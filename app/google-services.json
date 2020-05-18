@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "924399712100",
+    "firebase_url": "https://barfi-f09dd.firebaseio.com",
+    "project_id": "barfi-f09dd",
+    "storage_bucket": "barfi-f09dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:924399712100:android:7cdf926d66e14966276c71",
+        "android_client_info": {
+          "package_name": "com.timpra.barfi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "924399712100-li5isa0p15avkbmfc3g1bti25lm2g5br.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.timpra.barfi",
+            "certificate_hash": "cd03a106585235b4cd2060a1eeebe3b6f2a19192"
+          }
+        },
+        {
+          "client_id": "924399712100-7cs4dga59qp5i2to56l8bhck910jh5ch.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCzIVncgnLJ8Kb72ah1BK6GjGFLbjwzQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "924399712100-7cs4dga59qp5i2to56l8bhck910jh5ch.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
