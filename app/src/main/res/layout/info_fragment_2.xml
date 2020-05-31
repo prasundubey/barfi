@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".InfoFragment2"
+    >
+    <LinearLayout
+        android:id="@+id/ll0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <TextView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat_bold"
+        android:paddingEnd="80dp"
+        android:paddingStart="20dp"
+        android:paddingTop="70dp"
+        android:text="Now, Add photos of yourself"
+        android:textColor="@color/colorAccent"
+        android:textSize="40sp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:paddingTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/montserrat"
+        android:paddingEnd="40dp"
+        android:paddingStart="20dp"
+        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of getting a match!"
+        android:textColor="@color/colorGray"
+        android:textSize="12sp"
+        android:textStyle="normal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/ll0"
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:paddingTop="15dp"
+        android:layout_marginBottom="25sp"
+        android:layout_marginTop="50sp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/profileImage"
+            android:layout_marginEnd="10dp"
+            android:layout_weight="0.33"
+            android:layout_width="120sp"
+            android:layout_height="120sp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_white_border"
+            android:src="@drawable/icons_add_image" />
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_weight="0.33"
+            android:layout_marginEnd="10dp"
+            android:layout_width="120sp"
+            android:layout_height="120sp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_white_border"
+            android:src="@drawable/icons_add_image" />
+
+        <ImageView
+            android:id="@+id/image3"
+            android:layout_width="120sp"
+            android:layout_weight="0.33"
+            android:layout_height="120sp"
+            android:layout_gravity="center"
+            android:background="@drawable/circle_white_border"
+            android:src="@drawable/icons_add_image" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_below="@id/ll1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10sp"
+        android:paddingLeft="10sp"
+        android:paddingRight="10dp"
+        android:textSize="10dp"
+        android:textColorHighlight="@color/colorGray"
+        android:layout_gravity="center"
+        android:background="@drawable/text_border"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select to update"
+        android:textStyle="normal"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:fitsSystemWindows="false"
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:enabled="false"
+            android:background="@drawable/bg_button"
+            android:layout_marginEnd="30dp"
+            android:layout_marginStart="30dp"
+            android:id="@+id/next2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:layout_weight="1"
+            android:padding="10sp"
+            android:text="Continue"
+            android:textColor="@android:color/white"
+            />
+    </LinearLayout>
+
+
+</RelativeLayout>

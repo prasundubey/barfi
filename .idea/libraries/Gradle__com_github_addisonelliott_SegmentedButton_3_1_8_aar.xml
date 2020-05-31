@@ -1,0 +1,17 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.addisonelliott:SegmentedButton:3.1.8@aar">
+    <ANNOTATIONS>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1c338146dd92752493c0f414b9112a8d/jetified-SegmentedButton-3.1.8/annotations.zip!/" />
+    </ANNOTATIONS>
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1c338146dd92752493c0f414b9112a8d/jetified-SegmentedButton-3.1.8/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1c338146dd92752493c0f414b9112a8d/jetified-SegmentedButton-3.1.8/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.addisonelliott/SegmentedButton/3.1.8/754660288e789565bc9b14346bda22b6200f3158/SegmentedButton-3.1.8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.addisonelliott/SegmentedButton/3.1.8/a1cecdaeaeb3490c528a42f57abd2202fd45f2b5/SegmentedButton-3.1.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

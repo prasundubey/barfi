@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".InfoFragment1">
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/ll0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:paddingEnd="80dp"
+            android:paddingStart="20dp"
+            android:paddingTop="70dp"
+            android:text="Set-up your profile"
+            android:textColor="@color/colorAccent"
+            android:textSize="40sp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:text="Fill in the below details about yourself. These details cannot be changed once your profile has been created."
+            android:textColor="@color/colorGray"
+            android:textSize="12sp"
+            android:textStyle="normal" />
+
+        <com.google.android.material.textfield.TextInputLayout
+             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:textColorHint="#A9A9A9">
+
+            <com.google.android.material.textfield.TextInputEditText
+
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#A9A9A9"
+                android:hint="@string/name"
+                android:inputType="textCapWords"
+                android:textColor="@color/colorGray"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:textColorHint="#A9A9A9">
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A9A9A9"
+            android:hint="@string/email"
+            android:id="@+id/email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/colorGray"
+            android:textSize="18sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <LinearLayout
+
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="25dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="80dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text=" Birthday:  "
+            android:textStyle="normal"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10sp"
+            android:hint="Select Date"
+            android:background="@drawable/edit_border"
+            android:id="@+id/birthday"
+            android:textSize="15sp"/>
+    </LinearLayout>
+
+    <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
+        android:id="@+id/radioRealButtonGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:layout_marginTop="30dp"
+        android:elevation="0dp"
+        android:background="@color/colorGrayMid"
+        app:borderColor="@color/colorWhite"
+        app:borderWidth="1dp"
+        app:divider="@color/colorWhite"
+        app:dividerPadding="0dp"
+        app:dividerWidth="1dp"
+        app:position="0"
+        app:radius="20dp"
+        app:ripple="true"
+        app:rippleColor="@color/colorAccent"
+        app:selectedBackground="@color/colorGray">
+
+        <com.addisonelliott.segmentedbutton.SegmentedButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:drawable="@drawable/icons_male"
+            app:drawableGravity="left"
+            app:selectedTextColor="@color/colorWhite"
+            app:text=" Male"
+            app:textColor="@color/colorWhite" />
+
+        <com.addisonelliott.segmentedbutton.SegmentedButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="10dp"
+            app:drawable="@drawable/icons_female"
+            app:drawableGravity="left"
+            app:selectedTextColor="@color/colorWhite"
+            app:text=" Female"
+            app:textColor="@color/colorWhite" />
+    </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:fitsSystemWindows="false"
+            android:layout_marginTop="50dp"
+            android:layout_alignParentBottom="true">
+
+            <Button
+                android:enabled="false"
+                android:background="@drawable/bg_button"
+                android:layout_marginEnd="30dp"
+                android:layout_marginStart="30dp"
+                android:id="@+id/next"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="30dp"
+                android:layout_weight="1"
+                android:padding="10sp"
+                android:text="Continue"
+                android:textColor="@android:color/white"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+
+</FrameLayout>
