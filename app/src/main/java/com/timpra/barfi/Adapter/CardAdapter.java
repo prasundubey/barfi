@@ -44,8 +44,19 @@ public class CardAdapter extends ArrayAdapter<UserObject>{
 
         TextView name = convertView.findViewById(R.id.name);
         ImageView image = convertView.findViewById(R.id.image);
+        TextView mJob = convertView.findViewById(R.id.job);
+        TextView mSchool = convertView.findViewById(R.id.school);
 
         name.setText(card_item.getName() + ", " + card_item.getAge());
+
+        if(!card_item.getJob().equals(""))
+        { mJob.setText(card_item.getJob());
+        } else mJob.setVisibility(View.GONE);
+
+        if(!card_item.getSchool().equals(""))
+        { mSchool.setText(card_item.getSchool());
+        } else mSchool.setVisibility(View.GONE);
+
 
         if(!card_item.getProfileImageUrl().equals("default"))
             Glide.with(convertView.getContext()).load(card_item.getProfileImageUrl()).into(image);

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.timpra.barfi.Activity.MainActivity;
 import com.timpra.barfi.R;
@@ -41,5 +42,10 @@ public class OpenSettings extends AppCompatActivity {
             }
 
         });
+    }
+
+    public void onBackPressed() {
+        // super.onBackPressed();
+        Toast.makeText(getApplicationContext(), "Enable location permission continue", Toast.LENGTH_SHORT).show();
     }
 }

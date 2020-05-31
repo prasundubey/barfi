@@ -19,6 +19,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.timpra.barfi.Activity.EditProfileActivity;
+import com.timpra.barfi.Activity.ZoomCardActivity;
+import com.timpra.barfi.Activity.ZoomCardUser;
 import com.timpra.barfi.Objects.UserObject;
 import com.timpra.barfi.R;
 import com.timpra.barfi.Activity.SettingsActivity;
@@ -29,7 +31,7 @@ import com.timpra.barfi.Activity.SettingsActivity;
  */
 public class UserFragment extends Fragment {
 
-    private TextView mName;
+    private TextView mName, mPreview, mCity;
 
     private ImageView mProfileImage, mSettings, mEditProfile;
 
@@ -47,13 +49,26 @@ public class UserFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_user, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
 
         mName = view.findViewById(R.id.name);
         mProfileImage = view.findViewById(R.id.profileImage);
+        mCity = view.findViewById(R.id.city);
 
+        mPreview = view.findViewById(R.id.preview);
         mSettings = view.findViewById(R.id.settings);
         mEditProfile = view.findViewById(R.id.editProfile);
+
+        mProfileImage.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ZoomCardUser.class);
+            startActivity(intent);
+        });
+
+        mPreview.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ZoomCardUser.class);
+            startActivity(intent);
+        });
+
 
         mEditProfile.setOnClickListener(v -> {
             Intent intent = new Intent(getContext(), EditProfileActivity.class);
@@ -65,6 +80,8 @@ public class UserFragment extends Fragment {
         });
 
         getUserInfo();
+
+
 
         return view;
     }
@@ -89,6 +106,11 @@ public class UserFragment extends Fragment {
                 mName.setText(mUser.getName() + ", " + mUser.getAge());
                 if(getContext() != null && !mUser.getProfileImageUrl().equals("default"))
                     Glide.with(getContext()).load(mUser.getProfileImageUrl()).apply(RequestOptions.circleCropTransform()).into(mProfileImage);
+
+                if (!mUser.getCity().equals("")) {
+                    mCity.setText(mUser.getCity());
+                } else mCity.setVisibility(View.GONE);
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {

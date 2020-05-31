@@ -2,7 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,8 +21,8 @@
             android:drawableLeft="@drawable/ic_user"
             android:drawableTint="@color/colorBlack"
             android:text="likes"
-            android:textStyle="bold" />-->
-
+            android:textStyle="bold" />
+-->
 
         <TextView
             android:paddingTop="30sp"
@@ -29,7 +30,7 @@
             android:paddingBottom="10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:text="@string/new_matches"
             android:textStyle="bold" />
 
@@ -40,7 +41,7 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorGray"
+            android:textColor="@color/colorGrayDark7f"
             android:text="@string/no_matches_to_show"
             android:textStyle="bold"
             android:visibility="gone"/>
@@ -53,14 +54,20 @@
             android:scrollbars="horizontal">
         </androidx.recyclerview.widget.RecyclerView>
 
+        <View
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="10px"
+            android:background="@color/colorDeadBackground"
+            android:layout_marginBottom="10dp"/>
 
         <TextView
-            android:paddingTop="20sp"
+            android:paddingTop="10sp"
             android:paddingLeft="20sp"
             android:paddingBottom="10sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/colorPrimaryDark"
             android:text="@string/messages"
             android:textStyle="bold" />
 
@@ -71,7 +78,7 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/colorGray"
+            android:textColor="@color/colorGrayDark7f"
             android:text="@string/no_chats_to_show"
             android:textStyle="bold"
             android:visibility="gone"/>

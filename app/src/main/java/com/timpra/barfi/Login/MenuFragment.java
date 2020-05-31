@@ -1,5 +1,6 @@
 package com.timpra.barfi.Login;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,8 @@ import com.timpra.barfi.R;
 public class MenuFragment extends Fragment implements View.OnClickListener {
 
     Button mLogin, mRegistration;
+
+    Button mRegister;
 
     View view;
 
@@ -42,6 +45,16 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         initializeObjects();
+
+        /*mRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(AuthenticationActivity.this, RegisterActivityOtp.class);
+                startActivity(intent);
+
+            }
+
+        });*/
     }
 
     @Override
@@ -53,6 +66,10 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
             case R.id.login:
                 ((AuthenticationActivity) getActivity()).loginClick();
                 break;
+            case R.id.register:
+                Intent intent = new Intent(getActivity(), RegisterActivityOtp.class);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -60,12 +77,15 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
     /**
      * initializes the design Elements
      */
+
     private void initializeObjects(){
         mLogin = view.findViewById(R.id.login);
         mRegistration = view.findViewById(R.id.registration);
+        mRegister = view.findViewById(R.id.register);
 
         mRegistration.setOnClickListener(this);
         mLogin.setOnClickListener(this);
+        mRegister.setOnClickListener(this);
 
     }
 }

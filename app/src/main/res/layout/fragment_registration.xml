@@ -17,6 +17,7 @@
         android:layout_marginTop="100dp"
         android:background="@color/colorGrayLight"
         android:textColorHint="#cccccc">
+
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

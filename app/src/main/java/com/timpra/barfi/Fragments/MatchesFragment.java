@@ -71,11 +71,12 @@ public class MatchesFragment extends Fragment {
         //mLikes = view.findViewById(R.id.likes);
 
         mNoMatches.setVisibility(View.VISIBLE);
+        mNoChats.setVisibility(View.VISIBLE);
 
         getUserMatchId();
         initChats();
         initNewMatches();
-        // getLikes();
+        //getLikes();
 
 
         return view;
@@ -112,15 +113,14 @@ public class MatchesFragment extends Fragment {
 
 
     //Count no of likes
-/*
-    private void getLikes() {
+    /*private void getLikes() {
         DatabaseReference matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections").child("yeps");
         matchDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
                     countLikes = (int) dataSnapshot.getChildrenCount();
-                    mLikes.setVisibility(View.VISIBLE);
+                    // mLikes.setVisibility(View.VISIBLE);
                     likes = Integer.toString(countLikes);
                     mLikes.setText(likes);
 
@@ -132,8 +132,7 @@ public class MatchesFragment extends Fragment {
 
             }
         });
-    }
-*/
+    }*/
 
 
 
@@ -168,7 +167,7 @@ public class MatchesFragment extends Fragment {
                 return;
         }
 
-        mNoChats.setVisibility(View.VISIBLE);
+
 
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
         userDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -225,11 +224,11 @@ public class MatchesFragment extends Fragment {
                     mMessage.parseObject(dataSnapshot);
 
 
-                    mNoChats.setVisibility(View.GONE);
 
 
                     for(int i = 0; i < resultsMatches.size(); i++){
                         if(resultsMatches.get(i).getChatId().equals(chatId)) {
+                            mNoChats.setVisibility(View.GONE);
                             resultsMatches.get(i).setLastMessage(mMessage.getMessage());
                             for(int j = 0; j < resultsChat.size(); j++){
                                 if(resultsChat.get(j).getChatId().equals(chatId)){

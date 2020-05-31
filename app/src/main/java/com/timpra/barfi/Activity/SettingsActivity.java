@@ -3,10 +3,17 @@ package com.timpra.barfi.Activity;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
+import io.apptik.widget.MultiSlider;
+
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,6 +39,9 @@ import java.util.Map;
  */
 public class SettingsActivity extends AppCompatActivity {
 
+
+    private TextView mPhone, mEmail;
+
     private SegmentedButtonGroup mRadioGroup;
     FluidSlider mSlider;
     private Button mLogOut;
@@ -52,20 +62,54 @@ public class SettingsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+
         mRadioGroup = findViewById(R.id.radioRealButtonGroup);
         mSlider = findViewById(R.id.fluidSlider);
         mLogOut = findViewById(R.id.logOut);
+        mPhone = findViewById(R.id.phone);
+        mEmail = findViewById(R.id.email);
 
         mAuth = FirebaseAuth.getInstance();
-
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+
+        final TextView min5 = (TextView) findViewById(R.id.minValue5);
+        final TextView max5 = (TextView) findViewById(R.id.maxValue5);
+
+
+
+        MultiSlider multiSlider5 = (MultiSlider)findViewById(R.id.range_slider5);
+
+        min5.setText(String.valueOf(multiSlider5.getThumb(0).getValue()));
+        max5.setText(String.valueOf(multiSlider5.getThumb(1).getValue()));
+
+        multiSlider5.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+            @Override
+            public void onValueChanged(MultiSlider multiSlider,
+                                       MultiSlider.Thumb thumb,
+                                       int thumbIndex,
+                                       int value)
+            {
+                if (thumbIndex == 0) {
+                    min5.setText(String.valueOf(value));
+                } else {
+                    max5.setText(String.valueOf(value));
+                }
+            }
+        });
+
+
+
+
+
+
 
         getUserInfo();
 
         mLogOut.setOnClickListener(v -> logOut());
 
     }
-
 
     /**
      * Fetch user search settings and populates elements
@@ -76,6 +120,17 @@ public class SettingsActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 mUser.parseObject(dataSnapshot);
+
+                if (!mUser.getPhone().equals("")) {
+                    mPhone.setText(mUser.getPhone());
+                } else mPhone.setVisibility(View.GONE);
+
+
+                if (!mUser.getEmail().equals("")) {
+                    mEmail.setText(mUser.getEmail());
+                } else mEmail.setVisibility(View.GONE);
+
+
 
                 mSlider.setPosition(mUser.getSearchDistance() / 100);
 

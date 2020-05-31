@@ -67,6 +67,8 @@ public class AuthenticationActivity extends AppCompatActivity {
                 .commit();
     }
 
+
+
     @Override
     public void onBackPressed() {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {

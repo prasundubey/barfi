@@ -14,8 +14,8 @@
     <string name="gps_network_not_enabled">Location services not enabled</string>
     <string name="open_location_settings">Open location services</string>
     <string name="Cancel">Cancel</string>
-    <string name="messages">Messages</string>
-    <string name="new_matches">New Matches</string>
+    <string name="messages">Conversations</string>
+    <string name="new_matches">Matches</string>
     <string name="no_matches_to_show">No matches to show</string>
     <string name="no_chats_to_show">No chats to show</string>
     <string name="message">message…</string>
@@ -45,4 +45,32 @@
     <string name="text">Text</string>
     <string name="tab">tab</string>
     <string name="both">Both</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <!--
+    Extra profile details-->
+
+    <string name="pets">Pets</string>
+    <string name="status"> Marital status</string>
+    <string name="reading">Reading</string>
+    <string name="politics">Political view</string>
+    <string name="diet">Diet type</string>
+    <string name="kids">Want/Have Kids</string>
+    <string name="exercise">Exercise</string>
+    <string name="smoking">Smoking</string>
+    <string name="drinking">Drinking</string>
+    <string name="zodiac">Zodiac</string>
+    <string name="height">Height</string>
+    <string name="religion">Religion</string>
+    <string name="degree">Education level</string>
+    <string name="school_college">School/College</string>
+
+
+
+    <string name="preview_profile"><u>Preview Profile</u></string>
+
+
 </resources>

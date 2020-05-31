@@ -11,9 +11,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Fragments.OpenSettings"></activity>
+        <!--<activity android:name=".SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>-->
+       <!-- <activity android:name=".Login.RegisterActivityOtp"
+            android:windowSoftInputMode="adjustResize"> &lt;!&ndash;This goes in the specific activity with the button &ndash;&gt;
+        </activity>-->
+        <activity android:name=".NewUserDetails" />
+        <activity android:name=".Login.OtpActivity" />
+        <activity android:name=".Login.RegisterActivityOtp" />
+        <activity android:name=".Fragments.OpenSettings" />
         <activity android:name=".Fragments.MainActivity" />
         <activity android:name=".Activity.Birthday" />
+
         <activity
             android:name=".Login.LauncherActivity"
             android:theme="@style/AppTheme.Launcher">
@@ -23,6 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name=".Login.AuthenticationActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
         <activity android:name=".Activity.ChatActivity" />
@@ -32,6 +48,11 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".Activity.ZoomCardActivity" />
         <activity android:name=".Activity.SettingsActivity" />
+        <activity android:name=".Activity.ZoomCardUser" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
