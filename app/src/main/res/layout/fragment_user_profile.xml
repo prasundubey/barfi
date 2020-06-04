@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#F8F8F8">
 
     <LinearLayout
+        android:id="@+id/ll"
         android:paddingTop="60sp"
         android:background="@drawable/user_profile_background"
         android:layout_width="match_parent"
@@ -48,14 +49,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawableLeft="@drawable/ic_location"
+                android:drawablePadding="5dp"
                 android:textStyle="normal"
                 android:text="Location"
                 android:drawableTint="@color/colorGray"
-                style="@style/Smaller_Drawable"
-                android:textSize="22sp"
+                android:textSize="14sp"
                 android:textColor="@color/colorGray"
                 android:id="@+id/city"
-                android:visibility="visible"/>
+                android:visibility="visible"
+                android:layout_marginBottom="10dp"/>
 
 
         </LinearLayout>
@@ -127,26 +129,24 @@
                     />
             </LinearLayout>
 
-
-
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-            <ImageView
-                android:layout_margin="10sp"
-                android:layout_width="250sp"
-                android:layout_height="250sp"
-                android:src="@mipmap/ic_launcher_foreground"
-                android:contentDescription="logo" />
-        </LinearLayout>
-
 
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <ImageView
+
+            android:layout_margin="10sp"
+            android:layout_width="250sp"
+            android:layout_height="250sp"
+            android:src="@mipmap/ic_launcher_foreground"
+            android:contentDescription="logo" />
+    </RelativeLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

@@ -11,16 +11,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-    <TextView
 
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_bold"
+            android:paddingEnd="80dp"
+            android:paddingStart="20dp"
+            android:layout_marginTop="70dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_bold"
+        android:fontFamily="@font/montserrat_semi_bold"
         android:paddingEnd="80dp"
         android:paddingStart="20dp"
-        android:paddingTop="70dp"
-        android:text="Now, Add photos of yourself"
-        android:textColor="@color/colorAccent"
+        android:text="Add your photos"
+        android:textColor="@color/colorGrayTitle"
         android:textSize="40sp"
         android:textStyle="bold"/>
 
@@ -31,8 +42,8 @@
         android:fontFamily="@font/montserrat"
         android:paddingEnd="40dp"
         android:paddingStart="20dp"
-        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of getting a match!"
-        android:textColor="@color/colorGray"
+        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of getting connections!"
+        android:textColor="@color/colorGrayDark7f"
         android:textSize="12sp"
         android:textStyle="normal" />
     </LinearLayout>
@@ -42,9 +53,8 @@
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
         android:paddingTop="15dp"
+        android:gravity="center"
         android:layout_marginBottom="25sp"
         android:layout_marginTop="50sp"
         android:orientation="horizontal">
@@ -52,7 +62,6 @@
         <ImageView
             android:id="@+id/profileImage"
             android:layout_marginEnd="10dp"
-            android:layout_weight="0.33"
             android:layout_width="120sp"
             android:layout_height="120sp"
             android:layout_gravity="center"
@@ -61,7 +70,6 @@
 
         <ImageView
             android:id="@+id/image"
-            android:layout_weight="0.33"
             android:layout_marginEnd="10dp"
             android:layout_width="120sp"
             android:layout_height="120sp"
@@ -72,7 +80,6 @@
         <ImageView
             android:id="@+id/image3"
             android:layout_width="120sp"
-            android:layout_weight="0.33"
             android:layout_height="120sp"
             android:layout_gravity="center"
             android:background="@drawable/circle_white_border"

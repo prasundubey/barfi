@@ -66,6 +66,7 @@ public class ZoomCardUser extends AppCompatActivity {
             mPolitics,
             mReading;
 
+    private ImageView mBack;
 
 
     @Override
@@ -74,6 +75,8 @@ public class ZoomCardUser extends AppCompatActivity {
         setContentView(R.layout.zoom_card);
 
 
+        mBack = findViewById(R.id.back);
+        mBack.setOnClickListener(view -> { super.onBackPressed();});
 
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -138,7 +141,10 @@ public class ZoomCardUser extends AppCompatActivity {
                 else mImage3.setVisibility(View.GONE);
 
 
-                mAbout.setText(mUser.getAbout());
+                if(!mUser.getAbout().equals(""))
+                { mAbout.setText(mUser.getAbout());
+                } else mAbout.setVisibility(View.GONE);
+
 
                 if (!mUser.getJob().equals("")) {
                     mJob.setText(mUser.getJob());

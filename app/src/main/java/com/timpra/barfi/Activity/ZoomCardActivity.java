@@ -36,6 +36,8 @@ public class ZoomCardActivity extends AppCompatActivity {
     private ImageView mImage1;
     private ImageView mImage3;
 
+    private ImageView mBack;
+
     private TextView
             mStatus,
             mReligion,
@@ -71,6 +73,7 @@ public class ZoomCardActivity extends AppCompatActivity {
         mImage1 = findViewById(R.id.image1);
         mImage3 = findViewById(R.id.image3);
 
+        mBack = findViewById(R.id.back);
 
         mJob = findViewById(R.id.job);
         mAbout = findViewById(R.id.about);
@@ -97,6 +100,7 @@ public class ZoomCardActivity extends AppCompatActivity {
 
 
 
+        mBack.setOnClickListener(view -> { super.onBackPressed();});
 
 
 

@@ -8,7 +8,7 @@
     android:gravity="center"
     android:id="@+id/layout">
     <ImageView
-        android:layout_marginBottom="10sp"
+        android:layout_marginBottom="5sp"
         android:layout_width="75sp"
         android:layout_height="75sp"
         android:src="@mipmap/ic_user_default"
@@ -18,7 +18,7 @@
         android:textStyle="bold"
         android:textSize="14sp"
         android:textColor="@color/colorBlack"
-        android:paddingBottom="20sp"
+        android:paddingBottom="10sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/match_s_name"

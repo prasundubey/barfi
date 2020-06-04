@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -10,10 +10,33 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="android:statusBarColor">@color/colorGrayLight</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
         <item name="multiSliderStyle">@style/Widget.MultiSlider</item>
 
+        <item name="alertDialogTheme">@style/AppCompatAlertDialogStyle</item>
 
     </style>
+
+
+
+    <style name="AppCompatAlertDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="colorAccent">@color/colorGrayDark7f</item> <!-- buttons OK cancel-->
+        <item name="android:textColorPrimary">@color/colorPrimaryDark</item> <!--title in message-->
+        <item name="android:dialogCornerRadius">10dp</item>
+
+
+        <item name="textColorAlertDialogListItem">@color/colorBlack</item> <!-- list color-->
+        <item name="android:background">@color/white</item>
+       <!-- <item name="android:layout_gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="drawableTint">@color/colorGray</item>
+        <item name="alertDialogCenterButtons">true</item>-->
+
+    </style>
+
+
 
 
     <style name="Widget.MultiSlider" parent="android:Widget">
@@ -21,8 +44,8 @@
 
 
     <style name="AppTheme.Launcher">
-
-        <item name="android:windowBackground">@color/colorPrimary</item>
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>

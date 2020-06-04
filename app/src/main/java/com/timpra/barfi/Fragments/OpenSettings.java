@@ -1,9 +1,7 @@
 package com.timpra.barfi.Fragments;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,7 +10,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.timpra.barfi.Activity.MainActivity;
 import com.timpra.barfi.R;
 
 
@@ -23,9 +20,9 @@ public class OpenSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_open_settings);
+        setContentView(R.layout.activity_location_settings);
 
-        setContentView(R.layout.activity_open_settings);
+        setContentView(R.layout.activity_location_settings);
 
 
 

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,8 +13,11 @@ import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -55,7 +59,7 @@ public class ChatActivity extends AppCompatActivity {
 
     private TextView mName;
 
-    private Button unMatch;
+    private TextView unMatch;
 
     private String currentUserID, matchId, chatId;
 
@@ -83,11 +87,9 @@ public class ChatActivity extends AppCompatActivity {
         unMatch.setOnClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
-            builder.setMessage("Unmatching will remove this profile from your list & delete the chat");
-            builder.setTitle("Are You Sure?");
-            // Set Cancelable false, for when the user clicks on the outside, the Dialog Box then it will remain show
-            builder.setCancelable(false);
-            // Set the positive button with yes name, OnClickListener method is use of, DialogInterface interface.
+            builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Removing will delete this profile from connection & delete the chat</font>"));
+            builder.setTitle( Html.fromHtml("<font color='#2d2d2d'>Are you sure?</font>"));
+            builder.setCancelable(true);
             builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -124,6 +126,24 @@ public class ChatActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(mChatAdapter);
 
 
+        //Push the view when the keyboard opens
+        mRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                if (bottom < oldBottom) {
+                    mRecyclerView.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mRecyclerView.smoothScrollToPosition(mChatAdapter.getItemCount());
+                        }
+                    }, 100);
+                }
+            }
+        });
+
+
+
+
         mName = findViewById(R.id.name);
         mImage = findViewById(R.id.image);
 
@@ -136,6 +156,12 @@ public class ChatActivity extends AppCompatActivity {
         mSendButton.setOnClickListener(view -> sendMessage());
 
         getMatchInfo();
+
+
+        //inflate the zoom card view on photo click
+        mImage.setOnClickListener(view -> getMatchProfile());
+        mName.setOnClickListener(view -> getMatchProfile());
+
     }
 
     /**
@@ -144,7 +170,7 @@ public class ChatActivity extends AppCompatActivity {
      * Checks if text to send is empty before that.
      */
     private void sendMessage() {
-        String sendMessageText = mSendEditText.getText().toString();
+        String sendMessageText = mSendEditText.getText().toString().trim();
 
         if(!sendMessageText.isEmpty()){
             DatabaseReference newMessageDb = mDatabaseChat.push();
@@ -154,7 +180,7 @@ public class ChatActivity extends AppCompatActivity {
             newMessage.put("text", sendMessageText);
 
             SendNotification sendNotification = new SendNotification();
-            sendNotification.SendNotification(sendMessageText, "new Message!", matchId);
+            sendNotification.SendNotification(sendMessageText, "New Message!", matchId);
 
             newMessageDb.setValue(newMessage);
         }
@@ -252,5 +278,39 @@ public class ChatActivity extends AppCompatActivity {
     }
 
 
+    //inflates match profile through zoom card
+
+    private void getMatchProfile() {
+        DatabaseReference mMatchDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(matchId);
+        mMatchDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists() && dataSnapshot.getChildrenCount() > 0) {
+
+                    UserObject mUser = new UserObject();
+                    mUser.parseObject(dataSnapshot);
+                    Intent i = new Intent(ChatActivity.this, ZoomCardActivity.class);
+                    i.putExtra("UserObject", mUser);
+                    startActivity(i);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+
+        });
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
 }

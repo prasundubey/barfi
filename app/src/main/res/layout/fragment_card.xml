@@ -15,6 +15,18 @@
         android:text="@string/no_more_people_to_show"/>
 
 
+  <!--testing match card-->
+    <Button
+        android:id="@+id/popup"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_button_grad"
+        android:text="show popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+
     <ProgressBar
         android:id="@+id/pBar"
         style="?android:attr/progressBarStyleLarge"
@@ -23,6 +35,8 @@
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
         android:visibility="gone"/>
+
+
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView
         android:id="@+id/frame"

@@ -15,6 +15,31 @@
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
 
+<!--
+    https://github.com/skyfishjy/android-ripple-background
+-->
+
+    <com.skyfishjy.library.RippleBackground
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/content"
+        app:rb_color="@color/colorGrayLight"
+        app:rb_radius="40dp"
+        app:rb_rippleAmount="4"
+        app:rb_duration="6000"
+        app:rb_type="fillRipple"
+        app:rb_scale="6">
+        <ImageView
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_centerInParent="true"
+            android:id="@+id/centerImage"
+            android:src="@drawable/ic_barfies_white"
+            />
+    </com.skyfishjy.library.RippleBackground>
+
 
     <com.google.android.material.appbar.AppBarLayout
 

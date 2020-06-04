@@ -1,6 +1,9 @@
 package com.timpra.barfi.Fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -71,7 +74,7 @@ public class MatchesFragment extends Fragment {
         //mLikes = view.findViewById(R.id.likes);
 
         mNoMatches.setVisibility(View.VISIBLE);
-        mNoChats.setVisibility(View.VISIBLE);
+
 
         getUserMatchId();
         initChats();
@@ -104,8 +107,16 @@ public class MatchesFragment extends Fragment {
         mChat.setHasFixedSize(false);
         RecyclerView.LayoutManager mChatLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mChat.setLayoutManager(mChatLayoutManager);
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        /*DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL);
+        mChat.addItemDecoration(dividerItemDecoration);*/
+
+        //NOT WORKING
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(),
+                LinearLayoutManager.VERTICAL);
+        dividerItemDecoration.setDrawable(getContext().getResources().getDrawable(R.drawable.divider));
         mChat.addItemDecoration(dividerItemDecoration);
+
+
         mChatAdapter = new ChatListAdapter(getDataSetChat(), getContext());
         mChat.setAdapter(mChatAdapter);
     }
@@ -171,6 +182,7 @@ public class MatchesFragment extends Fragment {
 
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
         userDb.addListenerForSingleValueEvent(new ValueEventListener() {
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
@@ -224,6 +236,7 @@ public class MatchesFragment extends Fragment {
                     mMessage.parseObject(dataSnapshot);
 
 
+                    mNoChats.setVisibility(View.VISIBLE);
 
 
                     for(int i = 0; i < resultsMatches.size(); i++){
@@ -233,6 +246,7 @@ public class MatchesFragment extends Fragment {
                             for(int j = 0; j < resultsChat.size(); j++){
                                 if(resultsChat.get(j).getChatId().equals(chatId)){
                                     resultsMatches.get(i).setLastMessage(mMessage.getMessage());
+
                                     mChatAdapter.notifyDataSetChanged();
                                     return;
                                 }

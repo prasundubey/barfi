@@ -53,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
+            android:gravity="center"
             android:layout_marginBottom="20sp"
             android:layout_marginTop="20sp"
             android:orientation="horizontal">
@@ -60,7 +61,6 @@
             <ImageView
                 android:id="@+id/profileImage"
                 android:layout_marginEnd="10dp"
-                android:layout_weight="0.33"
                 android:layout_width="120sp"
                 android:layout_height="120sp"
                 android:layout_gravity="center"
@@ -69,7 +69,6 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_weight="0.33"
                 android:layout_marginEnd="10dp"
                 android:layout_width="120sp"
                 android:layout_height="120sp"
@@ -80,7 +79,6 @@
             <ImageView
                 android:id="@+id/image3"
                 android:layout_width="120sp"
-                android:layout_weight="0.33"
                 android:layout_height="120sp"
                 android:layout_gravity="center"
                 android:background="@drawable/circle_white_border"
@@ -138,7 +136,7 @@
                 android:paddingLeft="10sp"
                 android:paddingBottom="5sp"
                 android:text="About"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <EditText
                 android:id="@+id/bio"
@@ -151,6 +149,7 @@
                 android:background="@drawable/edit_border"
                 android:hint="Write a little bit about yourself.."
                 android:textSize="16sp"
+                android:maxLines="8"
                 android:textColorHint="@android:color/darker_gray" />
 
         </LinearLayout>
@@ -171,14 +170,17 @@
             <EditText
                 android:id="@+id/homeTown"
                 android:drawableLeft="@drawable/i_home"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:inputType="textCapWords"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/edit_border"
-                android:hint="   Home Town"
+                android:hint="Home Town"
+                android:drawablePadding="20dp"
                 android:textSize="16sp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColorHint="@android:color/darker_gray"
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
 
         </LinearLayout>
 
@@ -201,7 +203,7 @@
                 android:paddingLeft="10sp"
                 android:paddingBottom="5sp"
                 android:text="Employment"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <EditText
                 android:id="@+id/jobTitle"
@@ -212,7 +214,10 @@
                 android:background="@drawable/edit_border"
                 android:hint="  Job Title"
                 android:textSize="16sp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:imeOptions="actionDone"
+                android:singleLine="true"
+                android:textColorHint="@android:color/darker_gray"
+                />
 
             <EditText
                 android:id="@+id/company"
@@ -224,7 +229,9 @@
                 android:background="@drawable/edit_border"
                 android:hint="  Company"
                 android:textSize="16sp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColorHint="@android:color/darker_gray"
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
 
         </LinearLayout>
 
@@ -246,7 +253,7 @@
                 android:paddingLeft="10sp"
                 android:paddingBottom="5sp"
                 android:text="Education"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/degree"
@@ -272,7 +279,9 @@
                 android:background="@drawable/edit_border"
                 android:hint="@string/school_college"
                 android:textSize="16sp"
-                android:textColorHint="@android:color/darker_gray" />
+                android:textColorHint="@android:color/darker_gray"
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
 
         </LinearLayout>
 
@@ -293,7 +302,7 @@
                 android:paddingLeft="10sp"
                 android:paddingBottom="5sp"
                 android:text="My basic info"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
 
             <TextView

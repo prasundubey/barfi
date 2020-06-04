@@ -20,6 +20,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.timpra.barfi.Activity.MainActivity;
 
+import org.w3c.dom.Text;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +39,7 @@ public class InfoFragment4 extends Fragment {
     EditText
             //mTown,
             mJob, mCompany, mSchool;
+    private TextView mSkip;
     Button mNext4;
     private TextView
             mStatus,
@@ -91,7 +94,7 @@ public class InfoFragment4 extends Fragment {
 
         mNext4 = (Button) view.findViewById(R.id.next4);
 
-
+        mSkip = (TextView) view.findViewById(R.id.skip2);
 
 
 
@@ -99,7 +102,7 @@ public class InfoFragment4 extends Fragment {
 
         mStatus.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("What's my marital status?");
+            builder.setTitle("What's your marital status?");
             builder.setIcon(R.drawable.i_status);
             String[] arr = {"Never married", "Divorced", "Awaiting Divorce"};
 
@@ -121,9 +124,9 @@ public class InfoFragment4 extends Fragment {
 
         mReligion.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("WHAT RELIGION I FOLLOW?");
+            builder.setTitle("What religion do you follow?");
             builder.setIcon(R.drawable.i_religion);
-            String[] arr = {"Agnostic", "Atheist", "Buddhist", "Christian", "Hindu","Jain","jewish","Muslim","Zoroastrian","Sikh","Spritual","Others" };
+            String[] arr = {"Agnostic", "Atheist", "Buddhist", "Christian", "Hindu","Jain","Jewish","Muslim","Zoroastrian","Sikh","Spiritual","Others" };
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -143,9 +146,9 @@ public class InfoFragment4 extends Fragment {
 
         mHeight.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How tall am I?");
+            builder.setTitle("How tall are you?");
             builder.setIcon(R.drawable.i_height);
-            String[] arr = {"5,0'", "5,5'", "6,0'", "6,5'", "7,0'"};
+            String[] arr = {"<4.10'", "4.10'", "4.11'", "5'0","5.1'","5.2'","5.3'","5.4'", "5.5'","5.6'","5.7'","5.8'","5.9'","5.10'","5.11'", "6.0'","6.1'","6.2'","6.3'","6.4'", "6.5'", ">6.5'"};
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -165,7 +168,7 @@ public class InfoFragment4 extends Fragment {
 
         mZodiac.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("What is my zodiac sign?");
+            builder.setTitle("What's your zodiac sign?");
             builder.setIcon(R.drawable.i_zodiac);
             String[] arr = {"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"};
 
@@ -187,7 +190,7 @@ public class InfoFragment4 extends Fragment {
 
         mDrinking.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How often do I drink?");
+            builder.setTitle("How often do you drink?");
             builder.setIcon(R.drawable.i_drinking);
             String[] arr = {"Socially", "Never", "Frequently"};
 
@@ -209,7 +212,7 @@ public class InfoFragment4 extends Fragment {
 
         mSmoking.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How often do I smoke?");
+            builder.setTitle("How often do you smoke?");
             builder.setIcon(R.drawable.i_smoking);
             String[] arr = {"Socially", "Never", "Regularly"};
 
@@ -231,7 +234,7 @@ public class InfoFragment4 extends Fragment {
 
         mExercise.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How often do I workout/exercise?");
+            builder.setTitle("How often do you workout/exercise?");
             builder.setIcon(R.drawable.i_exercise);
             String[] arr = {"Actively", "Sometimes", "Almost never", "Never"};
 
@@ -253,7 +256,7 @@ public class InfoFragment4 extends Fragment {
 
         mPets.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How do I feel about pets?");
+            builder.setTitle("How do you feel about pets?");
             builder.setIcon(R.drawable.i_pet);
             String[] arr = {"Dogs", "Cats", "Any pet", "Don't want"};
 
@@ -275,7 +278,7 @@ public class InfoFragment4 extends Fragment {
 
         mKids.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("Do I have or want babies?");
+            builder.setTitle("Do you have or want babies?");
             builder.setIcon(R.drawable.i_kids);
             String[] arr = {"Want someday", "Don't want", "Have and want more", "Have and don't want more"};
 
@@ -297,9 +300,9 @@ public class InfoFragment4 extends Fragment {
 
         mDiet.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("What kind of diet do I follow?");
+            builder.setTitle("What kind of diet do you follow?");
             builder.setIcon(R.drawable.i_diet);
-            String[] arr = {"Vegan", "Vegetarian", "Occasionally non-vegetarian", "Non-vegetarian", "Eggitarian", "Jain"};
+            String[] arr = {"Vegan", "Vegetarian", "Occasionally non-vegetarian", "Non-vegetarian", "Eggiterian", "Jain"};
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -319,7 +322,7 @@ public class InfoFragment4 extends Fragment {
 
         mPolitics.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("What are my political views?");
+            builder.setTitle("What are your political views?");
             builder.setIcon(R.drawable.i_politics);
             String[] arr = {"Apolitical", "Neutral", "Left", "Right"};
 
@@ -341,7 +344,7 @@ public class InfoFragment4 extends Fragment {
 
         mReading.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle("How do I like reading books?");
+            builder.setTitle("Do you like reading books?");
             builder.setIcon(R.drawable.i_reading);
             String[] arr = {"Love reading", "Read sometimes", "Don't read much", "Never"};
 
@@ -364,6 +367,15 @@ public class InfoFragment4 extends Fragment {
 
 
 
+        mSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveUserInformation();
+                FragmentTransaction fr = getFragmentManager().beginTransaction();
+                fr.replace(R.id.infoContainer, new InfoFragment5());
+                fr.commit();
+            }
+        });
 
 
 
@@ -371,8 +383,9 @@ public class InfoFragment4 extends Fragment {
             @Override
             public void onClick(View view) {
                 saveUserInformation();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
+                FragmentTransaction fr = getFragmentManager().beginTransaction();
+                fr.replace(R.id.infoContainer, new InfoFragment5());
+                fr.commit();
             }
         });
 

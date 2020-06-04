@@ -4,8 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -15,6 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.timpra.barfi.Activity.MainActivity;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 
 public class NewUserDetails extends AppCompatActivity {
@@ -36,7 +44,12 @@ public class NewUserDetails extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                //check if name is updated name
+
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.add(R.id.infoContainer, new InfoFragment1());
+                fragmentTransaction.commit();
+
+               /* //check if name is updated name
                 if (!dataSnapshot.hasChild("name") || dataSnapshot.child("name").getValue() == null) {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.add(R.id.infoContainer, new InfoFragment1());
@@ -47,7 +60,9 @@ public class NewUserDetails extends AppCompatActivity {
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.add(R.id.infoContainer, new InfoFragment2());
                     fragmentTransaction.commit();
+                    finish();
                 }
+*/
             }
 
             @Override
@@ -55,13 +70,22 @@ public class NewUserDetails extends AppCompatActivity {
 
             }
         });
-/*
+
+    }
+
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
     @Override
     public void onBackPressed() {
         // super.onBackPressed();
         Toast.makeText(getApplicationContext(), "Enter details to continue", Toast.LENGTH_SHORT).show();
-    }*/
-
-
     }
 }

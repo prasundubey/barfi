@@ -46,6 +46,13 @@ public class SettingsActivity extends AppCompatActivity {
     FluidSlider mSlider;
     private Button mLogOut;
 
+    private TextView mDone;
+
+    private TextView min,max;
+    String ageMin = "20";
+    String ageMax = "80";
+    private MultiSlider multiSlider;
+
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
 
@@ -69,22 +76,24 @@ public class SettingsActivity extends AppCompatActivity {
         mPhone = findViewById(R.id.phone);
         mEmail = findViewById(R.id.email);
 
+        mDone = findViewById(R.id.done);
+
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
 
 
-        final TextView min5 = (TextView) findViewById(R.id.minValue5);
-        final TextView max5 = (TextView) findViewById(R.id.maxValue5);
+        min = (TextView) findViewById(R.id.minValue5);
+        max = (TextView) findViewById(R.id.maxValue5);
 
 
 
-        MultiSlider multiSlider5 = (MultiSlider)findViewById(R.id.range_slider5);
+        multiSlider = (MultiSlider)findViewById(R.id.range_slider5);
 
-        min5.setText(String.valueOf(multiSlider5.getThumb(0).getValue()));
-        max5.setText(String.valueOf(multiSlider5.getThumb(1).getValue()));
+        /*min.setText(String.valueOf(multiSlider.getThumb(0).getValue()));
+        max.setText(String.valueOf(multiSlider.getThumb(1).getValue()));*/
 
-        multiSlider5.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
+        multiSlider.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider,
                                        MultiSlider.Thumb thumb,
@@ -92,17 +101,19 @@ public class SettingsActivity extends AppCompatActivity {
                                        int value)
             {
                 if (thumbIndex == 0) {
-                    min5.setText(String.valueOf(value));
+                    min.setText(String.valueOf(value));
+                    ageMin = String.valueOf(value);
                 } else {
-                    max5.setText(String.valueOf(value));
+                    max.setText(String.valueOf(value));
+                    ageMax = String.valueOf(value);
                 }
             }
         });
 
-
-
-
-
+        mDone.setOnClickListener(view -> {
+            saveUserInformation();
+            super.onBackPressed();
+        });
 
 
         getUserInfo();
@@ -129,6 +140,16 @@ public class SettingsActivity extends AppCompatActivity {
                 if (!mUser.getEmail().equals("")) {
                     mEmail.setText(mUser.getEmail());
                 } else mEmail.setVisibility(View.GONE);
+
+                if (!mUser.getAgeMin().equals("")) {
+                    min.setText(mUser.getAgeMin());
+                    multiSlider.getThumb(0).setValue(Integer.parseInt(mUser.getAgeMin()));
+                } else min.setVisibility(View.GONE);
+
+                if (!mUser.getAgeMax().equals("")) {
+                    max.setText(mUser.getAgeMax());
+                    multiSlider.getThumb(1).setValue(Integer.parseInt(mUser.getAgeMax()));
+                } else max.setVisibility(View.GONE);
 
 
 
@@ -160,6 +181,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void saveUserInformation() {
         String interest = "Both";
 
+
         switch(mRadioGroup.getPosition()){
             case 0:
                 interest = "Male";
@@ -172,8 +194,12 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
 
+
+
         Map userInfo = new HashMap();
         userInfo.put("interest", interest);
+        userInfo.put("ageMin", ageMin);
+        userInfo.put("ageMax", ageMax);
         userInfo.put("search_distance", Math.round(mSlider.getPosition() * 100));
         mUserDatabase.updateChildren(userInfo);
 

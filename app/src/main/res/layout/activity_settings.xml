@@ -261,7 +261,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            app:scaleMin="21"
+            app:scaleMin="20"
             app:scaleMax="80"
             app:thumbNumber="2"
             app:range1="@drawable/multislider_track_mtrl_alpha"
@@ -294,7 +294,8 @@
             android:textSize="16sp"/>
 
         <com.ramotion.fluidslider.FluidSlider
-            android:layout_margin="0sp"
+            android:layout_marginStart="10sp"
+            android:layout_marginEnd="10sp"
             android:id="@+id/fluidSlider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -319,11 +320,11 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:fitsSystemWindows="false"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="40dp"
         >
 
         <Button
-            android:background="@drawable/button_grad"
+            android:background="@drawable/bg_button_grad"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:id="@+id/logOut"

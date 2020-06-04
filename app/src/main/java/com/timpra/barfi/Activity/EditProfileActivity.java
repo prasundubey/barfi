@@ -1,6 +1,7 @@
 package com.timpra.barfi.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,12 +14,17 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -185,7 +191,7 @@ public class EditProfileActivity extends AppCompatActivity {
         mDegree.setOnClickListener(v -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Whats you degreee mf");
+            builder.setTitle("What's my highest qualification?");
             builder.setIcon(R.drawable.ic_school);
 
             String[] deg = {"High school diploma", "In college", "Undergraduate", "In grad school", "Graduate"};
@@ -199,7 +205,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
             });
 
-            builder.setNeutralButton("Do not disclose", new DialogInterface.OnClickListener() {
+
+            builder.setNeutralButton( "Do not disclose", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     mDegree.setText(null);
@@ -208,6 +215,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
             AlertDialog dialog = builder.create();
             dialog.show();
+            // dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setTextColor(R.color.colorBlack);
+
+
 
         });
 
@@ -226,6 +236,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     mStatus.setText(selectedItem);
                 }
             });
+
             builder.setNeutralButton("Do not disclose", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) { mStatus.setText(null); }
@@ -237,9 +248,9 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mReligion.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("WHAT RELIGION I FOLLOW?");
+            builder.setTitle("What religion do I follow?");
             builder.setIcon(R.drawable.i_religion);
-            String[] arr = {"Agnostic", "Atheist", "Buddhist", "Christian", "Hindu","Jain","jewish","Muslim","Zoroastrian","Sikh","Spritual","Others" };
+            String[] arr = {"Agnostic", "Atheist", "Buddhist", "Christian", "Hindu","Jain","Jewish","Muslim","Zoroastrian","Sikh","Spiritual","Others" };
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -261,7 +272,7 @@ public class EditProfileActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("How tall am I?");
             builder.setIcon(R.drawable.i_height);
-            String[] arr = {"5,0'", "5,5'", "6,0'", "6,5'", "7,0'"};
+            String[] arr = {"<4.10'", "4.10'", "4.11'", "5'0","5.1'","5.2'","5.3'","5.4'", "5.5'","5.6'","5.7'","5.8'","5.9'","5.10'","5.11'", "6.0'","6.1'","6.2'","6.3'","6.4'", "6.5'", ">6.5'"};
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -281,7 +292,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mZodiac.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("What is my zodiac sign?");
+            builder.setTitle("What's my zodiac sign?");
             builder.setIcon(R.drawable.i_zodiac);
             String[] arr = {"Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"};
 
@@ -415,7 +426,7 @@ public class EditProfileActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("What kind of diet do I follow?");
             builder.setIcon(R.drawable.i_diet);
-            String[] arr = {"Vegan", "Vegetarian", "Occasionally non-vegetarian", "Non-vegetarian", "Eggitarian", "Jain"};
+            String[] arr = {"Vegan", "Vegetarian", "Occasionally non-vegetarian", "Non-vegetarian", "Eggiterian", "Jain"};
 
             builder.setItems(arr, new DialogInterface.OnClickListener() {
                 @Override
@@ -457,7 +468,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mReading.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("How do I like reading books?");
+            builder.setTitle("Do I like reading books?");
             builder.setIcon(R.drawable.i_reading);
             String[] arr = {"Love reading", "Read sometimes", "Don't read much", "Never"};
 
@@ -514,7 +525,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 mTown.setText(mUser.getTown());
                 mJobTitle.setText(mUser.getJobTitle());
                 mCompany.setText(mUser.getCompany());
-                mDegree.setText(mUser.getAbout());
+                mDegree.setText(mUser.getDegree());
                 mSchool.setText(mUser.getSchool());
 
 
@@ -653,7 +664,7 @@ public class EditProfileActivity extends AppCompatActivity {
         final String company = mCompany.getText().toString();
         final String school = mSchool.getText().toString();
         final String degree = mDegree.getText().toString();
-        final String about = mAbout.getText().toString();
+        final String about = mAbout.getText().toString().trim();
 
 
         final String status = mStatus.getText().toString();
@@ -675,7 +686,12 @@ public class EditProfileActivity extends AppCompatActivity {
         userInfo.put("town", town);
         userInfo.put("jobTitle", jobTitle);
         userInfo.put("company", company);
-        userInfo.put("job", jobTitle + " at " + company);
+        if(!jobTitle.isEmpty()&& !company.isEmpty())
+            userInfo.put("job", jobTitle + " at " + company);
+        if(jobTitle.isEmpty()&& !company.isEmpty())
+            userInfo.put("job", company);
+        if(!jobTitle.isEmpty()&& company.isEmpty())
+            userInfo.put("job", jobTitle);
         userInfo.put("school", school);
         userInfo.put("degree", degree);
         userInfo.put("about", about);
@@ -778,5 +794,14 @@ public class EditProfileActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Details updated", Toast.LENGTH_SHORT).show();
     }
 
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
 }

@@ -1,9 +1,11 @@
 package com.timpra.barfi.Activity;
 
 import android.Manifest;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 
 import com.firebase.geofire.GeoFire;
@@ -20,13 +22,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.graphics.drawable.ColorDrawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.provider.Settings;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +43,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.onesignal.OneSignal;
+import com.skyfishjy.library.RippleBackground;
 import com.timpra.barfi.Fragments.CardFragment;
 import com.timpra.barfi.Fragments.MatchesFragment;
 import com.timpra.barfi.Fragments.OpenSettings;
@@ -70,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
     Location lastKnownLocation;
 
     private TabLayout tabLayout;
@@ -96,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
         //checkUserInformation();
 
 
+        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
+        ImageView imageView=(ImageView)findViewById(R.id.centerImage);
+        rippleBackground.startRippleAnimation();
+
+
 
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -106,13 +115,12 @@ public class MainActivity extends AppCompatActivity {
                 //check if name is updated name
                 if (!dataSnapshot.hasChild("name") || dataSnapshot.child("name").getValue()==null||!dataSnapshot.hasChild("profileImageUrl") ) {
                     Intent intent = new Intent(MainActivity.this, NewUserDetails.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
                     startActivity(intent);
                     //added later
                     finish();
-                }
 
+                }
 
                 //for testing
 
@@ -138,7 +146,6 @@ public class MainActivity extends AppCompatActivity {
 
                     tabLayout = findViewById(R.id.tabs);
                     tabLayout.setupWithViewPager(viewPager);
-
 
 
 
@@ -179,6 +186,9 @@ public class MainActivity extends AppCompatActivity {
 
                     getPermissions();
                     isLocationEnable();
+
+                    rippleBackground.stopRippleAnimation();
+                    imageView.setVisibility(View.GONE);
 
                 }
 
@@ -247,6 +257,7 @@ public class MainActivity extends AppCompatActivity {
                 cardFragment.getCloseUsers(location);
 
                 locationGotten = true;
+
             }
             else{
                 isLocationEnable();
@@ -373,10 +384,7 @@ public class MainActivity extends AppCompatActivity {
 
                 } else {
 
-
-//Enable setting manually
-
-
+                    //Enable setting manually
                     goToOpenSettings();
 
                     // permission denied, boo! Disable the
@@ -391,12 +399,8 @@ public class MainActivity extends AppCompatActivity {
             // permissions this app might request
 
 
-
-
         }
     }
-
-
 
 
 

@@ -41,7 +41,8 @@
 
         <activity android:name=".Login.AuthenticationActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
-        <activity android:name=".Activity.ChatActivity" />
+        <activity android:name=".Activity.ChatActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize"/>
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main2"
@@ -54,6 +55,8 @@
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
     </application>
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 

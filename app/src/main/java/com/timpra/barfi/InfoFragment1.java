@@ -1,7 +1,10 @@
 package com.timpra.barfi;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
@@ -12,11 +15,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
@@ -27,6 +33,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static androidx.core.content.ContextCompat.getSystemService;
+
 public class InfoFragment1 extends Fragment {
 
     private static final String TAG = "Birthday";
@@ -35,6 +43,7 @@ public class InfoFragment1 extends Fragment {
     Button mNext;
     private TextView mBirthday;
     SegmentedButtonGroup mRadioGroup;
+
 
     private DatePickerDialog.OnDateSetListener mDateSetListener;
     private FirebaseAuth mAuth;
@@ -56,6 +65,7 @@ public class InfoFragment1 extends Fragment {
 
 
 
+
         mEmail = (EditText) view.findViewById(R.id.email);
         mName = (EditText) view.findViewById(R.id.name);
         mBirthday = (TextView) view.findViewById(R.id.birthday);
@@ -67,7 +77,7 @@ public class InfoFragment1 extends Fragment {
             public void onClick(View view) {
                 Calendar cal = Calendar.getInstance();
                 Calendar twenty1 = (Calendar) cal.clone();
-                twenty1.add(Calendar.YEAR, -18);
+                twenty1.add(Calendar.YEAR, -19);
 
 
 
@@ -128,11 +138,15 @@ public class InfoFragment1 extends Fragment {
                 FragmentTransaction fr = getFragmentManager().beginTransaction();
                 fr.replace(R.id.infoContainer, new InfoFragment2());
                 fr.commit();
+
             }
         });
 
 
         return view;
+
+
+
     }
 
 
@@ -180,6 +194,20 @@ public class InfoFragment1 extends Fragment {
         userInfo.put("email", email);
         userInfo.put("search_distance", 100);
 
+
+        //age range
+        switch(accountType){
+            case "Male":
+                userInfo.put("ageMax", age+3);
+                userInfo.put("ageMin", age-7);
+                break;
+            case "Female":
+                userInfo.put("ageMax", age+7);
+                userInfo.put("ageMin", age-3);
+                break;
+        }
+
+
         switch(accountType){
             case "Male":
                 userInfo.put("interest", "Female");
@@ -203,3 +231,4 @@ public class InfoFragment1 extends Fragment {
 
 
 }
+

@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:padding="20sp"
-    android:id="@+id/layout">
+    android:layout_marginBottom="100dp"
+    android:id="@+id/layout"
+    >
     <ImageView
         android:layout_width="75sp"
         android:layout_height="75sp"
@@ -29,9 +31,17 @@
             android:textSize="16sp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
             android:text="@string/chat_message"
             android:layout_gravity="center"
             android:id="@+id/message"/>
+       <!-- <View
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="5px"
+            android:background="@color/colorDeadBackground"
+            android:layout_marginBottom="10dp"/>-->
+
     </LinearLayout>
 
 

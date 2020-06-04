@@ -11,6 +11,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorDeadBackground">
+
+    <TextView
+        android:id="@+id/skip1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:gravity="top"
+        android:text="Skip"
+        android:textSize="18sp"
+        android:padding="15dp"
+        android:textColor="@color/colorGrayDark7f"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll0"
@@ -22,12 +40,12 @@
 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:paddingEnd="80dp"
             android:paddingStart="20dp"
-            android:paddingTop="70dp"
-            android:text="Your Details"
-            android:textColor="@color/colorAccent"
+            android:layout_marginTop="70dp"
+            android:text="Add about yourself"
+            android:textColor="@color/colorGrayTitle"
             android:textSize="40sp"
             android:textStyle="bold"/>
 
@@ -39,7 +57,7 @@
             android:paddingEnd="50dp"
             android:paddingStart="20dp"
             android:text="Fill in the details below. It helps you find the right partner!"
-            android:textColor="@color/colorGray"
+            android:textColor="@color/colorGrayDark7f"
             android:textSize="12sp"
             android:textStyle="normal" />
 
@@ -62,7 +80,7 @@
         android:paddingLeft="10sp"
         android:paddingBottom="5sp"
         android:text="About"
-        android:textSize="16sp"/>
+        android:textSize="14sp"/>
 
     <EditText
         android:id="@+id/bio"
@@ -76,6 +94,7 @@
         android:background="@drawable/edit_border"
         android:hint="Write a little bit about yourself.."
         android:textSize="16sp"
+        android:maxLines="8"
         android:textColorHint="@android:color/darker_gray" />
 
     </LinearLayout>
@@ -93,17 +112,21 @@
         android:orientation="horizontal"
         android:padding="10dp">
 
-        <TextView
+        <EditText
             android:id="@+id/homeTown"
             android:drawableLeft="@drawable/i_home"
-            android:drawableRight="@drawable/add_icon_selector"
+
+            android:inputType="textCapWords"
             android:layout_width="match_parent"
             android:padding="10dp"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_border"
-            android:hint="   Home Town"
+            android:drawablePadding="20dp"
+            android:hint="Home Town"
             android:textSize="16sp"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
     </LinearLayout>
 
@@ -126,7 +149,7 @@
             android:paddingLeft="10sp"
             android:paddingBottom="5sp"
             android:text="Employment"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <EditText
             android:id="@+id/jobTitle"
@@ -137,7 +160,9 @@
             android:background="@drawable/edit_border"
             android:hint="  Job Title"
             android:textSize="16sp"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <EditText
             android:id="@+id/company"
@@ -171,7 +196,7 @@
             android:paddingLeft="10sp"
             android:paddingBottom="5sp"
             android:text="Education"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/degree"
@@ -197,7 +222,9 @@
             android:background="@drawable/edit_border"
             android:hint="@string/school_college"
             android:textSize="16sp"
-            android:textColorHint="@android:color/darker_gray" />
+            android:textColorHint="@android:color/darker_gray"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
     </LinearLayout>
 
@@ -214,7 +241,7 @@
         android:layout_marginTop="30dp">
 
         <Button
-            android:background="@drawable/button_grad"
+            android:background="@drawable/bg_button_grad"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:id="@+id/next3"

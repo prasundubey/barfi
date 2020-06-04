@@ -51,15 +51,16 @@ public class InfoFragment3 extends Fragment {
 
 
 
-
     EditText
             mAbout,
             mJob,
             mCompany,
             mSchool;
-    Button mNext3;
-    private TextView mDegree, mTown;
 
+    private Button mNext3;
+    private TextView mDegree, mSkip;
+
+    private EditText mTown;
 
     private FirebaseAuth mAuth;
     public String mAge;
@@ -81,7 +82,7 @@ public class InfoFragment3 extends Fragment {
 
 
 
-        mTown = (TextView) view.findViewById(R.id.homeTown);
+        mTown = (EditText) view.findViewById(R.id.homeTown);
         mJob = (EditText) view.findViewById(R.id.jobTitle);
         mCompany = (EditText) view.findViewById(R.id.company);
         mSchool = (EditText) view.findViewById(R.id.school);
@@ -89,11 +90,14 @@ public class InfoFragment3 extends Fragment {
         mDegree = (TextView) view.findViewById(R.id.degree);
 
         mNext3 = (Button) view.findViewById(R.id.next3);
+        mSkip = (TextView) view.findViewById(R.id.skip1);
 
 
 
 
-        mTown.setOnClickListener(k -> {
+        // for auto selection with custom view
+
+       /* mTown.setOnClickListener(k -> {
 
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
                     View row = getLayoutInflater().inflate(R.layout.row_items, null);
@@ -117,10 +121,8 @@ public class InfoFragment3 extends Fragment {
                     AlertDialog dialog = builder1.create();
                     dialog.show();
 
-
-
         });
-
+*/
 
 
 
@@ -140,7 +142,7 @@ public class InfoFragment3 extends Fragment {
            // title.setGravity(Gravity.CENTER);
             //title.setTextColor(Color.RED);
            // title.setTextSize(25);
-            builder.setTitle("Whats you degreee mf");
+            builder.setTitle("What's your highest qualification?");
             builder.setIcon(R.drawable.ic_school);
 
 
@@ -172,6 +174,15 @@ public class InfoFragment3 extends Fragment {
         });
 
 
+        mSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveUserInformation();
+                FragmentTransaction fr = getFragmentManager().beginTransaction();
+                fr.replace(R.id.infoContainer, new InfoFragment4());
+                fr.commit();
+            }
+        });
 
 
         mNext3.setOnClickListener(new View.OnClickListener() {
@@ -197,7 +208,7 @@ public class InfoFragment3 extends Fragment {
         final String company = mCompany.getText().toString();
         final String school = mSchool.getText().toString();
         final String degree = mDegree.getText().toString();
-        final String about = mAbout.getText().toString();
+        final String about = mAbout.getText().toString().trim();
 
 
 
@@ -209,7 +220,12 @@ public class InfoFragment3 extends Fragment {
         userInfo.put("town", town);
         userInfo.put("jobTitle", jobTitle);
         userInfo.put("company", company);
-        userInfo.put("job", jobTitle + " at " + company);
+        if(!jobTitle.isEmpty()&& !company.isEmpty())
+            userInfo.put("job", jobTitle + " at " + company);
+        if(jobTitle.isEmpty()&& !company.isEmpty())
+            userInfo.put("job", company);
+        if(!jobTitle.isEmpty()&& company.isEmpty())
+            userInfo.put("job", jobTitle);
         userInfo.put("school", school);
         userInfo.put("degree", degree);
         userInfo.put("about", about);
@@ -217,13 +233,11 @@ public class InfoFragment3 extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("details").updateChildren(userInfo);
 
 
-
-
         mAuth = FirebaseAuth.getInstance();
         mUserId = mAuth.getCurrentUser().getUid();
 
-
     }
+
 
 
 }

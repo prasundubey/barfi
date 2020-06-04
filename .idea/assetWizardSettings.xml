@@ -47,10 +47,10 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="$PROJECT_DIR$/../../../icons8-nonya_kueh.png" />
-                                      <entry key="outputName" value="ic_tab_card" />
+                                      <entry key="imageAsset" value="$USER_HOME$/Downloads/barfies_white.png" />
+                                      <entry key="outputName" value="ic_barfies_white" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="c1c1c1" />
+                                      <entry key="themeColor" value="ffffff" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -180,7 +180,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/Applications/Android%20Studio%202.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/communication/ic_email_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/Applications/Android%20Studio%202.app/Contents/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_touch_app_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -190,9 +190,9 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="color" value="7f7f7f" />
-                            <entry key="outputName" value="ic_email_solid" />
-                            <entry key="sourceFile" value="$USER_HOME$/Downloads/noun_setting_2060937.svg" />
+                            <entry key="color" value="ec81d2" />
+                            <entry key="outputName" value="ic_touch" />
+                            <entry key="sourceFile" value="$USER_HOME$/Downloads/clear-black-18dp.svg" />
                           </map>
                         </option>
                       </PersistentState>

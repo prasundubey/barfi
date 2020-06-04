@@ -11,7 +11,7 @@ public class UserObject implements Serializable {
     private String  userId = "",
                     name = "",
                     profileImageUrl = "default",
-                    age = "",
+                    age = "", ageMin= "", ageMax="",
                     userSex = "",
                     interest = "",
                     phone = "", email = "";
@@ -65,6 +65,10 @@ public class UserObject implements Serializable {
             userSex = dataSnapshot.child("sex").getValue().toString();
         if(dataSnapshot.child("age").getValue()!=null)
             age = dataSnapshot.child("age").getValue().toString();
+        if(dataSnapshot.child("ageMin").getValue()!=null)
+            ageMin = dataSnapshot.child("ageMin").getValue().toString();
+        if(dataSnapshot.child("ageMax").getValue()!=null)
+            ageMax = dataSnapshot.child("ageMax").getValue().toString();
         if(dataSnapshot.child("city").getValue()!=null)
             city = dataSnapshot.child("city").getValue().toString();
 
@@ -153,7 +157,6 @@ public class UserObject implements Serializable {
             reading = dataSnapshot.child("details").child("reading").getValue().toString();
 
 
-
     }
 
     public String getUserId(){
@@ -164,6 +167,12 @@ public class UserObject implements Serializable {
     }
     public String getAge(){
         return age;
+    }
+    public String getAgeMin(){
+        return ageMin;
+    }
+    public String getAgeMax(){
+        return ageMax;
     }
 
     public String getProfileImageUrl(){

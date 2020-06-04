@@ -1,9 +1,15 @@
 package com.timpra.barfi.Fragments;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.os.Bundle;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
@@ -13,13 +19,20 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,6 +41,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
+import com.timpra.barfi.Activity.ChatActivity;
+import com.timpra.barfi.InfoFragment2;
 import com.timpra.barfi.Objects.UserObject;
 import com.timpra.barfi.Adapter.CardAdapter;
 import com.timpra.barfi.Activity.MainActivity;
@@ -35,8 +50,13 @@ import com.timpra.barfi.R;
 import com.timpra.barfi.Utils.SendNotification;
 import com.timpra.barfi.Activity.ZoomCardActivity;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.Context.VIBRATOR_SERVICE;
+
 
 /**
  * Activity that displays the cards to the user
@@ -49,11 +69,22 @@ public class CardFragment  extends Fragment {
     int searchDistance = 100;
 
     private FirebaseAuth mAuth;
-
     private String currentUId;
-
+    private DatabaseReference mUserDatabase;
     private DatabaseReference usersDb;
 
+    private Integer ageMax= 50;
+    private Integer ageMin= 20;
+
+
+    Dialog myDialog;
+
+    //private Button mPopup;
+
+    UserObject user = new UserObject();
+    UserObject currentProfile = new UserObject();
+    private DatabaseReference mMatchDatabase;
+    private String matchUId;
 
     private ProgressBar pgsBar;
 
@@ -82,11 +113,12 @@ public class CardFragment  extends Fragment {
         view = inflater.inflate(R.layout.fragment_card, container, false);
 
         usersDb = FirebaseDatabase.getInstance().getReference().child("Users");
-
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()==null)
             return view;
         currentUId = mAuth.getCurrentUser().getUid();
+
+
 
         fetchUserSearchParams();
 
@@ -123,7 +155,6 @@ public class CardFragment  extends Fragment {
                 isConnectionMatch(userId);
             }
 
-
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
             }
@@ -150,6 +181,14 @@ public class CardFragment  extends Fragment {
         pgsBar.setVisibility(View.VISIBLE);
 
 
+
+
+        myDialog = new Dialog(getActivity());
+
+       /* mPopup = (Button) view.findViewById(R.id.popup);
+        mPopup.setOnClickListener(v -> {
+            ShowSwipePopup(v);
+        });*/
 
 
         FloatingActionButton fabLike = view.findViewById(R.id.fabLike);
@@ -216,7 +255,7 @@ public class CardFragment  extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    Toast.makeText(getContext(), "new Connection", Toast.LENGTH_LONG).show();
+                    // Toast.makeText(getContext(), "New Connection", Toast.LENGTH_LONG).show();
 
                     String key = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
 
@@ -226,7 +265,13 @@ public class CardFragment  extends Fragment {
                     SendNotification sendNotification = new SendNotification();
                     sendNotification.SendNotification("check it out!", "new Connection!", dataSnapshot.getKey());
 
-                    Snackbar.make(view.findViewById(R.id.layout), "new Connection!", Snackbar.LENGTH_LONG).show();
+                    matchUId = userId;
+
+                    ShowPopup(getView());
+                    //Vibrate
+                    Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+                    long[] pattern = { 0, 3000, 3000 };
+                    v.vibrate(pattern, -1);
 
                 }
             }
@@ -258,7 +303,17 @@ public class CardFragment  extends Fragment {
                     if (dataSnapshot.child("search_distance").getValue() != null)
                         searchDistance = Integer.parseInt(dataSnapshot.child("search_distance").getValue().toString());
 
+                   // check user age max & min
+                    if (dataSnapshot.child("ageMax").getValue() != null)
+                        ageMax = Integer.parseInt(dataSnapshot.child("ageMax").getValue().toString());
+
+                    if (dataSnapshot.child("ageMin").getValue() != null)
+                        ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
+
+                    // the line below throwing error
                     ((MainActivity)getActivity()).isLocationEnable();
+
+
                     rowItems.clear();
                     cardAdapter.notifyDataSetChanged();
 
@@ -295,12 +350,17 @@ public class CardFragment  extends Fragment {
                 UserObject mUser = new UserObject();
                 mUser.parseObject(dataSnapshot);
 
+
                 pgsBar.setVisibility(View.GONE);
+
+                Integer age = Integer.parseInt(mUser.getAge());
+                //user age range
 
                 if(mUser.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){return;}
                 if(dataSnapshot.child("connections").child("nope").hasChild(currentUId)){return;}
                 if(dataSnapshot.child("connections").child("yeps").hasChild(currentUId)) {return;}
                 if(!mUser.getUserSex().equals(userInterest) && !userInterest.equals("Both")){return;}
+                if(age>ageMax || age<ageMin){return;}
 
                 for(UserObject mCard : rowItems){
                     if(mCard.getUserId().equals(userId)){return;}
@@ -318,4 +378,85 @@ public class CardFragment  extends Fragment {
             }
         });
     }
+
+    private void ShowPopup(View v) {
+
+        Button mChat;
+        TextView mBack;
+        TextView mName;
+        ImageView mImage1;
+        ImageView mImage2;
+        myDialog.setContentView(R.layout.connection_popup);
+
+        mChat = (Button) myDialog.findViewById(R.id.gochat);
+        mBack = (TextView) myDialog.findViewById(R.id.back);
+        mName = (TextView) myDialog.findViewById(R.id.name);
+
+        mImage1 = (ImageView) myDialog.findViewById(R.id.image1);
+        mImage2 = (ImageView) myDialog.findViewById(R.id.image2);
+
+        //Image of user
+        mAuth = FirebaseAuth.getInstance();
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                user.parseObject(dataSnapshot);
+
+               if(!user.getProfileImageUrl().equals("default"))
+                    Glide.with(getActivity().getApplicationContext()).load(user.getProfileImageUrl()).apply(RequestOptions.circleCropTransform()).into(mImage1);
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        //image of current match profile
+
+        usersDb.child(matchUId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                UserObject mUser = new UserObject();
+                mUser.parseObject(dataSnapshot);
+
+                if(!mUser.getProfileImageUrl().equals("default"))
+                    Glide.with(getActivity().getApplicationContext()).load(mUser.getProfileImageUrl()).apply(RequestOptions.circleCropTransform()).into(mImage2);
+
+                mName.setText(mUser.getName() + " likes you too.");
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+
+
+        mChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO chat window
+                Intent intent = new Intent(view.getContext(), ChatActivity.class);
+                intent.putExtra("matchId", matchUId);
+                view.getContext().startActivity(intent);
+
+                myDialog.dismiss();
+            }
+        });
+
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myDialog.dismiss();
+            }
+        });
+
+        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        myDialog.show();
+
+
+    }
+
+
+
 }

@@ -71,6 +71,8 @@
 
 
     <string name="preview_profile"><u>Preview Profile</u></string>
+    <string name="right_left_swipe_text">Swipe to make your move!\n <b>Right</b> for the profiles you like \n and <b>Left</b> otherwise!</string>
+    <string name="resend_otp"><u>Resend OTP</u></string>
 
 
 </resources>

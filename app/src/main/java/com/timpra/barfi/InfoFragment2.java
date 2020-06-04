@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,6 +40,8 @@ public class InfoFragment2 extends Fragment {
     private ImageView mProfileImage;
     private ImageView mImage;
     private ImageView mImage3;
+
+    private TextView mName;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mUserDatabase;
@@ -66,6 +69,8 @@ public class InfoFragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.info_fragment_2, container, false);
+
+        mName = view.findViewById(R.id.name);
 
         mProfileImage = view.findViewById(R.id.profileImage);
 
@@ -151,6 +156,8 @@ public class InfoFragment2 extends Fragment {
 
                 mUser.parseObject(dataSnapshot);
 
+                mName.setText("Hi " + mUser.getName() + ",");
+
 
                 if(!mUser.getProfileImageUrl().equals("default"))
                     Glide.with(getActivity().getApplicationContext()).load(mUser.getProfileImageUrl()).apply(RequestOptions.circleCropTransform()).into(mProfileImage);
@@ -198,10 +205,10 @@ public class InfoFragment2 extends Fragment {
                // getActivity().finish();
 
             }).addOnFailureListener(exception -> {
-                getActivity().finish();
+              getActivity().finish();
             }));
         }else{
-            getActivity().finish();
+           // getActivity().finish();
         }
 
 
@@ -223,10 +230,10 @@ public class InfoFragment2 extends Fragment {
                // getActivity().finish();
 
             }).addOnFailureListener(exception -> {
-                getActivity().finish();
+               getActivity().finish();
             }));
         }else{
-            getActivity().finish();
+           // getActivity().finish();
         }
 
 
@@ -245,10 +252,10 @@ public class InfoFragment2 extends Fragment {
                 mUserDatabase.updateChildren(newImage3);
                // getActivity().finish();
             }).addOnFailureListener(exception -> {
-                getActivity().finish();
+               // getActivity().finish();
             }));
         }else{
-            getActivity().finish();
+           // getActivity().finish();
         }
 
 
@@ -318,6 +325,7 @@ public class InfoFragment2 extends Fragment {
         }
 
     }
+
 
 
 }
