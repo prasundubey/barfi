@@ -11,49 +11,70 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        android:background="@drawable/bg_login_hands"
+        >
+
 
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="100dp"
-            android:layout_marginTop="50dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="20dp"
             android:layout_gravity="center"
-            android:src="@drawable/logo_text_shadow" />
+            android:src="@drawable/logo_barfi_text_white" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:fontFamily="@font/montserrat"
-            android:text="Find the one!"
+            android:text="Let's start something\nsweet!"
             android:textColor="@color/colorGrayDark7f"
-            android:textSize="25dp"/>
+            android:textSize="18sp"/>
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/bg_menu_pic"/>
+            android:src="@drawable/bg_menu_pic"
+            android:visibility="gone"
+            />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shadow_bottom"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:orientation="vertical"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_alignParentBottom="true"
+        >
+
+        <TextView
+            android:id="@+id/terms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/terms"
+            android:textSize="12sp"
+            android:textColor="@color/white"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"/>
 
         <Button
-
             android:background="@drawable/bg_button_grad"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
             android:id="@+id/register"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:padding="10sp"
+            android:padding="5dp"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:text="Continue with mobile number"
             android:textColor="@android:color/white"
             />

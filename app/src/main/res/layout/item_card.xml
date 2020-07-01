@@ -8,9 +8,8 @@
     android:paddingLeft="10sp"
     android:paddingRight="10sp"
     android:paddingTop="10sp"
-    android:paddingBottom="70sp"
+    android:paddingBottom="75sp"
     android:outlineProvider="bounds"
-    android:background="@color/colorWhite"
     android:clipToPadding="false">
 
     <androidx.cardview.widget.CardView
@@ -27,12 +26,13 @@
             android:orientation="vertical">
 
             <ImageView
-                android:src="@mipmap/ic_user_default"
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/image"
+                android:contentDescription="@string/profile_image"
                 android:scaleType="centerCrop"
-                android:contentDescription="@string/profile_image" />
+                android:adjustViewBounds="true"
+                android:src="@mipmap/ic_user_default" />
 
             <View
                 android:layout_width="match_parent"
@@ -45,35 +45,51 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_gravity="bottom"
+                android:paddingStart="10dp"
                 >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <TextView
+                        android:id="@+id/name"
+                        android:fontFamily="@font/montserrat_bold"
+                        android:textSize="25sp"
+                        android:paddingStart="2sp"
+                        android:textColor="@color/white"
+                        tools:text="Name name"
+                        android:gravity="center|start"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:shadowRadius="10"
+                        android:shadowColor="@color/colorGrayDark7f"/>
+                    <ImageView
+                        android:id="@+id/verified"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/icons_verified"
+                        android:layout_gravity="center|start"
+                        android:visibility="visible"
+                        />
+                </LinearLayout>
+
                 <TextView
-                    android:id="@+id/name"
-                    android:fontFamily="@font/montserrat_bold"
-                    android:textSize="30sp"
-                    android:paddingLeft="15sp"
-                    android:textColor="@color/white"
-                    tools:text="hello"
+                    android:id="@+id/job"
+                    android:drawableTint="@color/colorWhite"
+                    android:text="@string/job"
+                    android:fontFamily="@font/montserrat"
+                    android:textSize="14sp"
+                    android:padding="2sp"
+                    android:gravity="center|start"
+                    android:textColor="@color/colorWhite"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:shadowRadius="10"
-                    android:shadowColor="@color/colorGrayDark7f"/>
-                <TextView
-                    android:id="@+id/job"
-                    android:drawableStart="@drawable/i_work"
-                    android:drawableTint="@color/colorWhite"
-                    android:drawablePadding="10sp"
-                    android:text="@string/job"
-                    android:paddingStart="15dp"
-                    android:fontFamily="@font/montserrat"
-                    android:textSize="15sp"
-                    android:padding="2dp"
-                    android:textColor="@color/colorWhite"
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:shadowRadius="10"
                     android:shadowColor="@color/colorGray"/>
 
-                <TextView
+                <!--<TextView
                     android:id="@+id/school"
                     android:drawableStart="@drawable/i_school_solid"
                     android:drawableTint="@color/colorWhite"
@@ -88,7 +104,297 @@
                     android:layout_height="25dp"
                     android:shadowRadius="10"
                     android:shadowColor="@color/colorGray"
-                    android:layout_marginBottom="5dp"/>
+                    android:layout_marginBottom="5dp"
+                    />-->
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="27dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:weightSum="5"
+
+                    >
+                    <com.nex3z.flowlayout.FlowLayout
+
+                        android:layout_weight="4"
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        app:flChildSpacing="10dp"
+                        app:flChildSpacingForLastRow="align"
+                        app:flRowSpacing="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginEnd="10dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/school"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawablePadding="5dp"
+                            android:drawableStart="@drawable/i_building"
+                            android:drawableTint="@color/colorPrimary"
+                            android:gravity="center"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:text="School/College"
+                            android:textColor="@color/colorGray"
+                            android:textSize="12sp" />
+
+
+
+                        <TextView
+                            android:id="@+id/height"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_height"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/height"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/zodiac"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_zodiac"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/zodiac"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/homeTown"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawablePadding="5dp"
+                            android:drawableStart="@drawable/i_home"
+                            android:drawableTint="@color/colorPrimary"
+                            android:gravity="center"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:text="Home town"
+                            android:textColor="@color/colorGray"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/religion"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_religion"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+
+                        <TextView
+                            android:id="@+id/status"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_status"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/city"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawablePadding="5dp"
+                            android:drawableStart="@drawable/ic_location"
+                            android:drawableTint="@color/colorPrimary"
+                            android:gravity="center"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:text="City"
+                            android:textColor="@color/colorGray"
+                            android:textSize="12sp" />
+
+
+
+                        <TextView
+                            android:id="@+id/degree"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/ic_school"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+
+
+
+
+                        <TextView
+                            android:id="@+id/drinking"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_drinking"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/smoking"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_smoking"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/exercise"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_exercise"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/pets"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_pet"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/kids"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_kids"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/diet"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_diet"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/politics"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_politics"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                        <TextView
+                            android:id="@+id/reading"
+                            android:background="@drawable/bg_box_white_noborder"
+                            android:drawableStart="@drawable/i_reading"
+                            android:drawableTint="@color/colorPrimary"
+                            android:drawablePadding="5dp"
+                            android:text="@string/degree"
+                            android:textSize="12sp"
+                            android:padding="5sp"
+                            android:paddingEnd="10dp"
+                            android:textColor="@color/colorGray"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            />
+
+                    </com.nex3z.flowlayout.FlowLayout>
+
+                    <TextView
+                        android:gravity="bottom"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:text="...view more"
+                        android:textSize="11sp"
+                        android:paddingBottom="3dp"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+
                 <View
                     android:layout_marginTop="5dp"
                     android:layout_width="match_parent"

@@ -4,12 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OtpActivity">
+    tools:context=".Login.OtpActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:src="@color/colorDeadBackground"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            />
 
         <TextView
 
@@ -18,9 +25,8 @@
             android:fontFamily="@font/montserrat_semi_bold"
             android:paddingEnd="80dp"
             android:paddingStart="20dp"
-            android:layout_marginTop="70dp"
             android:text="Enter 6 digit OTP"
-            android:textColor="@color/colorGrayTitle"
+            android:textColor="@color/colorTitleDark"
             android:textSize="40sp"
             />
 
@@ -31,7 +37,7 @@
             android:fontFamily="@font/montserrat"
             android:paddingEnd="50dp"
             android:paddingStart="20dp"
-            android:text="Enter your OTP that you have recieved on your mobile number as SMS"
+            android:text="Please enter the code you have received via SMS"
             android:textColor="@color/colorGrayDark7f"
             android:textSize="12sp"
             android:textStyle="normal" />
@@ -45,7 +51,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/edit_border"
+        android:background="@drawable/bg_box_edit_border"
         android:padding="10dp"
         android:ems="10"
         android:hint="   OTP"
@@ -67,6 +73,20 @@
         android:textColor="@android:color/black"
         android:textSize="10sp"
         android:textStyle="normal" />
+    <TextView
+
+        android:id="@+id/resend_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextCode"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:padding="10dp"
+        android:text="OTP sent to your number again!"
+        android:textColor="@color/colorGray"
+        android:textSize="10sp"
+        android:textStyle="normal"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,7 +104,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:padding="10sp"
+            android:padding="5dp"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:text="Continue"
             android:textColor="@android:color/white"
             />
@@ -100,5 +121,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="-214dp"
         android:visibility="gone"/>
+
+
 
 </RelativeLayout>

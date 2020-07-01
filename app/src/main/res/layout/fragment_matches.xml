@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white"
     >
 
@@ -10,9 +10,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginBottom="90dp"
+
         >
 
+     <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:orientation="vertical"
+         android:background="@color/colorDeadBackground">
        <!-- <TextView
             android:id="@+id/likes"
             android:paddingTop="30sp"
@@ -34,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimaryDark"
-            android:text="Connections"
+            android:text="New Connections"
             android:textStyle="bold" />
 
         <TextView
@@ -58,6 +63,8 @@
             android:layout_marginStart="10dp">
         </androidx.recyclerview.widget.RecyclerView>
 
+     </LinearLayout>
+
         <View
             android:layout_marginTop="0dp"
             android:layout_width="match_parent"
@@ -65,7 +72,9 @@
             android:background="@color/colorDeadBackground"
             android:layout_marginBottom="10dp"/>
 
+
         <TextView
+            android:id="@+id/conversations"
             android:paddingTop="10sp"
             android:paddingLeft="20sp"
             android:paddingBottom="10sp"
@@ -75,6 +84,48 @@
             android:text="@string/messages"
             android:textStyle="bold" />
 
+        <LinearLayout
+            android:layout_marginTop="50dp"
+            android:id="@+id/keepSwiping"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:visibility="gone">
+        <TextView
+            android:layout_marginTop="30dp"
+            android:singleLine="false"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Keep swiping to make a connection."
+            android:textColor="@color/colorPrimaryLight"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginBottom="10dp"
+            />
+
+        <TextView
+            android:singleLine="false"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/right_left_swipe_text"
+            android:textColor="@color/colorGrayDark7f"
+            android:textSize="14sp"
+            android:layout_marginBottom="20dp"/>
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/undraw_user_preview"/>
+        </LinearLayout>
+
         <TextView
             android:id="@+id/no_chats_layout"
             android:paddingTop="40sp"
@@ -82,21 +133,30 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/colorGrayDark7f"
+            android:textColor="@color/colorPrimaryLight"
             android:text="@string/no_chats_to_show"
             android:textStyle="bold"
             android:visibility="gone"/>
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/chat"
             android:scrollbars="vertical"
-            android:layout_marginStart="5dp"
+            android:layout_marginBottom="60dp"
             >
         </androidx.recyclerview.widget.RecyclerView>
 
 
+       <!-- <View
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="150px"
+            android:background="@color/colorDeadBackground"
+            android:layout_marginBottom="10dp"/>-->
+
+
     </LinearLayout>
 
-</ScrollView>
+</LinearLayout>

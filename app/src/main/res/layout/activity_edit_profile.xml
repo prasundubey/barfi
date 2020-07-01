@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:gravity="top"
-            android:text="Save"
+            android:text="Done"
             android:textSize="18sp"
             android:padding="15dp"
             android:textColor="@color/colorAccent"/>
@@ -50,38 +50,43 @@
             android:visibility="gone"/>
 
         <LinearLayout
+            android:layout_below="@+id/ll0"
+            android:id="@+id/ll1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="15dp"
+            android:layout_height="110dp"
             android:gravity="center"
-            android:layout_marginBottom="20sp"
+            android:layout_marginBottom="10sp"
             android:layout_marginTop="20sp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="3">
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_marginEnd="10dp"
-                android:layout_width="120sp"
-                android:layout_height="120sp"
+                android:padding="5dp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/circle_white_border"
+                android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
 
             <ImageView
                 android:id="@+id/image"
+                android:padding="5dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_width="120sp"
-                android:layout_height="120sp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/circle_white_border"
+                android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
 
             <ImageView
                 android:id="@+id/image3"
-                android:layout_width="120sp"
-                android:layout_height="120sp"
+                android:padding="5dp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="@drawable/circle_white_border"
+                android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
 
         </LinearLayout>
@@ -95,34 +100,64 @@
             android:textSize="10dp"
             android:textColorHighlight="@color/colorGray"
             android:layout_gravity="center"
-            android:background="@drawable/text_border"
+            android:background="@drawable/bg_box_text_border"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Select to update"
             android:textStyle="normal"/>
 
-        <TextView
-            android:paddingTop="20sp"
-            android:paddingLeft="10sp"
-            android:paddingBottom="5sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/name"
-            android:textStyle="bold"
-            android:visibility="gone"/>
-        <EditText
-            android:padding="10sp"
-            android:inputType="textCapWords"
+
+        <RelativeLayout
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/name"
-            android:background="@color/colorWhite"
-            android:hint="@string/add_name"
-            android:visibility="gone"/>
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/name"
+                android:drawableTint="@color/colorPrimaryDark"
+                android:inputType="textCapWords"
+                android:layout_width="wrap_content"
+                android:padding="10dp"
+                android:paddingEnd="30dp"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                android:drawablePadding="20dp"
+                android:textSize="16sp"
+                android:gravity="center|start"
+                android:maxLength="22"
+                android:textColor="@color/colorGray"
+                android:textStyle="bold"
+                android:textColorHint="@android:color/darker_gray"
+                android:singleLine="true"/>
+
+            <TextView
+                android:layout_toStartOf="@+id/switch1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hide name"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="20dp"
+                android:textSize="12dp"/>
+
+            <Switch
+                android:id="@+id/switch1"
+                android:layout_centerInParent="true"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                />
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_below="@+id/ll0"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="10dp"
             android:id="@+id/about"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -146,7 +181,7 @@
                 android:layout_height="100dp"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLength="500"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="Write a little bit about yourself.."
                 android:textSize="16sp"
                 android:maxLines="8"
@@ -155,6 +190,8 @@
         </LinearLayout>
 
         <!--Hometown layout-->
+
+
 
         <LinearLayout
             android:id="@+id/linearLayout"
@@ -174,10 +211,12 @@
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="Home Town"
                 android:drawablePadding="20dp"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:maxLength="18"
                 android:textColorHint="@android:color/darker_gray"
                 android:imeOptions="actionDone"
                 android:singleLine="true"/>
@@ -211,9 +250,11 @@
                 android:padding="10dp"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="  Job Title"
+                android:inputType="textCapSentences"
                 android:textSize="16sp"
+                android:maxLength="20"
                 android:imeOptions="actionDone"
                 android:singleLine="true"
                 android:textColorHint="@android:color/darker_gray"
@@ -226,9 +267,11 @@
                 android:padding="10dp"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="  Company"
+                android:inputType="textCapSentences"
                 android:textSize="16sp"
+                android:maxLength="20"
                 android:textColorHint="@android:color/darker_gray"
                 android:imeOptions="actionDone"
                 android:singleLine="true"/>
@@ -258,15 +301,17 @@
             <TextView
                 android:id="@+id/degree"
                 android:drawableLeft="@drawable/ic_school"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:drawablePadding="20dp"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/degree"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <EditText
@@ -276,14 +321,55 @@
                 android:padding="10dp"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/school_college"
                 android:textSize="16sp"
+                android:maxLength="20"
+                android:inputType="textCapWords"
                 android:textColorHint="@android:color/darker_gray"
                 android:imeOptions="actionDone"
                 android:singleLine="true"/>
 
         </LinearLayout>
+
+<!--
+        Instagram
+-->
+
+    <LinearLayout
+        android:layout_below="@+id/ll3"
+        android:layout_marginTop="10dp"
+        android:id="@+id/ll4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/insta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_button"
+            android:elevation="1dp"
+            android:padding="5dp"
+            android:gravity="start|center"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:layout_gravity="start"
+            android:drawableStart="@drawable/icons_instagram"
+            android:drawableEnd="@drawable/ic_add"
+            android:drawablePadding="10dp"
+            android:drawableTint="@color/white"
+            android:text="Connect your Instagram"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
 
         <LinearLayout
             android:id="@+id/ll5"
@@ -308,53 +394,61 @@
             <TextView
                 android:id="@+id/status"
                 android:drawableLeft="@drawable/i_status"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:drawablePadding="20dp"
                 android:hint="@string/status"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:id="@+id/religion"
                 android:drawableLeft="@drawable/i_religion"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/religion"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:id="@+id/height"
                 android:drawableLeft="@drawable/i_height"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/height"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
             <TextView
                 android:layout_marginTop="10dp"
                 android:id="@+id/zodiac"
                 android:drawableLeft="@drawable/i_zodiac"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/zodiac"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -362,13 +456,15 @@
                 android:id="@+id/drinking"
                 android:drawableLeft="@drawable/i_drinking"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/drinking"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -376,13 +472,15 @@
                 android:id="@+id/smoking"
                 android:drawableLeft="@drawable/i_smoking"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/smoking"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -390,13 +488,15 @@
                 android:id="@+id/exercise"
                 android:drawableLeft="@drawable/i_exercise"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/exercise"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -404,13 +504,15 @@
                 android:id="@+id/pets"
                 android:drawableLeft="@drawable/i_pet"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/pets"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -418,13 +520,15 @@
                 android:id="@+id/kids"
                 android:drawableLeft="@drawable/i_kids"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/kids"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -432,13 +536,15 @@
                 android:id="@+id/diet"
                 android:drawableLeft="@drawable/i_diet"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/diet"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -446,13 +552,15 @@
                 android:id="@+id/politics"
                 android:drawableLeft="@drawable/i_politics"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/politics"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
             <TextView
@@ -460,13 +568,15 @@
                 android:id="@+id/reading"
                 android:drawableLeft="@drawable/i_reading"
                 android:drawablePadding="20dp"
-                android:drawableRight="@drawable/add_icon_selector"
+                android:drawableRight="@drawable/selector_add_icon"
                 android:layout_width="match_parent"
                 android:padding="10dp"
                 android:layout_height="wrap_content"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/reading"
                 android:textSize="16sp"
+                android:gravity="center|start"
+                android:textColor="@color/colorBlack"
                 android:textColorHint="@android:color/darker_gray" />
 
 

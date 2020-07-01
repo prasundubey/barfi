@@ -11,19 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:src="@drawable/steps_info2_photo"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat_bold"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:paddingEnd="80dp"
             android:paddingStart="20dp"
-            android:layout_marginTop="70dp"
-            android:textColor="@color/colorAccent"
+            android:text="Hi,"
+            android:textColor="@color/colorTitleDark"
             android:textSize="20sp"
             android:textStyle="bold"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +37,7 @@
         android:paddingEnd="80dp"
         android:paddingStart="20dp"
         android:text="Add your photos"
-        android:textColor="@color/colorGrayTitle"
+        android:textColor="@color/colorTitleDark"
         android:textSize="40sp"
         android:textStyle="bold"/>
 
@@ -42,7 +48,7 @@
         android:fontFamily="@font/montserrat"
         android:paddingEnd="40dp"
         android:paddingStart="20dp"
-        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of getting connections!"
+        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of making connections!"
         android:textColor="@color/colorGrayDark7f"
         android:textSize="12sp"
         android:textStyle="normal" />
@@ -52,44 +58,58 @@
         android:layout_below="@+id/ll0"
         android:id="@+id/ll1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="15dp"
+        android:layout_height="110dp"
         android:gravity="center"
-        android:layout_marginBottom="25sp"
+        android:layout_marginBottom="10sp"
         android:layout_marginTop="50sp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="3">
 
         <ImageView
             android:id="@+id/profileImage"
-            android:layout_marginEnd="10dp"
-            android:layout_width="120sp"
-            android:layout_height="120sp"
+            android:padding="5dp"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/circle_white_border"
+            android:background="@drawable/bg_circle_white_noborder"
             android:src="@drawable/icons_add_image" />
 
         <ImageView
             android:id="@+id/image"
+            android:padding="5dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_width="120sp"
-            android:layout_height="120sp"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/circle_white_border"
+            android:background="@drawable/bg_circle_white_noborder"
             android:src="@drawable/icons_add_image" />
 
         <ImageView
             android:id="@+id/image3"
-            android:layout_width="120sp"
-            android:layout_height="120sp"
+            android:padding="5dp"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:background="@drawable/circle_white_border"
+            android:background="@drawable/bg_circle_white_noborder"
             android:src="@drawable/icons_add_image" />
 
     </LinearLayout>
 
+    <ProgressBar
+        android:layout_below="@id/select"
+        android:id="@+id/pBar"
+        android:layout_centerHorizontal="true"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"/>
+
 
     <TextView
         android:layout_below="@id/ll1"
+        android:id="@+id/select"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10sp"
         android:paddingLeft="10sp"
@@ -97,7 +117,7 @@
         android:textSize="10dp"
         android:textColorHighlight="@color/colorGray"
         android:layout_gravity="center"
-        android:background="@drawable/text_border"
+        android:background="@drawable/bg_box_text_border"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select to update"
@@ -121,8 +141,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:padding="10sp"
-            android:text="Continue"
+            android:padding="5dp"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:text="Next"
             android:textColor="@android:color/white"
             />
     </LinearLayout>

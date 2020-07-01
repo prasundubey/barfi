@@ -15,6 +15,8 @@
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior" />
 
 
+
+
 <!--
     https://github.com/skyfishjy/android-ripple-background
 -->
@@ -41,6 +43,44 @@
     </com.skyfishjy.library.RippleBackground>
 
 
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="4"
+        android:orientation="horizontal"
+        android:elevation="9dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="25dp"
+        >
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_weight="3.1"
+            />
+
+    <ImageView
+        android:id="@+id/chatBadge"
+        android:padding="0dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/dot_color"
+        android:layout_gravity="bottom|end"
+        android:elevation="2dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_weight="0.9"
+        android:visibility="gone"
+        />
+
+    </LinearLayout>
+
+
+
+
     <com.google.android.material.appbar.AppBarLayout
 
         android:layout_width="match_parent"
@@ -49,6 +89,7 @@
         android:background="@color/colorWhite"
         android:layout_gravity="bottom"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabs"

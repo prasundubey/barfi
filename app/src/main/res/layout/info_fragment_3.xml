@@ -30,11 +30,19 @@
         android:textColor="@color/colorGrayDark7f"/>
     </LinearLayout>
 
+
     <LinearLayout
         android:id="@+id/ll0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:src="@drawable/steps_info3_details1"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="40dp"
+            />
 
         <TextView
 
@@ -43,9 +51,8 @@
             android:fontFamily="@font/montserrat_semi_bold"
             android:paddingEnd="80dp"
             android:paddingStart="20dp"
-            android:layout_marginTop="70dp"
-            android:text="Add about yourself"
-            android:textColor="@color/colorGrayTitle"
+            android:text="Tell us about yourself"
+            android:textColor="@color/colorTitleDark"
             android:textSize="40sp"
             android:textStyle="bold"/>
 
@@ -56,7 +63,7 @@
             android:fontFamily="@font/montserrat"
             android:paddingEnd="50dp"
             android:paddingStart="20dp"
-            android:text="Fill in the details below. It helps you find the right partner!"
+            android:text="Fill in the details below. These details will be helpful in finding the right partner for you!"
             android:textColor="@color/colorGrayDark7f"
             android:textSize="12sp"
             android:textStyle="normal" />
@@ -91,7 +98,7 @@
         android:layout_weight="2"
         android:inputType="textCapSentences|textMultiLine"
         android:maxLength="500"
-        android:background="@drawable/edit_border"
+        android:background="@drawable/bg_box_edit_border"
         android:hint="Write a little bit about yourself.."
         android:textSize="16sp"
         android:maxLines="8"
@@ -120,10 +127,12 @@
             android:layout_width="match_parent"
             android:padding="10dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:drawablePadding="20dp"
+            android:maxLength="15"
             android:hint="Home Town"
             android:textSize="16sp"
+            android:gravity="center|start"
             android:textColorHint="@android:color/darker_gray"
             android:imeOptions="actionDone"
             android:singleLine="true"/>
@@ -157,9 +166,12 @@
             android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:hint="  Job Title"
+            android:inputType="textCapSentences"
             android:textSize="16sp"
+            android:gravity="center|start"
+            android:maxLength="20"
             android:textColorHint="@android:color/darker_gray"
             android:imeOptions="actionDone"
             android:singleLine="true"/>
@@ -171,10 +183,14 @@
             android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:hint="  Company"
+            android:inputType="textCapSentences"
             android:textSize="16sp"
-            android:textColorHint="@android:color/darker_gray" />
+            android:gravity="center|start"
+            android:maxLength="20"
+            android:textColorHint="@android:color/darker_gray"
+            android:singleLine="true"/>
 
     </LinearLayout>
 
@@ -201,14 +217,15 @@
         <TextView
             android:id="@+id/degree"
             android:drawableLeft="@drawable/ic_school"
-            android:drawableRight="@drawable/add_icon_selector"
+            android:drawableRight="@drawable/selector_add_icon"
             android:drawablePadding="20dp"
             android:layout_width="match_parent"
             android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:hint="@string/degree"
+            android:gravity="center|start"
             android:textSize="16sp"
             android:textColorHint="@android:color/darker_gray" />
 
@@ -219,11 +236,14 @@
             android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:hint="@string/school_college"
+            android:inputType="textCapSentences"
             android:textSize="16sp"
+            android:gravity="center|start"
             android:textColorHint="@android:color/darker_gray"
             android:imeOptions="actionDone"
+            android:maxLength="20"
             android:singleLine="true"/>
 
     </LinearLayout>
@@ -249,7 +269,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:padding="10sp"
+            android:padding="5dp"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:text="Next"
             android:textColor="@android:color/white"
             />

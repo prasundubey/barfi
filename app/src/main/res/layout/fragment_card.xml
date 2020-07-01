@@ -5,13 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/colorDeadBackground"
+    android:background="@color/white"
     android:id="@+id/layout">
 
     <TextView
+        android:id="@+id/noPeople"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:padding="50dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/colorGrayMid"
+        android:textSize="18sp"
         android:text="@string/no_more_people_to_show"/>
 
 
@@ -26,6 +31,29 @@
         android:layout_height="wrap_content"
         android:visibility="gone"/>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animationView1"
+        android:layout_gravity="right|center"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:lottie_rawRes="@raw/swipe_heart_animation"
+        app:lottie_autoPlay="true"
+        app:lottie_speed="2"
+        app:lottie_loop="false"
+        android:visibility="gone"
+        android:elevation="30dp"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_gravity="left|center"
+        android:id="@+id/animationView2"
+        android:layout_width="90dp"
+        android:layout_height="90dp"
+        app:lottie_rawRes="@raw/swipe_cross_animation"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="false"
+        app:lottie_speed="2"
+        android:visibility="gone"
+        android:elevation="30dp"/>
 
     <ProgressBar
         android:id="@+id/pBar"
@@ -33,7 +61,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="60dp"
         android:visibility="gone"/>
 
 

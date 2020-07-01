@@ -6,10 +6,9 @@
     <solid
         android:color="#ffffff"/>
     <gradient
-        android:endColor="#d0d8ff"
-        android:centerColor="#ec81d2"
-        android:startColor="#fc5c7d"
-        android:angle="90" />
+        android:endColor="@color/colorSecondaryLight"
+        android:startColor="@color/colorPrimaryLight"
+        android:angle="45" />
 
     <size
         android:width="110dp"

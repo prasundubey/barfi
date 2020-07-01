@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.timpra.barfi">
+    package="com.app.barfi">
 
     <application
         android:allowBackup="true"
@@ -11,38 +11,42 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <!--<activity android:name=".SplashActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>-->
-       <!-- <activity android:name=".Login.RegisterActivityOtp"
-            android:windowSoftInputMode="adjustResize"> &lt;!&ndash;This goes in the specific activity with the button &ndash;&gt;
-        </activity>-->
-        <activity android:name=".NewUserDetails" />
-        <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.RegisterActivityOtp" />
-        <activity android:name=".Fragments.OpenSettings" />
-        <activity android:name=".Fragments.MainActivity" />
-        <activity android:name=".Activity.Birthday" />
-
-        <activity
-            android:name=".Login.LauncherActivity"
-            android:theme="@style/AppTheme.Launcher">
+        <activity android:name=".Activity.PaymentActivity" android:theme="@style/Theme.AppCompat.Dialog.Alert"></activity>
+        <activity android:name=".Activity.VerifyAccount" />
+        <activity android:name=".Activity.WebViewActivity" />
+        <!--
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
+        -->
+        <!--
+ <activity android:name=".Login.RegisterActivityOtp"
+            android:windowSoftInputMode="adjustResize"> &lt;!&ndash;This goes in the specific activity with the button &ndash;&gt;
+        </activity>
+        -->
+        <activity android:name=".NewUserDetails" />
+        <activity android:name=".Login.OtpActivity" />
+        <activity android:name=".Login.RegisterActivityOtp" />
+        <activity android:name=".Fragments.OpenSettings" />
+        <activity android:name=".Fragments.MainActivity" />
+        <activity android:name=".Activity.Birthday" />
+        <activity
+            android:name=".Login.LauncherActivity"
+            android:theme="@style/AppTheme.Launcher">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".Login.AuthenticationActivity" />
         <activity android:name=".Activity.EditProfileActivity" />
-        <activity android:name=".Activity.ChatActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"/>
+        <activity
+            android:name=".Activity.ChatActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main2"
@@ -54,10 +58,31 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+
+
     </application>
 
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+
 
 </manifest>

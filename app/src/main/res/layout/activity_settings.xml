@@ -8,7 +8,7 @@
 
 <RelativeLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorDeadBackground">
 
@@ -41,10 +41,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:gravity="top"
-            android:text="Done"
-            android:textSize="18sp"
             android:padding="15dp"
-            android:textColor="@color/colorAccent"/>
+            android:text="Done"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp" />
     </LinearLayout>
 
 
@@ -64,17 +64,18 @@
             android:paddingLeft="10sp"
             android:paddingBottom="5sp"
             android:text="Phone number"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <TextView
             android:id="@+id/phone"
             android:layout_width="match_parent"
             android:drawableLeft="@drawable/ic_phone"
+            android:drawableRight="@drawable/ic_tick"
             android:drawablePadding="10dp"
             android:padding="10dp"
             android:layout_height="0dp"
             android:layout_weight="2"
-            android:background="@drawable/edit_border"
+            android:background="@drawable/bg_box_edit_border"
             android:hint="Phone"
             android:textSize="16sp"
             android:textColorHint="@android:color/darker_gray" />
@@ -98,7 +99,7 @@
                 android:paddingLeft="10sp"
                 android:paddingBottom="5sp"
                 android:text="Email ID"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/email"
@@ -108,7 +109,7 @@
                 android:padding="10dp"
                 android:layout_height="0dp"
                 android:layout_weight="2"
-                android:background="@drawable/edit_border"
+                android:background="@drawable/bg_box_edit_border"
                 android:hint="Email ID"
                 android:textSize="16sp"
                 android:textColorHint="@android:color/darker_gray" />
@@ -134,7 +135,7 @@
             android:paddingLeft="10sp"
             android:paddingBottom="5sp"
             android:text="@string/interested_in"
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
 
         <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
             android:id="@+id/radioRealButtonGroup"
@@ -158,39 +159,59 @@
 
             <com.addisonelliott.segmentedbutton.SegmentedButton
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:padding="5dp"
+                app:drawableWidth="18dp"
+                app:drawableHeight="18dp"
                 app:drawable="@drawable/icons_male"
                 app:drawablePadding="5dp"
                 app:drawableGravity="left"
                 app:selectedTextColor="@color/colorWhite"
                 app:text="@string/male"
+                app:textSize="14dp"
                 app:textColor="@color/colorWhite" />
 
             <com.addisonelliott.segmentedbutton.SegmentedButton
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:padding="10dp"
+                app:drawableWidth="18dp"
+                app:drawableHeight="18dp"
                 app:drawable="@drawable/icons_female"
                 app:drawablePadding="5dp"
                 app:drawableGravity="left"
                 app:selectedTextColor="@color/colorWhite"
                 app:text="@string/female"
+                app:textSize="14dp"
                 app:textColor="@color/colorWhite" />
 
             <com.addisonelliott.segmentedbutton.SegmentedButton
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:layout_height="50dp"
                 android:layout_weight="1"
-                android:padding="10dp"
-                app:drawable="@drawable/ic_male_female"
+                app:drawableWidth="18dp"
+                app:drawableHeight="18dp"
+                app:drawable="@drawable/icons_other_gender"
+                app:drawablePadding="5dp"
+                app:drawableGravity="left"
+                app:selectedTextColor="@color/colorWhite"
+                app:text="Others"
+                app:textSize="14dp"
+                app:textColor="@color/colorWhite" />
+
+            <com.addisonelliott.segmentedbutton.SegmentedButton
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                app:drawableWidth="22dp"
+                app:drawableHeight="22dp"
+                app:drawable="@drawable/icons_all_gender"
                 app:drawablePadding="5dp"
                 app:drawableGravity="left"
                 app:drawableTint="@color/colorWhite"
                 app:selectedTextColor="@color/colorWhite"
-                app:text="@string/both"
+                app:text="All"
+                app:textSize="14dp"
                 app:textColor="@color/colorWhite" />
         </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
 
@@ -228,7 +249,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Age between:"
-                android:textSize="16sp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/minValue5"
@@ -256,6 +277,10 @@
         </LinearLayout>
 
         <io.apptik.widget.MultiSlider
+            app:thumbColor="@color/colorPrimaryLight"
+            app:trackColor="@color/colorGrayMid"
+            app:rangeColor="@color/colorPrimaryDark"
+            android:layout_marginTop="10dp"
             android:id="@+id/range_slider5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -274,9 +299,9 @@
 
     <!--    https://github.com/Ramotion/fluid-slider-android-->
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_below="@+id/ll6"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="30dp"
         android:id="@+id/ll7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -288,10 +313,30 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="10sp"
             android:paddingBottom="5sp"
+            android:gravity="start"
+            android:layout_marginStart="10dp"
             android:text="Search radius (in KM) "
-            android:textSize="16sp"/>
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_toStartOf="@+id/switch1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Whole country"
+            android:gravity="start|top"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="20dp"
+            android:textSize="12dp"/>
+
+        <Switch
+            android:id="@+id/switch1"
+            android:layout_alignParentEnd="true"
+            android:gravity="start|top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            />
 
         <com.ramotion.fluidslider.FluidSlider
             android:layout_marginStart="10sp"
@@ -305,37 +350,50 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:size="small"
-            app:bar_color="@color/design_default_color_secondary_variant"
+            app:bar_color="@color/colorPrimaryDark"
             app:duration="@android:integer/config_mediumAnimTime"
             tools:targetApi="lollipop"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
 
 
 
     <LinearLayout
+        android:layout_alignParentBottom="true"
         android:layout_below="@id/ll7"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:fitsSystemWindows="false"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="50dp"
+        android:orientation="vertical"
         >
 
         <Button
-            android:background="@drawable/bg_button_grad"
+            android:background="@drawable/bg_box_white_noborder"
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:id="@+id/logOut"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:layout_weight="1"
-            android:padding="10sp"
+            android:padding="0sp"
             android:text="Logout"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
+            android:textStyle="normal"
+            android:textColor="@color/colorGray"
+            />
+
+        <TextView
+            android:padding="10dp"
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Account"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginBottom="30dp"
+            android:visibility="gone"
             />
 
     </LinearLayout>

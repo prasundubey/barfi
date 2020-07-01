@@ -3,46 +3,123 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F8F8F8">
+    android:background="@color/white"
+    >
+
+    <TextView
+        android:layout_margin="10dp"
+        android:id="@+id/share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:padding="5dp"
+        android:elevation="1dp"
+        android:drawableStart="@drawable/i_share"
+        android:drawableTint="@color/colorPrimaryDark"
+        android:drawablePadding="5dp"
+        android:text="Share App"
+        android:background="@drawable/bg_box_white_noborder"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:id="@+id/rlTop"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/bg_logo_barfi_canvas">
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/llImage"
+        android:layout_marginTop="80dp">
+        <ImageView
+            android:layout_below="@+id/rlTop"
+            android:layout_width="150sp"
+            android:layout_height="150sp"
+            android:padding="10dp"
+            android:adjustViewBounds="true"
+            android:src="@mipmap/ic_user_default"
+            android:background="@drawable/bg_circle_white_noborder"
+            android:id="@+id/profileImage"/>
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/ll"
-        android:paddingTop="60sp"
-        android:background="@drawable/user_profile_background"
+        android:layout_below="@+id/llImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="40sp">
+        android:paddingBottom="30sp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:id="@+id/llUser"
+            android:background="@color/white">
 
-            <ImageView
-                android:layout_width="150sp"
-                android:layout_height="150sp"
-                android:background="@mipmap/ic_user_default"
-                android:id="@+id/profileImage"/>
+
+
             <TextView
                 android:id="@+id/preview"
-                android:paddingTop="5dp"
+                android:paddingTop="2dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/preview_profile"
-                android:textSize="12sp"
-                android:textColor="@color/colorGrayDark7f"
+                android:textSize="10sp"
+                android:textColor="@color/colorGrayMid"
                 />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat_bold"
                 android:text="Name"
                 android:textStyle="bold"
-                android:paddingTop="10sp"
                 android:textSize="22sp"
                 android:textColor="@color/colorBlack"
                 android:id="@+id/name"/>
+
+                <ImageView
+                    android:id="@+id/verified"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/icons_verified"
+                    android:layout_gravity="center"
+                    android:visibility="gone"
+
+                    />
+                <ImageView
+                    android:id="@+id/unverified"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginStart="10dp"
+                    android:src="@drawable/icons_unverified"
+                    android:layout_gravity="center"
+
+                    />
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -62,13 +139,52 @@
 
         </LinearLayout>
 
+
+            <TextView
+                android:id="@+id/verify_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_box_white_noborder"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="1dp"
+                android:layout_margin="10dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:padding="5dp"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:drawableEnd="@drawable/icons_unverified"
+                android:drawablePadding="25dp"
+                android:drawableTint="@color/white"
+                android:text="Verify your account"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/underReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_box_edit_border"
+            android:layout_margin="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:padding="5dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:drawableTint="@color/white"
+            android:text="Verification under review"
+            android:textSize="12sp"
+            android:textColor="@color/colorGrayDark7f"
+            android:textStyle="normal"/>
+
+
         <LinearLayout
+            android:layout_marginTop="10dp"
             android:paddingBottom="20sp"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:gravity="center"
             android:orientation="horizontal">
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -76,29 +192,29 @@
                 android:orientation="vertical"
                 android:gravity="center">
                 <ImageView
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_margin="15dp"
-                android:src="@drawable/ic_setting"
-                android:padding="20dp"
-                android:background="@drawable/circle_white_border"
-                android:elevation="5dp"
-                android:id="@+id/settings"
-                android:contentDescription="@string/settings" />
+                    android:layout_width="65sp"
+                    android:layout_height="65sp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_settings"
+                    android:padding="20dp"
+                    android:background="@drawable/bg_circle_white_noborder"
+                    android:elevation="5dp"
+                    android:id="@+id/settings"
+                    android:contentDescription="@string/settings" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Account Settings"
                     android:textSize="14sp"
-                    android:textColor="@color/colorGrayDark7f"
+                    android:textColor="@color/colorGray"
                     />
             </LinearLayout>
 
 
             <View
-                android:layout_width="1px"
-                android:layout_height="match_parent"
+                android:layout_width="0.5px"
+                android:layout_height="70dp"
                 android:background="@color/colorGrayLight"
                 android:layout_marginLeft="40sp"
                 android:layout_marginRight="40sp"/>
@@ -110,22 +226,23 @@
                 android:orientation="vertical"
                 android:gravity="center">
 
-            <ImageView
-                android:layout_width="70sp"
-                android:layout_height="70sp"
-                android:layout_margin="15dp"
-                android:id="@+id/editProfile"
-                android:src="@drawable/i_edit"
-                android:padding="20dp"
-                android:background="@drawable/circle_white_border"
-                android:elevation="5dp"
-                android:contentDescription="@string/edit" />
+                <ImageView
+                    android:layout_width="65sp"
+                    android:layout_height="65sp"
+                    android:layout_margin="10dp"
+                    android:id="@+id/editProfile"
+                    android:src="@drawable/i_edit"
+                    android:tint="@color/white"
+                    android:padding="20dp"
+                    android:background="@drawable/bg_circle_primary_grad"
+                    android:elevation="5dp"
+                    android:contentDescription="@string/edit" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Edit Profile"
+                    android:text="      Edit Profile      "
                     android:textSize="14sp"
-                    android:textColor="@color/colorGrayDark7f"
+                    android:textColor="@color/colorGray"
                     />
             </LinearLayout>
 
@@ -133,20 +250,21 @@
 
     </LinearLayout>
 
-    <RelativeLayout
+
+    <TextView
+        android:id="@+id/contact"
         android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="75dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <ImageView
-
-            android:layout_margin="10sp"
-            android:layout_width="250sp"
-            android:layout_height="250sp"
-            android:src="@mipmap/ic_launcher_foreground"
-            android:contentDescription="logo" />
-    </RelativeLayout>
-
+        android:text="Contact us"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:padding="10dp"
+        android:textSize="14sp"
+        android:textColor="@color/colorGrayDark7f"
+        />
 
 </RelativeLayout>

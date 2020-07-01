@@ -2,16 +2,23 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+
+    <!--<style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">-->
+
         <!--<item name="android:windowDisablePreview">true</item>-->
         <!-- Customize your theme here. -->
        <!-- <item name="android:fontFamily">@font/montserrat</item>
         <item name="fontFamily">@font/montserrat</item>-->
+
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-        <item name="android:statusBarColor">@color/colorGrayLight</item>
+
+        <item name="android:statusBarColor">@color/colorDeadBackground</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
+
+
 
         <item name="multiSliderStyle">@style/Widget.MultiSlider</item>
 
@@ -41,7 +48,6 @@
 
     <style name="Widget.MultiSlider" parent="android:Widget">
     </style>
-
 
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/splash_screen_background</item>

@@ -11,12 +11,12 @@
     <string name="male">Male</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-    <string name="gps_network_not_enabled">Location services not enabled</string>
+    <string name="gps_network_not_enabled">Location services not enabled. Please enable to use Barfi.</string>
     <string name="open_location_settings">Open location services</string>
     <string name="Cancel">Cancel</string>
     <string name="messages">Conversations</string>
     <string name="new_matches">Matches</string>
-    <string name="no_matches_to_show">No matches to show</string>
+    <string name="no_matches_to_show">No connections to show</string>
     <string name="no_chats_to_show">No chats to show</string>
     <string name="message">message…</string>
     <string name="gender">Gender</string>
@@ -27,14 +27,14 @@
     <string name="add_phone">Add Phone</string>
     <string name="phone">Phone</string>
     <string name="add_about">Add About</string>
-    <string name="about">About</string>
+    <string name="about">About me you want to know. Yes about me. random text random text random text random text  </string>
     <string name="add_name">Add Name</string>
     <string name="name">Name</string>
     <string name="interested_in">Interested In</string>
     <string name="search_distance">Search Distance</string>
     <string name="logout">LogOut</string>
     <string name="profile_image">profile image</string>
-    <string name="no_more_people_to_show">No more People to show…</string>
+    <string name="no_more_people_to_show">No new profiles to show you right now.\nCheck back soon!</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="register">Register</string>
     <string name="edit">edit</string>
@@ -69,10 +69,13 @@
     <string name="school_college">School/College</string>
 
 
-
     <string name="preview_profile"><u>Preview Profile</u></string>
-    <string name="right_left_swipe_text">Swipe to make your move!\n <b>Right</b> for the profiles you like \n and <b>Left</b> otherwise!</string>
+    <string name="right_left_swipe_text"><b>Right</b> for the profiles you like \n and <b>Left</b> otherwise!</string>
     <string name="resend_otp"><u>Resend OTP</u></string>
 
+    <string name="terms">By tapping "continue", you agree to our <u>Terms &amp; Privacy Policy.</u></string>
+
+
+    <string name="facebook_app_id">586361782277092</string>
 
 </resources>

@@ -6,8 +6,7 @@
             <gradient android:endX="12.725001"
                 android:endY="-0.17059624" android:startX="12.725001"
                 android:startY="23.328" android:type="linear">
-                <item android:color="#FFD0D8FF" android:offset="0"/>
-                <item android:color="#FFEC81D2" android:offset="0.467"/>
+                <item android:color="#f76c7f" android:offset="0"/>
                 <item android:color="#FFFC5C7D" android:offset="1"/>
             </gradient>
         </aapt:attr>

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".InfoFragment3"
     android:background="#ffffff">
 
@@ -21,12 +22,27 @@
         android:textAlignment="center"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/montserrat_bold"
-        android:layout_above="@+id/text"
-        android:text="All Set &amp; Sweet!"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="30sp"
+        android:layout_above="@+id/swipe"
+        android:text="Sweet!"
+        android:textColor="@color/colorPrimary"
+        android:textSize="40sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"/>
+
+    <TextView
+
+        android:id="@+id/swipe"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/montserrat_semi_bold"
+        android:layout_above="@+id/text"
+        android:text="Swipe Tips"
+        android:textColor="@color/colorPrimaryLight"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"/>
 
     <TextView
 
@@ -36,26 +52,79 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_above="@+id/image"
+        android:layout_above="@+id/animationView2"
         android:text="@string/right_left_swipe_text"
         android:textColor="@color/colorGray"
-        android:textSize="18sp"
-        android:layout_marginBottom="30dp"/>
+        android:textSize="16sp"
+        android:layout_marginBottom="20dp"
+        />
+    <TextView
 
-    <ImageView
-        android:id="@+id/image"
+        android:id="@+id/text2"
+        android:singleLine="false"
+        android:textAlignment="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_above="@+id/animationView2"
+        android:text="Tap for more info."
+        android:textColor="@color/colorGray"
+        android:textSize="18sp"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone"/>
+
+    <RelativeLayout
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_undraw_preview"/>
+        android:layout_centerHorizontal="true"
+        android:id="@+id/ll1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:elevation="5dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Like Profile"
+            android:drawableTop="@drawable/i_heart"
+            android:textSize="10sp"
+            android:layout_marginStart="210dp"
+            android:layout_centerVertical="true"
+            android:elevation="2dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pass Profile"
+            android:textSize="10sp"
+            android:drawableTop="@drawable/i_cross"
+            android:elevation="2dp"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:id="@+id/animationView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_rawRes="@raw/swipe_animation"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        android:visibility="visible"
+        android:elevation="0dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:fitsSystemWindows="false"
-        android:layout_below="@+id/image"
+        android:layout_below="@+id/animationView2"
         android:layout_marginTop="100dp"
         >
 
@@ -67,9 +136,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="10sp"
+            android:padding="5dp"
             android:text="Get Started"
-            android:textStyle="bold"
+            android:fontFamily="@font/montserrat_semi_bold"
             android:textColor="@android:color/white"
             />
     </LinearLayout>
