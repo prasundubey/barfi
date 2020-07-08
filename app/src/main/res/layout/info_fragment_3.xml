@@ -243,7 +243,7 @@
             android:gravity="center|start"
             android:textColorHint="@android:color/darker_gray"
             android:imeOptions="actionDone"
-            android:maxLength="20"
+            android:maxLength="24"
             android:singleLine="true"/>
 
     </LinearLayout>

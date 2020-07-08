@@ -55,14 +55,27 @@
         android:visibility="gone"
         android:elevation="30dp"/>
 
-    <ProgressBar
+    <LinearLayout
         android:id="@+id/pBar"
-        style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:visibility="gone"/>
-
+        android:orientation="vertical"
+        android:visibility="gone">
+        <ProgressBar
+            android:id="@+id/pBar1"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fetching profiles.."
+            android:textColor="@color/colorGrayDark7f"/>
+    </LinearLayout>
 
 
     <com.lorentzos.flingswipe.SwipeFlingAdapterView

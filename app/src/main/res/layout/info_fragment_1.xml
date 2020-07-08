@@ -44,7 +44,7 @@
             android:fontFamily="@font/montserrat"
             android:paddingEnd="40dp"
             android:paddingStart="20dp"
-            android:text="Fill in the below details about yourself. These details cannot be changed once your profile has been created."
+            android:text="@string/enter_profile_details_1"
             android:textColor="@color/colorGrayDark7f"
             android:textSize="12sp"
             android:textStyle="normal" />
@@ -76,7 +76,7 @@
             android:layout_height="0dp"
             android:layout_weight="2"
             android:background="@drawable/bg_box_edit_border"
-            android:hint="Enter your full name"
+            android:hint="Enter your full name. You can hide it later.."
             android:textSize="16sp"
             android:inputType="textCapWords"
             android:imeOptions="actionDone"

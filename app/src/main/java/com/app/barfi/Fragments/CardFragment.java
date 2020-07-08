@@ -12,6 +12,7 @@ import android.os.Bundle;
 import com.airbnb.lottie.LottieAnimationView;
 import com.app.barfi.Activity.PaymentActivity;
 import com.app.barfi.Activity.WebViewActivity;
+import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.geofire.GeoFire;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +54,8 @@ import com.app.barfi.Activity.ZoomCardActivity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,7 +89,7 @@ public class CardFragment  extends Fragment {
     private DatabaseReference mMatchDatabase;
     private String matchUId;
 
-    private ProgressBar pgsBar;
+    private LinearLayout pgsBar;
     private TextView mNoPeople;
 
 
@@ -131,7 +135,7 @@ public class CardFragment  extends Fragment {
         mNoPeople.setVisibility(View.GONE);
 
         //loading bar
-        pgsBar = (ProgressBar) view.findViewById(R.id.pBar);
+        pgsBar = (LinearLayout) view.findViewById(R.id.pBar);
         pgsBar.setVisibility(View.VISIBLE);
 
         //testing button
@@ -186,6 +190,7 @@ public class CardFragment  extends Fragment {
                     swipes=swipesLimit;
                     usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
                     usersDb.child(currentUId).child("status").child("swipeDate").setValue(currentDay);
+                    updateScore();
                 }
 
                 else {
@@ -305,6 +310,7 @@ public class CardFragment  extends Fragment {
 
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
+
                 }
 
                 @Override
@@ -360,12 +366,12 @@ public class CardFragment  extends Fragment {
         rowItems.clear();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
+
         GeoFire geoFire = new GeoFire(ref);
 
         if(geoQuery!=null)
             geoQuery.removeAllListeners();
      //  geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), 100);
-
 
         if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
             geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), searchDistance);
@@ -380,7 +386,6 @@ public class CardFragment  extends Fragment {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 getUsersInfo(key);
-                pgsBar.setVisibility(View.GONE);
             }
             @Override
             public void onKeyExited(String key) {
@@ -494,15 +499,18 @@ public class CardFragment  extends Fragment {
         for(UserObject mCard : rowItems){
             if(mCard.getUserId().equals(userId)){return;}
         }
-
+        pgsBar.setVisibility(View.GONE);
         mNoPeople.setVisibility(View.VISIBLE);
+
 
         usersDb.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()) {
-                    return;
-                }
+                if(!dataSnapshot.exists()) { return; }
+
+                if(!dataSnapshot.child("name").exists()){return;}
+                if(!dataSnapshot.child("score").exists()){return;}
+                if(!dataSnapshot.child("profileImageUrl").exists()){return;}
 
                 for(UserObject mCard : rowItems){
                     if(mCard.getUserId().equals(dataSnapshot.getKey())){return;}
@@ -526,8 +534,22 @@ public class CardFragment  extends Fragment {
                     if(mCard.getUserId().equals(userId)){return;}
                 }
 
+
                 rowItems.add(mUser);
+                //cardAdapter.notifyDataSetChanged();
+
+                //test
+
+                Collections.sort(rowItems, Collections.reverseOrder(new Comparator<UserObject>() {
+                    @Override
+                    public int compare(UserObject lhs, UserObject rhs) {
+                        return lhs.getScore().compareTo(rhs.getScore());
+                    }
+                }));
+
+
                 cardAdapter.notifyDataSetChanged();
+
 
 
             }
@@ -616,40 +638,25 @@ public class CardFragment  extends Fragment {
 
     }
 
-    /*private void ShowSwipeOver(View v) {
-
-        Button mBuy;
-        TextView mBack;
-        myDialog.setContentView(R.layout.popup_swipe_over);
-
-        mBuy = (Button) myDialog.findViewById(R.id.buy);
-        mBack = (TextView) myDialog.findViewById(R.id.back);
-
-
-
-
-        mBuy.setOnClickListener(new View.OnClickListener() {
+    //update score on updating the info
+    private void updateScore() {
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onClick(View v) {
-                //TODO chat window
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ScoreObject mScore = new ScoreObject();
+                mScore.parseObject(dataSnapshot);
+                Integer score = mScore.getScore();
+                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+            }
 
-                myDialog.dismiss();
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
-
-        mBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                myDialog.dismiss();
-            }
-        });
-
-        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        myDialog.show();
-
 
     }
-*/
+
 
 
 }

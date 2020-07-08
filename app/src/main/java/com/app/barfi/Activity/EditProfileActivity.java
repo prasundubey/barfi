@@ -5,14 +5,23 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.exifinterface.media.ExifInterface;
 
 import android.os.Bundle;
+import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,9 +36,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
+import com.app.barfi.Login.AuthenticationActivity;
+import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,10 +56,22 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.app.barfi.Objects.UserObject;
 import com.app.barfi.R;
+import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.face.Face;
+import com.google.mlkit.vision.face.FaceContour;
+import com.google.mlkit.vision.face.FaceDetection;
+import com.google.mlkit.vision.face.FaceDetector;
+import com.google.mlkit.vision.face.FaceLandmark;
+import com.google.mlkit.vision.text.Text;
+import com.google.mlkit.vision.text.TextRecognition;
+import com.google.mlkit.vision.text.TextRecognizer;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -51,6 +79,10 @@ import java.util.Map;
  * Activity responsible for handling the edit of user's data
  */
 public class EditProfileActivity extends AppCompatActivity {
+
+    //Params to change
+    private Integer imageQuality = 35;
+    private Integer imageTextPermit = 12;
 
     private EditText
             mAbout,
@@ -97,8 +129,8 @@ public class EditProfileActivity extends AppCompatActivity {
     private ImageView mProfileImage;
     private ImageView mImage;
     private ImageView mImage3;
-    private Uri resultUri;
     private Uri resultUri1;
+    private Uri resultUri2;
     private Uri resultUri3;
 
     //For adding more images see this: https://www.youtube.com/watch?v=BLffEJkREMQ
@@ -157,7 +189,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
         //on profile image click allow user to choose another pic by calling the responding intentt
         mProfileImage.setOnClickListener(view -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("image/*");
             startActivityForResult(intent, 1);
         });
@@ -611,10 +643,16 @@ public class EditProfileActivity extends AppCompatActivity {
         else
             userSex = "Female";
 
-        if(resultUri != null) {
+        if(resultUri1 != null) {
             final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("profile_images").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            UploadTask uploadTask = filePath.putFile(resultUri);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmRotated1.compress(Bitmap.CompressFormat.JPEG, imageQuality, baos);
+            byte[] fileInBytes = baos.toByteArray();
+
+            UploadTask uploadTask = filePath.putBytes(fileInBytes);
+
+            //UploadTask uploadTask = filePath.putFile(resultUri1);
 
             uploadTask.addOnFailureListener(e -> {
                 finish();
@@ -636,10 +674,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
         // set new image for 2nd
 
-        if(resultUri1 != null) {
+        if(resultUri2 != null) {
             final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("images").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            UploadTask uploadTask1 = filePath.putFile(resultUri1);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmRotated2.compress(Bitmap.CompressFormat.JPEG, imageQuality, baos);
+            byte[] fileInBytes = baos.toByteArray();
+
+            UploadTask uploadTask1 = filePath.putBytes(fileInBytes);
+
 
             uploadTask1.addOnFailureListener(e -> {
                 finish();
@@ -663,7 +706,14 @@ public class EditProfileActivity extends AppCompatActivity {
         if(resultUri3 != null) {
             final StorageReference filePath = FirebaseStorage.getInstance().getReference().child("images3").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-            UploadTask uploadTask1 = filePath.putFile(resultUri3);
+
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bmRotated3.compress(Bitmap.CompressFormat.JPEG, imageQuality, baos);
+            byte[] fileInBytes = baos.toByteArray();
+
+            UploadTask uploadTask1 = filePath.putBytes(fileInBytes);
+
+          //  UploadTask uploadTask1 = filePath.putFile(resultUri3);
 
             uploadTask1.addOnFailureListener(e -> {
                 finish();
@@ -673,8 +723,6 @@ public class EditProfileActivity extends AppCompatActivity {
                 Map newImage3 = new HashMap();
                 newImage3.put("imageUrl3", uri.toString());
                 mUserDatabase.updateChildren(newImage3);
-
-
 
                 finish();
             }).addOnFailureListener(exception -> {
@@ -740,7 +788,26 @@ public class EditProfileActivity extends AppCompatActivity {
 
         mUserDatabase.child("details").updateChildren(userInfo);
 
+        updateScore();
 
+    }
+
+    //update score on updating the info
+    private void updateScore() {
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ScoreObject mScore = new ScoreObject();
+                mScore.parseObject(dataSnapshot);
+                Integer score = mScore.getScore();
+                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -750,63 +817,78 @@ public class EditProfileActivity extends AppCompatActivity {
      * @param resultCode - if the result was successful
      * @param data - data of the image fetched
      */
+
+    InputImage image;
+    TextRecognizer recognizer = TextRecognition.getClient();
+    FaceDetector detector = FaceDetection.getClient();
+
+
+    private Bitmap bitmap1,bitmap2,bitmap3;
+    private Bitmap bmRotated1,bmRotated2,bmRotated3;
+    private InputStream in1;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
 
 
         switch (requestCode) {
             case 1:
                 if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
                     final Uri imageUri = data.getData();
-                    resultUri = imageUri;
+                    resultUri1 = imageUri;
+                    Toast.makeText(EditProfileActivity.this, "Analysing Image..", Toast.LENGTH_SHORT).show();
+
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri);
-                        Glide.with(getApplication())
-                                .load(resultUri) // Uri of the picture
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(mProfileImage);
-
-
+                        bitmap1 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri1);
+                        image = InputImage.fromFilePath(getApplicationContext(), resultUri1);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    detectFaces(image, 1);
                 }
                 break;
 
             case 2:
                 if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
                     final Uri imageUri = data.getData();
-                    resultUri1 = imageUri;
+                    resultUri2 = imageUri;
+                    Toast.makeText(EditProfileActivity.this, "Analysing Image..", Toast.LENGTH_SHORT).show();
+
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri1);
-                        Glide.with(getApplication())
-                                .load(resultUri1) // Uri of the picture
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(mImage);
+                        bitmap2 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri2);
+                        image = InputImage.fromFilePath(getApplicationContext(), resultUri2);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    detectFaces(image, 2);
                 }
                 break;
+
             //image3
             case 3:
                 if (requestCode == 3 && resultCode == Activity.RESULT_OK) {
                     final Uri imageUri3 = data.getData();
                     resultUri3 = imageUri3;
+                    Toast.makeText(EditProfileActivity.this, "Analysing Image..", Toast.LENGTH_SHORT).show();
+
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri3);
-                        Glide.with(getApplication())
-                                .load(resultUri3) // Uri of the picture
-                                .apply(RequestOptions.circleCropTransform())
-                                .into(mImage3);
+                        bitmap3 = MediaStore.Images.Media.getBitmap(this.getContentResolver(), resultUri3);
+                        image = InputImage.fromFilePath(getApplicationContext(), resultUri3);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
+                    detectFaces(image, 3);
+
                 }
         }
 
     }
+
 
 
     @Override
@@ -832,4 +914,230 @@ public class EditProfileActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+
+
+    public void detectFaces(InputImage image, Integer position) {
+        Task<List<Face>> resultFace = detector.process(image).addOnSuccessListener(new OnSuccessListener<List<Face>>() {
+            @Override
+            public void onSuccess(List<Face> faces) {
+                if (!faces.isEmpty()) {
+                    Toast.makeText(EditProfileActivity.this, "Face detected", Toast.LENGTH_SHORT).show();
+                    detectText(image,position);
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
+                    builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Please select another photo to continue. </font>"));
+                    builder.setTitle( Html.fromHtml("<font color='#f76c7f'>Your face is not clearly visible in this photo!</font>"));
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+            }}).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                // Task failed with an exception
+                // ...
+            }
+        });
+
+    }
+
+    public void detectText(InputImage image, Integer position) {
+        Task<Text> result = recognizer.process(image).addOnSuccessListener(new OnSuccessListener<Text>() {
+            @Override
+            public void onSuccess(Text visionText) {
+               // processTextBlock(visionText);
+                if (visionText.getText().length() < imageTextPermit) {
+                    switch (position) {
+                        case 1:
+                            Glide.with(getApplication()).load(resultUri1).apply(RequestOptions.circleCropTransform()).into(mProfileImage);
+                            break;
+                        case 2:
+                            Glide.with(getApplication()).load(resultUri2).apply(RequestOptions.circleCropTransform()).into(mImage);
+                            break;
+                        case 3:
+                            Glide.with(getApplication()).load(resultUri3).apply(RequestOptions.circleCropTransform()).into(mImage3);
+                            break;
+                    }
+
+                    ExifInterface exifInterface = null;
+                    try {
+
+                        switch (position) {
+                            case 1:
+                                in1 = getContentResolver().openInputStream(resultUri1);
+                                break;
+                            case 2:
+                                in1 = getContentResolver().openInputStream(resultUri2);
+                                break;
+                            case 3:
+                                in1 = getContentResolver().openInputStream(resultUri3);
+                                break;
+                        }
+
+
+                     //   in1 = getContentResolver().openInputStream(resultUri1);
+
+                        exifInterface = new ExifInterface(in1);
+                    } catch (IOException e) {
+                        Toast.makeText(EditProfileActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
+                    } finally {
+                        if (in1 != null) {
+                            try {
+                                in1.close();
+                            } catch (IOException ignored) {
+                            }
+                        }
+                    }
+                    int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+                    switch (position) {
+                        case 1:
+                            bmRotated1 = rotateBitmap(bitmap1, orientation);
+                            break;
+                        case 2:
+                            bmRotated2 = rotateBitmap(bitmap2, orientation);
+                            break;
+                        case 3:
+                            bmRotated3 = rotateBitmap(bitmap3, orientation);
+                            break;
+                    }
+
+                    // bmRotated1 = rotateBitmap(bitmap1, orientation);
+
+                } else {
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
+                    builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Photos with text cannot be uploaded to your profile.\nPlease select another photo to continue. </font>"));
+                    builder.setTitle( Html.fromHtml("<font color='#f76c7f'>Selected Image Has Text!</font>"));
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+
+                    switch (position) {
+                        case 1:
+                            resultUri1 = null;
+                            break;
+                        case 2:
+                            resultUri2 = null;
+                            break;
+                        case 3:
+                            resultUri3 = null;
+                            break;
+                    }
+
+                    //resultUri1 = null;
+                }
+            }}).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(EditProfileActivity.this, "Unknown error", Toast.LENGTH_SHORT).show();
+                    }});
+    }
+
+
+
+
+
+
+    public static Bitmap rotateBitmap(Bitmap bitmap, int orientation) {
+
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                return bitmap;
+            case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
+                matrix.setScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.setRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_FLIP_VERTICAL:
+                matrix.setRotate(180);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_TRANSPOSE:
+                matrix.setRotate(90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.setRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_TRANSVERSE:
+                matrix.setRotate(-90);
+                matrix.postScale(-1, 1);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.setRotate(-90);
+                break;
+            default:
+                return bitmap;
+        }
+        try {
+            Bitmap bmRotated = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            bitmap.recycle();
+            return bmRotated;
+        }
+        catch (OutOfMemoryError e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    //process text
+    /* private void processTextBlock(Text result) {
+        String resultText = result.getText();
+        if (resultText.length()>=imageTextPermit)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
+            builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Photos with text cannot be uploaded to your profile.\nPlease select another photo to continue. </font>"));
+            builder.setTitle( Html.fromHtml("<font color='#f76c7f'>Selected Image Has Text!</font>"));
+            builder.setCancelable(true);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.cancel();
+                }
+            });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+
+        for (Text.TextBlock block : result.getTextBlocks()) {
+            String blockText = block.getText();
+            Point[] blockCornerPoints = block.getCornerPoints();
+            Rect blockFrame = block.getBoundingBox();
+            for (Text.Line line : block.getLines()) {
+                String lineText = line.getText();
+                Point[] lineCornerPoints = line.getCornerPoints();
+                Rect lineFrame = line.getBoundingBox();
+                for (Text.Element element : line.getElements()) {
+                    String elementText = element.getText();
+                    Point[] elementCornerPoints = element.getCornerPoints();
+                    Rect elementFrame = element.getBoundingBox();
+                }
+            }
+        }
+
+    }*/
+
+    //process face function example is in infoFrag2
 }

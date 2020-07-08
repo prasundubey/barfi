@@ -18,6 +18,9 @@ public class UserObject implements Serializable {
 
     private Integer swipeCount;
 
+    private Integer score=1;
+
+
     private String
             about = "",
             job = "",
@@ -58,6 +61,7 @@ public class UserObject implements Serializable {
 
     public void parseObject(DataSnapshot dataSnapshot){
         if(!dataSnapshot.exists()){return;}
+
         userId = dataSnapshot.getKey();
 
         if(dataSnapshot.child("name").getValue()!=null)
@@ -72,6 +76,8 @@ public class UserObject implements Serializable {
         if(dataSnapshot.child("verified").getValue()!=null)
             verified = dataSnapshot.child("verified").getValue().toString();
 
+        if(dataSnapshot.child("score").getValue()!=null)
+            score = Integer.parseInt(dataSnapshot.child("score").getValue().toString());
 
         if(dataSnapshot.child("status").child("swipes").getValue()!=null)
             swipeCount = Integer.parseInt(dataSnapshot.child("status").child("swipes").getValue().toString());
@@ -210,6 +216,10 @@ public class UserObject implements Serializable {
 
     public float getSearchDistance() {
         return searchDistance;
+    }
+
+    public Integer getScore() {
+        return score;
     }
 
     public Integer getSwipeCount() {

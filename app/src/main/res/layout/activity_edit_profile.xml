@@ -324,7 +324,7 @@
                 android:background="@drawable/bg_box_edit_border"
                 android:hint="@string/school_college"
                 android:textSize="16sp"
-                android:maxLength="20"
+                android:maxLength="24"
                 android:inputType="textCapWords"
                 android:textColorHint="@android:color/darker_gray"
                 android:imeOptions="actionDone"

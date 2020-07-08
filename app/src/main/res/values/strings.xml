@@ -16,7 +16,7 @@
     <string name="Cancel">Cancel</string>
     <string name="messages">Conversations</string>
     <string name="new_matches">Matches</string>
-    <string name="no_matches_to_show">No connections to show</string>
+    <string name="no_matches_to_show">No new connections to show</string>
     <string name="no_chats_to_show">No chats to show</string>
     <string name="message">message…</string>
     <string name="gender">Gender</string>
@@ -77,5 +77,7 @@
 
 
     <string name="facebook_app_id">586361782277092</string>
+    <string name="fake_photos"><u>Note:</u> Account with inappropriate or fake photos will be strictly reported/deleted.</string>
+    <string name="enter_profile_details_1">Fill in the below details about yourself.\n<u>Note:</u> These details cannot be changed once your profile has been created.</string>
 
 </resources>

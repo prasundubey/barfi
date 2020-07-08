@@ -243,6 +243,9 @@ public class InfoFragment1 extends Fragment {
         userInfo.put("fullName", name);
         userInfo.put("sex", accountType);
         userInfo.put("email", email);
+
+        userInfo.put("score", 1);
+
         FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).updateChildren(userInfo);
 
 
@@ -258,7 +261,7 @@ public class InfoFragment1 extends Fragment {
                 break;
             case "Female":
                 userInfo1.put("ageMax", age+8);
-                userInfo1.put("ageMin", age-3);
+                userInfo1.put("ageMin", age-2);
                 break;
         }
 

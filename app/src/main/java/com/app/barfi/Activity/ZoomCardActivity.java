@@ -151,6 +151,9 @@ public class ZoomCardActivity extends AppCompatActivity {
         else mImage3.setVisibility(View.GONE);
 
 
+
+
+
         if(!mUserObject.getAbout().equals(""))
         { mAbout.setText(mUserObject.getAbout());
         } else mAbout.setVisibility(View.GONE);

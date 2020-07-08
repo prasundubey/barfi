@@ -147,6 +147,7 @@ public class SettingsActivity extends AppCompatActivity {
         mDone.setOnClickListener(view -> {
             saveUserInformation();
             super.onBackPressed();
+            finish();
         });
 
 
@@ -321,6 +322,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBackPressed() {
         saveUserInformation();
         super.onBackPressed();
+        finish();
       //  Toast.makeText(getApplicationContext(), "Settings updated", Toast.LENGTH_SHORT).show();
     }
 

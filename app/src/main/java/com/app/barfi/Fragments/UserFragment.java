@@ -28,6 +28,7 @@ import com.app.barfi.Activity.MainActivity;
 import com.app.barfi.Activity.VerifyAccount;
 import com.app.barfi.Activity.WebViewActivity;
 import com.app.barfi.NewUserDetails;
+import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -222,6 +223,12 @@ public class UserFragment extends Fragment {
 
                     mVerified.setVisibility(View.VISIBLE);
 
+                    // increase score of verified
+                    ScoreObject mScore = new ScoreObject();
+                    mScore.parseObject(dataSnapshot);
+                    Integer score = mScore.getScore();
+                    FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+
                 }
 
                 if (!dataSnapshot.hasChild("verified")){
@@ -242,6 +249,7 @@ public class UserFragment extends Fragment {
             }
         });
     }
+
 
 
 }

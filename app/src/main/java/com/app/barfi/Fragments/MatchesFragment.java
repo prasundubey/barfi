@@ -103,6 +103,7 @@ public class MatchesFragment extends Fragment {
 
 
 
+
         getUserMatchId();
         initChats();
         initNewMatches();
@@ -274,6 +275,9 @@ public class MatchesFragment extends Fragment {
                     if (dataSnapshot.child("connections").child("matches").child(FirebaseAuth.getInstance().getUid()).hasChild("timestamp"))
                         //test
                         resultsMatches.remove(obj);
+
+                    if(resultsMatches.isEmpty())
+                        mNoMatches.setVisibility(View.VISIBLE);
 
                     if(!chatId.equals("")) {
                         FetchLastMessage(chatId);

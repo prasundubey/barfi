@@ -48,7 +48,7 @@
         android:fontFamily="@font/montserrat"
         android:paddingEnd="40dp"
         android:paddingStart="20dp"
-        android:text="You are required to add atleast one photo of yourself before you proceed. This will greatly improve your chances of making connections!"
+        android:text="You are required to add atleast one photo of yourself in the first section before you proceed!"
         android:textColor="@color/colorGrayDark7f"
         android:textSize="12sp"
         android:textStyle="normal" />
@@ -65,6 +65,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
+
         <ImageView
             android:id="@+id/profileImage"
             android:padding="5dp"
@@ -73,6 +74,7 @@
             android:layout_gravity="center"
             android:background="@drawable/bg_circle_white_noborder"
             android:src="@drawable/icons_add_image" />
+
 
         <ImageView
             android:id="@+id/image"
@@ -95,6 +97,7 @@
             android:src="@drawable/icons_add_image" />
 
     </LinearLayout>
+
 
     <ProgressBar
         android:layout_below="@id/select"
@@ -124,12 +127,23 @@
         android:textStyle="normal"/>
 
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/llNext"
+        android:layout_margin="25dp"
+        android:textSize="12sp"
+        android:text="@string/fake_photos"/>
+
+
     <LinearLayout
+        android:id="@+id/llNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:fitsSystemWindows="false"
         android:layout_alignParentBottom="true">
+
 
         <Button
             android:enabled="false"
