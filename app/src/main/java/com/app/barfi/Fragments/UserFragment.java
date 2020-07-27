@@ -8,7 +8,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,13 +22,19 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.barfi.Activity.ForceUpdateActivity;
 import com.app.barfi.Activity.MainActivity;
 import com.app.barfi.Activity.VerifyAccount;
 import com.app.barfi.Activity.WebViewActivity;
+import com.app.barfi.BuildConfig;
 import com.app.barfi.NewUserDetails;
 import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
@@ -38,6 +46,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.app.barfi.Activity.EditProfileActivity;
 import com.app.barfi.Activity.ZoomCardUser;
@@ -61,6 +70,7 @@ import java.util.UUID;
 
 import static android.app.Activity.RESULT_OK;
 import static android.media.MediaRecorder.VideoSource.CAMERA;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Activity responsible for displaying the current user and the buttons to go
@@ -78,10 +88,17 @@ public class UserFragment extends Fragment {
 
     private ImageView mProfileImage, mSettings, mEditProfile;
 
+    private DatabaseReference mUserDatabase;
+
+    private TextView mFlag;
+
+    private TextView mUpdateApp;
 
 
     public UserFragment() {
     }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +111,7 @@ public class UserFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
+
 
         mName = view.findViewById(R.id.name);
         mProfileImage = view.findViewById(R.id.profileImage);
@@ -113,6 +131,16 @@ public class UserFragment extends Fragment {
 
         mShare = view.findViewById(R.id.share);
         mContact = view.findViewById(R.id.contact);
+
+        mFlag = view.findViewById(R.id.flag);
+        mFlag.setVisibility(View.GONE);
+
+        mUpdateApp = view.findViewById(R.id.updateNow);
+        mUpdateApp.setVisibility(View.GONE);
+
+
+        getUserInfo();
+
 
         mContact.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,7 +187,7 @@ public class UserFragment extends Fragment {
             startActivity(intent);
         });
 
-        getUserInfo();
+
 
 
 
@@ -170,6 +198,38 @@ public class UserFragment extends Fragment {
         });
 
 
+
+        DatabaseReference versionDB  = FirebaseDatabase.getInstance().getReference().child("Version");
+        versionDB.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    int vc = Integer.parseInt(dataSnapshot.child("playVC").getValue().toString());
+
+                    if(vc> BuildConfig.VERSION_CODE){
+                        mUpdateApp.setVisibility(View.VISIBLE);
+                    }else
+                        mUpdateApp.setVisibility(View.GONE);
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        mUpdateApp.setOnClickListener(v -> {
+            final String appPackageName = getActivity().getPackageName(); // getPackageName() from Context or Activity object
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+        });
 
 
         return view;
@@ -186,17 +246,18 @@ public class UserFragment extends Fragment {
 
     private void getUserInfo() {
         String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-
-        mUserDatabase.addValueEventListener(new ValueEventListener() {
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
+        mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                if(dataSnapshot.hasChild("xx")){
+                    //  Toast.makeText(getContext(), "Your account is blocked & invisible to others. Contact us for more info.", Toast.LENGTH_LONG).show();
+                    mFlag.setVisibility(View.VISIBLE);}
+
                 UserObject mUser = new UserObject();
                 mUser.parseObject(dataSnapshot);
-
-
 
                 mName.setText(mUser.getName() + ", " + mUser.getAge());
                 if(getContext() != null && !mUser.getProfileImageUrl().equals("default"))
@@ -241,15 +302,23 @@ public class UserFragment extends Fragment {
                 }
 
 
-
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
             }
         });
+
+
     }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        getUserInfo();
+
+    }
 
 
 }

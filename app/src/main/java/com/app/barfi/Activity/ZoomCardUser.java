@@ -69,6 +69,7 @@ public class ZoomCardUser extends AppCompatActivity {
             mReading;
 
     private ImageView mBack;
+    private TextView mReport;
 
 
     @Override
@@ -76,6 +77,8 @@ public class ZoomCardUser extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.zoom_card);
 
+        mReport = findViewById(R.id.report);
+        mReport.setVisibility(View.GONE);
 
         mBack = findViewById(R.id.back);
         mBack.setOnClickListener(view -> { super.onBackPressed();});

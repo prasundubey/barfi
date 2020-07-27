@@ -1,10 +1,12 @@
 package com.app.barfi.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +15,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.barfi.Activity.MainActivity;
+import com.app.barfi.Activity.PaymentActivity;
+import com.app.barfi.LikesContainerActivity;
+import com.app.barfi.LikesFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -60,12 +66,16 @@ public class MatchesFragment extends Fragment {
     private TextView  mNoMatches, mConversations, mNoChats;
     private LinearLayout mKeepSwiping;
 
+    private LinearLayout mllLikes;
     private TextView mLikes;
     private String likes;
     private int countLikes;
+    private Boolean premium;
 
 
     private Boolean showNoChats;
+
+    private LinearLayout mPgs;
 
     public MatchesFragment() {
     }
@@ -94,21 +104,56 @@ public class MatchesFragment extends Fragment {
         mConversations = view.findViewById(R.id.conversations);
         mKeepSwiping = view.findViewById(R.id.keepSwiping);
 
-        //mLikes = view.findViewById(R.id.likes);
+        mLikes = view.findViewById(R.id.likes);
+        mllLikes = view.findViewById(R.id.llLikes);
 
         mNoMatches.setVisibility(View.VISIBLE);
         mKeepSwiping.setVisibility(View.VISIBLE);
         mConversations.setVisibility(View.GONE);
 
-
-
+        mPgs = view.findViewById(R.id.pgsLL);
+        mPgs.setVisibility(View.VISIBLE);
 
 
         getUserMatchId();
         initChats();
         initNewMatches();
-        //getLikes();
+        getLikes();
 
+        DatabaseReference mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
+        mUserDatabase.child("status").child("level").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+                    if (dataSnapshot.getValue().toString().equals("premium")) {
+                        premium = true;
+                    } else {
+                        premium = false;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mllLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(premium) {
+                    Intent intent = new Intent(view.getContext(), LikesContainerActivity.class);
+                    startActivity(intent);
+                }else{
+                    Intent intent = new Intent(view.getContext(), PaymentActivity.class);
+                    intent.putExtra("lPremium", true);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        mPgs.setVisibility(View.GONE);
 
         return view;
     }
@@ -144,18 +189,46 @@ public class MatchesFragment extends Fragment {
 
 
     //Count no of likes
-    /*private void getLikes() {
-        DatabaseReference matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections").child("yeps");
-        matchDb.addValueEventListener(new ValueEventListener() {
+    private void getLikes() {
+
+        DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users");
+
+        DatabaseReference connectionDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections");
+        connectionDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    countLikes = (int) dataSnapshot.getChildrenCount();
-                    // mLikes.setVisibility(View.VISIBLE);
-                    likes = Integer.toString(countLikes);
-                    mLikes.setText(likes);
 
-                }else mLikes.setVisibility(View.GONE);
+                   // countLikes = (int) dataSnapshot.child("yeps").getChildrenCount();
+                    countLikes=0;
+                     for(DataSnapshot yeps : dataSnapshot.child("yeps").getChildren()){
+                         if(!dataSnapshot.child("matches").hasChild(yeps.getKey()) && !dataSnapshot.child("rejected").hasChild(yeps.getKey())) {
+
+
+                            checkAccountStatus(yeps.getKey());
+
+                          //    countLikes++;
+
+
+                         }
+                     }
+
+                     /*if (countLikes!=0) {
+                         mllLikes.setVisibility(View.VISIBLE);
+                         mNoMatches.setVisibility(View.GONE);
+
+                     }else mllLikes.setVisibility(View.GONE);
+
+
+                     if(countLikes>99){
+                         countLikes=99;
+                         likes = Integer.toString(countLikes)+"+";
+                     }else likes = Integer.toString(countLikes);
+
+                    mLikes.setText(likes);*/
+
+                }else mllLikes.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -163,8 +236,48 @@ public class MatchesFragment extends Fragment {
 
             }
         });
-    }*/
+    }
 
+
+    private void checkAccountStatus(String userID){
+        DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users");
+        userDb.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //has to be the same condition as likes fragment
+                if(!dataSnapshot.exists()) { return; }
+                if(!dataSnapshot.child("name").exists()){return;}
+                if(!dataSnapshot.child("score").exists()){return;}
+                if(!dataSnapshot.child("profileImageUrl").exists()){return;}
+
+                countLikes++;
+
+                if (countLikes!=0) {
+                    mllLikes.setVisibility(View.VISIBLE);
+                    mNoMatches.setVisibility(View.GONE);
+
+                }else mllLikes.setVisibility(View.GONE);
+
+
+                if(countLikes>99){
+                    countLikes=99;
+                    likes = Integer.toString(countLikes)+"+";
+                }else likes = Integer.toString(countLikes);
+
+                mLikes.setText(likes);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
 
 
 
@@ -276,7 +389,7 @@ public class MatchesFragment extends Fragment {
                         //test
                         resultsMatches.remove(obj);
 
-                    if(resultsMatches.isEmpty())
+                    if(resultsMatches.isEmpty() && countLikes==0)
                         mNoMatches.setVisibility(View.VISIBLE);
 
                     if(!chatId.equals("")) {

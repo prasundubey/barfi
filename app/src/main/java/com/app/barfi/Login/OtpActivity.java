@@ -63,12 +63,15 @@ public class OtpActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                progressBar.setVisibility(View.VISIBLE);
+
                 String code = editText.getText().toString().trim();
 
                 if ((code.isEmpty() || code.length() < 6)){
 
                     editText.setError("Enter code...");
                     editText.requestFocus();
+                    progressBar.setVisibility(View.GONE);
                     return;
                 }
                 verifyCode(code);
@@ -101,6 +104,7 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     private void signInWithCredential(PhoneAuthCredential credential) {
+
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
@@ -109,7 +113,7 @@ public class OtpActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(OtpActivity.this, MainActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-
+                            progressBar.setVisibility(View.GONE);
                             startActivity(intent);
 
                         } else {
@@ -167,12 +171,17 @@ public class OtpActivity extends AppCompatActivity {
                 verifyCode(code);
 
             }*/
+
+
             signInWithCredential(phoneAuthCredential);
+            progressBar.setVisibility(View.VISIBLE);
+
         }
 
         @Override
         public void onVerificationFailed(FirebaseException e) {
             Toast.makeText(OtpActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
+            progressBar.setVisibility(View.GONE);
 
         }
     };

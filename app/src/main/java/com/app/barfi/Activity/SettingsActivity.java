@@ -17,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +38,7 @@ import com.ramotion.fluidslider.FluidSlider;
 import com.app.barfi.Objects.UserObject;
 import com.app.barfi.Login.AuthenticationActivity;
 import com.app.barfi.R;
+import com.skyfishjy.library.RippleBackground;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,6 +75,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     UserObject mUser = new UserObject();
 
+    private LinearLayout mPgs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,9 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
+        mPgs = findViewById(R.id.pgsLL);
+        mPgs.setVisibility(View.VISIBLE);
 
 
         mRadioGroup = findViewById(R.id.radioRealButtonGroup);
@@ -212,6 +221,9 @@ public class SettingsActivity extends AppCompatActivity {
                         mRadioGroup.setPosition(3, false);
                         break;
                 }
+
+                mPgs.setVisibility(View.GONE);
+
             }
 
             @Override
@@ -280,12 +292,23 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 final FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+                //mUserDatabase.removeValue();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(SettingsActivity.this, AuthenticationActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK |
+                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 mUserDatabase.removeValue();
-                currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+               // currentUser.delete();
+                finish();
+
+
+                /*currentUser.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG,"OK! Works fine!");
+                            mUserDatabase.removeValue();
                             Intent intent = new Intent(SettingsActivity.this, AuthenticationActivity.class);
                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK |
                                     Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -295,7 +318,7 @@ public class SettingsActivity extends AppCompatActivity {
                             Log.w(TAG,"Something is wrong!");
                         }
                     }
-                });
+                });*/
             }
         });
 

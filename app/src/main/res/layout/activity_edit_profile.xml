@@ -6,12 +6,35 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@color/colorDeadBackground">
+
+        <LinearLayout
+            android:id="@+id/pgsLL"
+            android:layout_width="match_parent"
+            android:layout_height="1000dp"
+            android:gravity="center"
+            android:elevation="2dp"
+            android:background="@color/white"
+            android:visibility="gone"
+            >
+            <ProgressBar
+                android:id="@+id/pBar"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:layout_gravity="center"
+                />
+
+        </LinearLayout>
+
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
@@ -41,13 +64,6 @@
             android:textColor="@color/colorAccent"/>
 
 
-        <ProgressBar
-            android:id="@+id/pBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:visibility="gone"/>
 
         <LinearLayout
             android:layout_below="@+id/ll0"
@@ -60,6 +76,9 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/profileImage"
                 android:padding="5dp"
@@ -68,7 +87,26 @@
                 android:layout_gravity="center"
                 android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
+                <TextView
+                    android:id="@+id/dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:gravity="center"
+                    android:text="*"
+                    android:textStyle="bold"
+                    android:textSize="20dp"
+                    android:textColor="@color/colorGrayDark7f"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignRight="@+id/profileImage"
+                    android:padding="3dp"
+                    android:background="@drawable/bg_circle_white_noborder"
+                    android:visibility="visible"
+                    />
+            </RelativeLayout>
 
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/image"
                 android:padding="5dp"
@@ -79,6 +117,22 @@
                 android:layout_gravity="center"
                 android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
+                <ImageView
+                    android:id="@+id/cross2"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_cancel"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignRight="@+id/image"
+                    android:padding="3dp"
+                    android:background="@drawable/bg_circle_white_noborder"
+                    android:visibility="gone"
+                    />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/image3"
@@ -88,11 +142,24 @@
                 android:layout_gravity="center"
                 android:background="@drawable/bg_circle_white_noborder"
                 android:src="@drawable/icons_add_image" />
+                <ImageView
+                    android:id="@+id/cross3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_cancel"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignRight="@+id/image3"
+                    android:padding="3dp"
+                    android:background="@drawable/bg_circle_white_noborder"
+                    android:visibility="gone"
+                    />
+            </RelativeLayout>
 
         </LinearLayout>
 
         <TextView
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="10dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:paddingLeft="10sp"
@@ -111,7 +178,7 @@
             android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:orientation="horizontal"
@@ -122,18 +189,21 @@
                 android:drawableTint="@color/colorPrimaryDark"
                 android:inputType="textCapWords"
                 android:layout_width="wrap_content"
-                android:padding="10dp"
+                android:paddingStart="10dp"
                 android:paddingEnd="30dp"
                 android:layout_height="wrap_content"
                 android:hint="Name"
                 android:drawablePadding="20dp"
                 android:textSize="16sp"
                 android:gravity="center|start"
+                android:layout_centerInParent="true"
+                android:layout_alignParentStart="true"
                 android:maxLength="22"
                 android:textColor="@color/colorGray"
                 android:textStyle="bold"
                 android:textColorHint="@android:color/darker_gray"
                 android:singleLine="true"/>
+
 
             <TextView
                 android:layout_toStartOf="@+id/switch1"
@@ -153,7 +223,21 @@
                 android:layout_marginStart="10dp"
                 />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/gender"
+                android:layout_below="@id/name"
+                android:paddingStart="10dp"
+                android:layout_marginTop="15dp"
+                android:text="Gender"
+                android:textSize="12sp"
+                android:textColor="@color/colorGrayDark7f"
+                android:singleLine="true"/>
+
         </RelativeLayout>
+
+
 
         <LinearLayout
             android:layout_below="@+id/ll0"
@@ -642,5 +726,7 @@
 
 
     </LinearLayout>
+
+    </RelativeLayout>
 </ScrollView>
 

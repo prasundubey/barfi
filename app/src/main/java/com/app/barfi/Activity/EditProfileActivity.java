@@ -30,12 +30,14 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
+import com.app.barfi.BuildConfig;
 import com.app.barfi.Login.AuthenticationActivity;
 import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
@@ -97,6 +99,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private Switch mSwitch;
     private TextView mFullName;
+    private TextView mGender;
 
     private TextView
             mStatus,
@@ -121,7 +124,7 @@ public class EditProfileActivity extends AppCompatActivity {
     UserObject mUser = new UserObject();
 
 
-    private ProgressBar pgsBar;
+    private LinearLayout mPgs;
 
     private ArrayAdapter <String> adapter;
 
@@ -132,6 +135,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private Uri resultUri1;
     private Uri resultUri2;
     private Uri resultUri3;
+
+
+    private ImageView mCross2,mCross3;
 
     //For adding more images see this: https://www.youtube.com/watch?v=BLffEJkREMQ
 
@@ -144,15 +150,11 @@ public class EditProfileActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        getUserInfo();
-
-        pgsBar = (ProgressBar) findViewById(R.id.pBar);
-
-
+        mPgs = findViewById(R.id.pgsLL);
+        mPgs.setVisibility(View.VISIBLE);
 
         mFullName = (TextView) findViewById(R.id.name);
+        mGender = (TextView) findViewById(R.id.gender);
 
         mSwitch = (Switch) findViewById(R.id.switch1);
 
@@ -162,8 +164,34 @@ public class EditProfileActivity extends AppCompatActivity {
         mImage = findViewById(R.id.image);
         mImage3 = findViewById(R.id.image3);
 
+        mCross2 = findViewById(R.id.cross2);
+        mCross3 = findViewById(R.id.cross3);
 
+        mAuth = FirebaseAuth.getInstance();
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        getUserInfo();
 
+        mCross2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImage.setImageResource(R.drawable.icons_add_image);
+                mUserDatabase.child("imageUrl").removeValue();
+                resultUri2=null;
+                mCross2.setVisibility(View.GONE);
+
+            }
+        });
+
+        mCross3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImage3.setImageResource(R.drawable.icons_add_image);
+                mUserDatabase.child("imageUrl3").removeValue();
+                resultUri3=null;
+                mCross3.setVisibility(View.GONE);
+
+            }
+        });
 
 
         mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -582,6 +610,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     mFullName.setText(mUser.getFullName());
                 }
 
+                mGender.setText(mUser.getUserSex());
 
                 mAbout.setText(mUser.getAbout());
                 mTown.setText(mUser.getTown());
@@ -610,16 +639,22 @@ public class EditProfileActivity extends AppCompatActivity {
                 if(!mUser.getProfileImageUrl().equals("default"))
                     Glide.with(getApplicationContext()).load(mUser.getProfileImageUrl()).apply(RequestOptions.circleCropTransform()).thumbnail(0.1f).into(mProfileImage);
 
-                if(!mUser.getImageUrl().equals("default"))
+                if(!mUser.getImageUrl().equals("default")) {
                     Glide.with(getApplicationContext()).load(mUser.getImageUrl()).apply(RequestOptions.circleCropTransform()).thumbnail(0.1f).into(mImage);
-
-                if(!mUser.getImageUrl3().equals("default"))
+                    mCross2.setVisibility(View.VISIBLE);
+                }
+                if(!mUser.getImageUrl3().equals("default")) {
                     Glide.with(getApplicationContext()).load(mUser.getImageUrl3()).apply(RequestOptions.circleCropTransform()).thumbnail(0.1f).into(mImage3);
+                    mCross3.setVisibility(View.VISIBLE);
+                }
+
 
                 if(mUser.getUserSex().equals("Male"))
                     mRadioGroup.setPosition(0, false);
                 else
                     mRadioGroup.setPosition(1, false);
+
+                mPgs.setVisibility(View.GONE);
             }
 
             @Override
@@ -733,6 +768,7 @@ public class EditProfileActivity extends AppCompatActivity {
         }
 
 
+
         final String town = mTown.getText().toString();
         final String jobTitle = mJobTitle.getText().toString();
         final String company = mCompany.getText().toString();
@@ -757,6 +793,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
         Map userInfo = new HashMap();
+
         userInfo.put("town", town);
         userInfo.put("jobTitle", jobTitle);
         userInfo.put("company", company);
@@ -925,6 +962,20 @@ public class EditProfileActivity extends AppCompatActivity {
                     detectText(image,position);
                 } else {
 
+                    switch (position) {
+                        case 1:
+                            resultUri1 = null;
+                            break;
+                        case 2:
+                            resultUri2 = null;
+                            mCross2.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            resultUri3 = null;
+                            mCross3.setVisibility(View.GONE);
+                            break;
+                    }
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(EditProfileActivity.this);
                     builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Please select another photo to continue. </font>"));
                     builder.setTitle( Html.fromHtml("<font color='#f76c7f'>Your face is not clearly visible in this photo!</font>"));
@@ -961,9 +1012,11 @@ public class EditProfileActivity extends AppCompatActivity {
                             break;
                         case 2:
                             Glide.with(getApplication()).load(resultUri2).apply(RequestOptions.circleCropTransform()).into(mImage);
+                            mCross2.setVisibility(View.VISIBLE);
                             break;
                         case 3:
                             Glide.with(getApplication()).load(resultUri3).apply(RequestOptions.circleCropTransform()).into(mImage3);
+                            mCross3.setVisibility(View.VISIBLE);
                             break;
                     }
 
@@ -1034,9 +1087,11 @@ public class EditProfileActivity extends AppCompatActivity {
                             break;
                         case 2:
                             resultUri2 = null;
+                            mCross2.setVisibility(View.GONE);
                             break;
                         case 3:
                             resultUri3 = null;
+                            mCross3.setVisibility(View.GONE);
                             break;
                     }
 

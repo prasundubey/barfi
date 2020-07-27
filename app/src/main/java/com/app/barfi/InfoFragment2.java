@@ -87,6 +87,7 @@ public class InfoFragment2 extends Fragment {
     //image3
     private Uri resultUri3;
 
+    private ImageView mCross2,mCross3;
 
     public InfoFragment2() {
     }
@@ -110,16 +111,38 @@ public class InfoFragment2 extends Fragment {
         mImage3 = view.findViewById(R.id.image3);
 
         pgsBar = view.findViewById(R.id.pBar);
-
-
-
         mNext2 = view.findViewById(R.id.next2);
+
+        mCross2 = view.findViewById(R.id.cross2);
+        mCross3 = view.findViewById(R.id.cross3);
 
 
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         getUserInfo();
+
+        mCross2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImage.setImageResource(R.drawable.icons_add_image);
+                mUserDatabase.child("imageUrl").removeValue();
+                resultUri2=null;
+                mCross2.setVisibility(View.GONE);
+
+            }
+        });
+
+        mCross3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mImage3.setImageResource(R.drawable.icons_add_image);
+                mUserDatabase.child("imageUrl3").removeValue();
+                resultUri3=null;
+                mCross3.setVisibility(View.GONE);
+
+            }
+        });
 
         //on profile image click allow user to choose another pic by calling the responding intentt
 
@@ -193,13 +216,16 @@ public class InfoFragment2 extends Fragment {
                 }
 
                 //Image1
-                if(!mUser.getImageUrl().equals("default"))
+                if(!mUser.getImageUrl().equals("default")) {
                     Glide.with(getActivity().getApplicationContext()).load(mUser.getImageUrl()).apply(RequestOptions.circleCropTransform()).into(mImage);
-
+                    mCross2.setVisibility(View.VISIBLE);
+                }
 
                 //Image3
-                if(!mUser.getImageUrl3().equals("default"))
+                if(!mUser.getImageUrl3().equals("default")) {
                     Glide.with(getActivity().getApplicationContext()).load(mUser.getImageUrl3()).apply(RequestOptions.circleCropTransform()).into(mImage3);
+                    mCross3.setVisibility(View.VISIBLE);
+                }
 
 
             }
@@ -397,6 +423,20 @@ public class InfoFragment2 extends Fragment {
                     detectText(image,position);
                 } else {
 
+                    switch (position) {
+                        case 1:
+                            resultUri1 = null;
+                            break;
+                        case 2:
+                            resultUri2 = null;
+                            mCross2.setVisibility(View.GONE);
+                            break;
+                        case 3:
+                            resultUri3 = null;
+                            mCross3.setVisibility(View.GONE);
+                            break;
+                    }
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setMessage( Html.fromHtml("<font color='#2d2d2d'>Please select another photo to continue. </font>"));
                     builder.setTitle( Html.fromHtml("<font color='#f76c7f'>Your face is not clearly visible in this photo!</font>"));
@@ -435,9 +475,11 @@ public class InfoFragment2 extends Fragment {
                             break;
                         case 2:
                             Glide.with(getActivity().getApplication()).load(resultUri2).apply(RequestOptions.circleCropTransform()).into(mImage);
+                            mCross2.setVisibility(View.VISIBLE);
                             break;
                         case 3:
                             Glide.with(getActivity().getApplication()).load(resultUri3).apply(RequestOptions.circleCropTransform()).into(mImage3);
+                            mCross3.setVisibility(View.VISIBLE);
                             break;
                     }
 
@@ -508,9 +550,11 @@ public class InfoFragment2 extends Fragment {
                             break;
                         case 2:
                             resultUri2 = null;
+                            mCross2.setVisibility(View.GONE);
                             break;
                         case 3:
                             resultUri3 = null;
+                            mCross3.setVisibility(View.GONE);
                             break;
                     }
 

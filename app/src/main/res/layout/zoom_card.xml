@@ -34,17 +34,22 @@
             android:background="@drawable/bg_box_white_noborder"
             android:contentDescription="@string/profile_image" />
 
+
+                
+                
+            
             <ImageView
                 android:id="@+id/back"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="480dp"
                 android:layout_marginEnd="20dp"
                 android:layout_alignEnd="@id/image"
                 android:elevation="2dp"
-                android:src="@drawable/ic_back_arrow"
-                android:padding="5dp"
+                android:src="@drawable/ic_back_arrow_green"
                 android:background="@drawable/bg_circle_white_noborder"
+                android:backgroundTint="@color/colorGreen"
+                android:padding="0dp"
                 />
 
             <LinearLayout
@@ -101,12 +106,16 @@
         </RelativeLayout>
 
 
+
+
+
        <!-- <View
             android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:background="@color/colorGrayLight"
             android:layout_marginBottom="10dp"/>-->
+
 
         <TextView
             android:layout_gravity="bottom"
@@ -115,16 +124,22 @@
             android:layout_marginStart="15dp"
             android:layout_marginEnd="15dp"
             android:text="@string/about"
-            android:textSize="16sp"
-            android:background="@drawable/bg_box_white_noborder"
-            android:padding="10dp"
+            android:textSize="18sp"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:background="@drawable/about_left"
+            android:backgroundTint="#f4f4f4"
+            android:paddingTop="15dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:paddingBottom="25dp"
             android:textColor="@color/colorGray"
-            android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
 
             />
+        
+        
 
 
 
@@ -162,6 +177,7 @@
                 android:paddingEnd="10dp"
                 android:text="Location"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:textSize="12sp" />
 
 
@@ -179,6 +195,7 @@
                 android:paddingEnd="10dp"
                 android:text="Home town"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:textSize="12sp" />
 
             <TextView
@@ -194,6 +211,7 @@
                 android:paddingEnd="10dp"
                 android:text="School/College"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:textSize="12sp" />
 
 
@@ -204,10 +222,11 @@
                 android:drawableStart="@drawable/ic_school"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="degree"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -218,10 +237,11 @@
                 android:drawableStart="@drawable/i_status"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="status"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -232,10 +252,11 @@
                 android:drawableStart="@drawable/i_religion"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="religion"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -246,10 +267,11 @@
                 android:drawableStart="@drawable/i_height"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="height"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -260,10 +282,11 @@
                 android:drawableStart="@drawable/i_zodiac"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="zodiac"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -274,10 +297,11 @@
                 android:drawableStart="@drawable/i_drinking"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="drinking"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -288,10 +312,11 @@
                 android:drawableStart="@drawable/i_smoking"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="smoking"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -302,10 +327,11 @@
                 android:drawableStart="@drawable/i_exercise"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="exercise"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -316,10 +342,11 @@
                 android:drawableStart="@drawable/i_pet"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="Pets"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -330,10 +357,11 @@
                 android:drawableStart="@drawable/i_kids"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="kids"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -344,10 +372,11 @@
                 android:drawableStart="@drawable/i_diet"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="diet"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -358,10 +387,11 @@
                 android:drawableStart="@drawable/i_politics"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="politics"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -372,10 +402,11 @@
                 android:drawableStart="@drawable/i_reading"
                 android:drawableTint="@color/colorPrimary"
                 android:drawablePadding="10dp"
-                android:text="@string/degree"
+                android:text="reading"
                 android:textSize="12sp"
                 android:padding="10sp"
                 android:textColor="@color/colorGray"
+                android:fontFamily="@font/roboto_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
@@ -397,6 +428,7 @@
             android:id="@+id/image1"
             android:adjustViewBounds="true"
             android:contentDescription="@string/profile_image" />
+
         <ImageView
             android:src="@mipmap/ic_user_default"
             android:layout_width="match_parent"
@@ -447,27 +479,57 @@
             android:orientation="horizontal"
             android:fitsSystemWindows="false"
             android:layout_below="@+id/linearLayout"
-            android:layout_marginTop="30dp"
+
             >
 
             <Button
                 android:background="@drawable/bg_button_grad"
-                android:layout_marginEnd="30dp"
-                android:layout_marginStart="30dp"
+                android:layout_margin="30dp"
                 android:id="@+id/edit_profile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp"
                 android:layout_weight="1"
                 android:padding="5dp"
                 android:text="Edit Profile"
                 android:fontFamily="@font/montserrat_semi_bold"
                 android:textColor="@android:color/white"
                 />
+
+
         </LinearLayout>
+
+       
+
+        <TextView
+            android:id="@+id/report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:text="Block &amp; Report"
+            android:textSize="16dp"
+            android:padding="10dp"
+            android:textColor="#feacb5"
+            android:layout_marginBottom="30dp"
+            />
+
+
+       <!-- <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/uid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="uid"
+                android:textSize="16dp"
+                android:padding="20dp"/>
+        </LinearLayout>-->
 
 
     </LinearLayout>
+
 
 
 

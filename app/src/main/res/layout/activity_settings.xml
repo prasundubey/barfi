@@ -6,11 +6,36 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
+
+
+
 <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorDeadBackground">
+
+    <LinearLayout
+        android:id="@+id/pgsLL"
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:elevation="2dp"
+        android:background="@color/white"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            />
+
+    </LinearLayout>
+
 
     <LinearLayout
         android:id="@+id/ll0"
@@ -290,7 +315,7 @@
             app:scaleMax="80"
             app:thumbNumber="2"
             app:range1="@drawable/multislider_track_mtrl_alpha"
-            app:stepsThumbsApart="5"
+            app:stepsThumbsApart="4"
             app:drawThumbsApart="true"
 
             />
@@ -365,7 +390,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="false"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:orientation="vertical"
         >
 
@@ -385,18 +410,22 @@
             />
 
         <TextView
+            android:layout_marginTop="10dp"
             android:padding="10dp"
             android:id="@+id/delete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Delete Account"
+            android:textColor="@color/colorGrayDark7f"
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginBottom="30dp"
-            android:visibility="gone"
+            android:visibility="visible"
             />
 
     </LinearLayout>
+
+
 </RelativeLayout>
 </ScrollView>
 

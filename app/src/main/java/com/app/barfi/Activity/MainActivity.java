@@ -6,6 +6,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.app.barfi.BuildConfig;
 import com.app.barfi.Objects.ScoreObject;
 
 import com.firebase.geofire.GeoFire;
@@ -13,6 +19,7 @@ import com.firebase.geofire.GeoLocation;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,8 +33,10 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,15 +52,18 @@ import com.onesignal.OneSignal;
 import com.skyfishjy.library.RippleBackground;
 import com.app.barfi.Fragments.CardFragment;
 import com.app.barfi.Fragments.MatchesFragment;
-import com.app.barfi.Fragments.OpenSettings;
+import com.app.barfi.Fragments.OpenLocationSettings;
 import com.app.barfi.Fragments.UserFragment;
 import com.app.barfi.NewUserDetails;
 import com.app.barfi.R;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
@@ -86,13 +98,24 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    public BillingClient billingClient;
+    public List skuList = new ArrayList();
+    public String sku = "inapp_premium_subs";
+    private Boolean everPaid = false;
 
 
+    private Integer updateCurrentDay = 0;
+
+    //check internet connectivity
+    private Integer i = 0;
+    private ImageView mOffline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //checkUserInformation();
 
@@ -104,26 +127,9 @@ public class MainActivity extends AppCompatActivity {
 
         chatBadge = findViewById(R.id.chatBadge);
 
-        /*
+        mOffline = findViewById(R.id.offline);
+        mOffline.setVisibility(View.GONE);
 
-        //for deep linking. TBD later
-
-        FacebookSdk.sdkInitialize(this);
-        Uri targetUrl =
-                AppLinks.getTargetUrlFromInboundIntent(this, getIntent());
-        if (targetUrl != null) {
-            Log.i("Activity", "App Link Target URL: " + targetUrl.toString());
-        } else {
-            AppLinkData.fetchDeferredAppLinkData(
-                    MainActivity.this,
-                    new AppLinkData.CompletionHandler() {
-                        @Override
-                        public void onDeferredAppLinkDataFetched(AppLinkData appLinkData) {
-                            //process applink data
-                        }
-                    });
-        }
-*/
 
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
@@ -151,35 +157,13 @@ public class MainActivity extends AppCompatActivity {
 
                 else {
 
-                    //save the notificationID to the database
-                    OneSignal.startInit(MainActivity.this).init();
-                    OneSignal.sendTag("User_ID", FirebaseAuth.getInstance().getCurrentUser().getUid());
-                    OneSignal.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
-                    OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
-                    OneSignal.idsAvailable((userId, registrationId) -> FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notificationKey").setValue(userId));
-
                     viewPager = findViewById(R.id.viewpager);
                     setupViewPager(viewPager);
 
                     tabLayout = findViewById(R.id.tabs);
                     tabLayout.setupWithViewPager(viewPager);
 
-
-                    Query matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("connections").child("matches").orderByChild("timestamp");
-                    matchDb.addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists())
-                                chatBadge.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
-
-
+                    updateCurrentDay=1;
 
                     //Listener responsible for changing the color of the elected fragment's icon
                     tabLayout.addOnTabSelectedListener(
@@ -190,8 +174,28 @@ public class MainActivity extends AppCompatActivity {
                                     int tabIconColor = ContextCompat.getColor(getApplicationContext(), R.color.colorGray);
                                     tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
 
+                                    //change status bar theme
+
+                                    if (tab == tabLayout.getTabAt(0)){
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            getWindow().setStatusBarColor(getResources().getColor(R.color.colorBgLightPinkCanvas, getApplication().getTheme()));
+                                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            getWindow().setStatusBarColor(getResources().getColor(R.color.colorBgLightPinkCanvas));
+                                        }
+                                    }
+
+                                    else {
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                            getWindow().setStatusBarColor(getResources().getColor(R.color.colorDeadBackground, getApplication().getTheme()));
+                                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                            getWindow().setStatusBarColor(getResources().getColor(R.color.colorDeadBackground));
+                                        }
+                                    }
+
+
                                     if (tab == tabLayout.getTabAt(2))
                                         chatBadge.setVisibility(View.GONE);
+
                                 }
 
                                 @Override
@@ -211,8 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
                     //Starts the custom view for each tab
                     for (int i = 0; i < tabLayout.getTabCount(); i++) {
                         TabLayout.Tab tab = tabLayout.getTabAt(i);
@@ -225,6 +227,8 @@ public class MainActivity extends AppCompatActivity {
                     getPermissions();
                     isLocationEnable();
 
+
+
                     rippleBackground.stopRippleAnimation();
                     imageView.setVisibility(View.GONE);
 
@@ -232,8 +236,50 @@ public class MainActivity extends AppCompatActivity {
                     ScoreObject mScore = new ScoreObject();
                     mScore.parseObject(dataSnapshot);
                     Integer score = mScore.getScore();
-
                     FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+
+
+
+                    //for chatBadge test
+                    Query matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("connections").child("matches").orderByChild("timestamp");
+                    matchDb.addValueEventListener(new ValueEventListener() {
+
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists())
+                                chatBadge.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                        }
+                    });
+
+                    //save the notificationID to the database
+                    OneSignal.startInit(MainActivity.this).init();
+                    OneSignal.sendTag("User_ID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    OneSignal.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
+                    OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
+                    OneSignal.idsAvailable((userId, registrationId) -> FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notificationKey").setValue(userId));
+
+
+                    //account status check and payment state checked
+                    if(dataSnapshot.child("status").hasChild("everPaid")){
+                        if(dataSnapshot.child("status").child("everPaid").getValue().toString().equals("yes")) {
+                            everPaid = true;
+                        }
+                    }
+                    setupBillingClient();
+
+
+
+                    //check update
+                    checkUpdate();
+
+                    mUserDatabase.child("vc").setValue(BuildConfig.VERSION_CODE);
+
+
+
 
                 }
 
@@ -334,6 +380,12 @@ public class MainActivity extends AppCompatActivity {
             gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
         } catch (Exception ex) {
         }
+
+
+
+        if(!isOnline())
+            Toast.makeText(MainActivity.this, "Slow or no internet connection! Please check your internet connectivity.", Toast.LENGTH_LONG).show();
+
 
 
         if (!gps_enabled) {
@@ -455,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your Location, app will not show cards because of this", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Location permission required", Toast.LENGTH_SHORT).show();
 
                 }
                 return;
@@ -464,19 +516,186 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request
 
-
         }
     }
 
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            // Toast.makeText(getContext(), "online", Toast.LENGTH_LONG).show();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          {
+            e.printStackTrace(); }
+        catch (InterruptedException e) {
+            e.printStackTrace(); }
 
+        Toast.makeText(MainActivity.this, "offline", Toast.LENGTH_LONG).show();
+        return false;
+    }
 
 
 
     private void goToOpenSettings() {
-        Intent intent = new Intent(MainActivity.this, OpenSettings.class);
+        Intent intent = new Intent(MainActivity.this, OpenLocationSettings.class);
         startActivity(intent);
         finish();
 
     }
+
+    private void setupBillingClient() {
+
+        // https://www.youtube.com/watch?v=hLYCrT4zzOY
+
+        billingClient = BillingClient.newBuilder(this).enablePendingPurchases().setListener(new PurchasesUpdatedListener() {
+            @Override
+            public void onPurchasesUpdated(@NonNull BillingResult billingResult, @Nullable List<Purchase> list) {
+            }
+        }).build();
+
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if(billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK){
+                    Purchase.PurchasesResult purchasesResult = billingClient.queryPurchases(BillingClient.SkuType.SUBS);
+                    if (purchasesResult.getPurchasesList() != null) {
+
+                        boolean isOwned = false;
+                        for (Purchase purchase : purchasesResult.getPurchasesList()) {
+                            String thisSku = purchase.getSku();
+                            if (thisSku.equals(sku)) {
+
+                                String orderID = purchase.getOrderId();
+                                String purchaseTime = String.valueOf(purchase.getPurchaseTime());
+
+                                Map userInfo = new HashMap();
+                                Map userInfo1 = new HashMap();
+                                userInfo.put("level", "premium");
+
+                                userInfo1.put("orderID", orderID);
+                                userInfo1.put("productID", purchase.getSku());
+                                userInfo1.put("purchaseState", purchase.getPurchaseState());
+                                userInfo1.put("purchaseTime", purchaseTime);
+                                userInfo1.put("autoRenewing", purchase.isAutoRenewing());
+                                userInfo1.put("acknowledged", purchase.isAcknowledged());
+
+
+
+                                mUserDatabase.child("status").updateChildren(userInfo);
+
+                                FirebaseDatabase.getInstance().getReference().child("Purchases").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(userInfo);
+                                FirebaseDatabase.getInstance().getReference().child("Purchases").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(orderID.replace(".","-")).updateChildren(userInfo1);
+
+
+                                isOwned = true;
+                            }
+
+                           /* if (thisSku.equals(sku) && !purchase.isAutoRenewing()) {
+
+                                Toast.makeText(MainActivity.this, "inactive & NOT auto renewing", Toast.LENGTH_LONG).show();
+                                mUserDatabase.child("status").child("purchase").child("autoRenewing").setValue(purchase.isAutoRenewing());
+
+                            }*/
+
+                        }
+
+                        if(!isOwned) {
+                            mUserDatabase.child("status").child("level").setValue("basic");
+                            if(everPaid)
+                            FirebaseDatabase.getInstance().getReference().child("Purchases").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("level").setValue("basic");
+                        }
+
+
+                    } else
+                        Toast.makeText(MainActivity.this, "*", Toast.LENGTH_LONG).show();
+
+
+                } else mUserDatabase.child("status").child("level").setValue("basic");
+
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+
+            }
+        });
+    }
+
+
+    private void checkUpdate (){
+        DatabaseReference versionDB  = FirebaseDatabase.getInstance().getReference().child("Version");
+        versionDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    int vc = Integer.parseInt(dataSnapshot.child("forceVC").getValue().toString());
+                    Boolean forceUpdate = (Boolean) dataSnapshot.child("forceUpdate").getValue();
+
+                    if(vc> BuildConfig.VERSION_CODE && forceUpdate){
+                        Intent intent = new Intent(MainActivity.this, ForceUpdateActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+
+        if(updateCurrentDay==1)
+        mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
+
+
+        ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+        boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+
+        if (!is3g && !isWifi) {
+            i=1;
+            mOffline.setVisibility(View.VISIBLE);
+            checkNetwork();
+        }
+
+
+    }
+    private void checkNetwork(){
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+                boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+
+
+
+                if (is3g || isWifi){
+                    mOffline.setVisibility(View.GONE);
+                    i = 0;
+                }
+
+                if(i==1)
+                    handler.postDelayed(this,3000);
+            }
+        },3000);
+
+
+    }
+
 
 }

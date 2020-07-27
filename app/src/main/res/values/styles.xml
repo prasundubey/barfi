@@ -15,9 +15,10 @@
         <item name="colorAccent">@color/colorAccent</item>
 
 
-        <item name="android:statusBarColor">@color/colorDeadBackground</item>
+        <item name="android:statusBarColor">@color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
 
+      <!--  <item name="android:navigationBarColor">@color/transparent</item>-->
 
 
         <item name="multiSliderStyle">@style/Widget.MultiSlider</item>

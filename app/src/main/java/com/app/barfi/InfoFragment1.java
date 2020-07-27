@@ -221,6 +221,10 @@ public class InfoFragment1 extends Fragment {
         final String accountType;
         int selectId = mRadioGroup.getPosition();
 
+
+        int versionCode = BuildConfig.VERSION_CODE;
+        String versionName = BuildConfig.VERSION_NAME;
+
         switch (selectId) {
 
             case 2:
@@ -285,10 +289,13 @@ public class InfoFragment1 extends Fragment {
         FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("status").updateChildren(userInfo2);
 
 
+
         mAuth = FirebaseAuth.getInstance();
         mUserId = mAuth.getCurrentUser().getUid();
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("age").setValue(age);
+
+        FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("vc").setValue(versionCode);
 
 
     }

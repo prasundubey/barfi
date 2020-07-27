@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -24,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -52,12 +54,21 @@ import com.app.barfi.R;
 import com.app.barfi.Utils.SendNotification;
 import com.app.barfi.Activity.ZoomCardActivity;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import static android.content.Context.CONNECTIVITY_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -91,14 +102,18 @@ public class CardFragment  extends Fragment {
 
     private LinearLayout pgsBar;
     private TextView mNoPeople;
+    private TextView mNotOnline;
 
 
     List<UserObject> rowItems;
 
 
-    private Integer swipesLimit;
-    private Integer swipes;
+    private Integer mLimit = 22,fLimit = 50, premiumLimit = 1000, swipesLimit = 10;
+    private Integer swipes,totalSwipes=0;
 
+    private Integer i = 0;
+
+    private Integer currentDay = 1,swipeDay = 1;
 
     View view;
 
@@ -121,6 +136,7 @@ public class CardFragment  extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_card, container, false);
 
+
         usersDb = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         if(mAuth.getCurrentUser()==null)
@@ -134,88 +150,55 @@ public class CardFragment  extends Fragment {
         mNoPeople = (TextView) view.findViewById(R.id.noPeople);
         mNoPeople.setVisibility(View.GONE);
 
-        //loading bar
+        mNotOnline = (TextView) view.findViewById(R.id.notOnline);
+        mNotOnline.setVisibility(View.GONE);
+
+
         pgsBar = (LinearLayout) view.findViewById(R.id.pBar);
         pgsBar.setVisibility(View.VISIBLE);
 
-        //testing button
-        /*Button mTest = (Button) view.findViewById(R.id.popup);
-        mTest.setOnClickListener(new View.OnClickListener() {
+
+        //check internet on 5 sec intervals
+
+       /* Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
+                if(!isOnline()){
+                    rowItems.clear();
+                    cardAdapter.notifyDataSetChanged();
+                    mNoPeople.setVisibility(View.GONE);
+                    mNotOnline.setVisibility(View.VISIBLE);
+                    i=1;
+                }else if (i==1){
+                   // mNoPeople.setVisibility(View.VISIBLE);
+                    fetchUserSearchParams();
+                    mNotOnline.setVisibility(View.GONE);
+                    i = 0;
+                }
 
-                Intent intent = new Intent(view.getContext(), WebViewActivity.class);
-                startActivity(intent);
-
+                handler.postDelayed(this,8000);
             }
-        });*/
+        },8000);
+
+*/
 
 
-        int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-        usersDb.child(currentUId).child("status").child("currentDay").setValue(currentDay);
+
 
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
 
-        mUserDatabase.child("status").child("level").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.getValue().toString().equals("premium")) {
-                    swipesLimit = 1000;
-                    swipes=swipesLimit;
-                    usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
-
-                } else {
-                    swipesLimit = 20;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        mUserDatabase.child("status").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                if(!dataSnapshot.hasChild("swipeDate")){
-                    swipes=swipesLimit;
-                    usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
-                    usersDb.child(currentUId).child("status").child("swipeDate").setValue(currentDay);
-                }
-
-                else if(Integer.parseInt(dataSnapshot.child("swipeDate").getValue().toString())!= currentDay){
-                    swipes=swipesLimit;
-                    usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
-                    usersDb.child(currentUId).child("status").child("swipeDate").setValue(currentDay);
-                    updateScore();
-                }
-
-                else {
-                    if (dataSnapshot.child("swipes").getValue() != null)
-                        swipes = Integer.parseInt(dataSnapshot.child("swipes").getValue().toString());
-                }
-
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-
+        initSwipes();
 
         fetchUserSearchParams();
 
         rowItems = new ArrayList<>();
-
         cardAdapter = new CardAdapter(getContext(), R.layout.item_card, rowItems );
         flingContainer = view.findViewById(R.id.frame);
         flingContainer.setAdapter(cardAdapter);
 
-        //Handling swipe of cards
 
+        //Handling swipe of cards
 
             flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
                 @Override
@@ -226,16 +209,32 @@ public class CardFragment  extends Fragment {
                         rowItems.remove(0);
                         cardAdapter.notifyDataSetChanged();
                         swipes--;
+                        totalSwipes++;
+                        usersDb.child(currentUId).child("status").child("totalSwipes").setValue(totalSwipes);
                         usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
+
+
+                        if(cardAdapter.isEmpty())
+                        {
+                            mNoPeople.setVisibility(View.VISIBLE);
+                            fetchUserSearchParams();
+
+                        } else mNoPeople.setVisibility(View.GONE);
+
+
+
                     } else {
                         Log.d("LIST", "object not removed!");
                         cardAdapter.notifyDataSetChanged();
+
                         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
-                        usersDb.child(currentUId).child("status").child("currentDay").setValue(currentDay);
+                        mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
+
                         Toast.makeText(getContext(), "Daily swipe limit reached", Toast.LENGTH_LONG).show();
-                        // ShowSwipeOver(getView());
+
 
                         Intent intent = new Intent(view.getContext(), PaymentActivity.class);
+                        intent.putExtra("lPremium", false);
                         startActivity(intent);
 
 
@@ -310,7 +309,6 @@ public class CardFragment  extends Fragment {
 
                 @Override
                 public void onAdapterAboutToEmpty(int itemsInAdapter) {
-
                 }
 
                 @Override
@@ -326,11 +324,9 @@ public class CardFragment  extends Fragment {
             Intent i = new Intent(getContext(), ZoomCardActivity.class);
             i.putExtra("UserObject", UserObject);
             i.putExtra("ShowFab", true);
+            i.putExtra("CardFrag",true);
             startActivity(i);
         });
-
-
-
 
 
 
@@ -353,6 +349,121 @@ public class CardFragment  extends Fragment {
         return view;
     }
 
+    private void getSwipeLimit(){
+         /*DatabaseReference mSwipeLimit = FirebaseDatabase.getInstance().getReference().child("Params");
+        mSwipeLimit.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()){
+                    mLimit = Integer.parseInt(dataSnapshot.child("mLimit").getValue().toString());
+                    fLimit = Integer.parseInt(dataSnapshot.child("fLimit").getValue().toString());
+                    premiumLimit = Integer.parseInt(dataSnapshot.child("premiumLimit").getValue().toString());
+
+                    Toast.makeText(getContext(), "Limit params", Toast.LENGTH_LONG).show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });*/
+
+        mUserDatabase.child("status").child("level").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists()) {
+
+                    if (dataSnapshot.getValue().toString().equals("premium")) {
+                        swipesLimit = premiumLimit;
+                        swipes = swipesLimit;
+                        mUserDatabase.child("status").child("swipes").setValue(swipes);
+
+                    } else {
+                        if (userInterest.equals("Female"))  //limit for male in general
+                            swipesLimit = mLimit;
+                        else swipesLimit = fLimit;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void initSwipes() {
+
+        getSwipeLimit();
+
+        //check if swipeDate is there. if not add it.
+        mUserDatabase.child("status").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    if (!dataSnapshot.child("swipeClock").hasChild("swipeDay")) {
+                        currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+                        swipes = swipesLimit;
+                        swipeDay = currentDay;
+                        mUserDatabase.child("status").child("swipes").setValue(swipes);
+                        mUserDatabase.child("status").child("swipeClock").child("swipeDay").setValue(swipeDay);
+                        mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
+
+                    } else {
+
+                        if (dataSnapshot.child("swipes").getValue() != null)
+                            swipes = Integer.parseInt(dataSnapshot.child("swipes").getValue().toString());
+                        if (dataSnapshot.hasChild("totalSwipes"))
+                            totalSwipes = Integer.parseInt(dataSnapshot.child("totalSwipes").getValue().toString());
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        checkCurrentDay();
+
+    }
+    private void checkCurrentDay(){
+
+        mUserDatabase.child("status").child("swipeClock").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if(dataSnapshot.child("currentDay").exists() && dataSnapshot.child("swipeDay").exists()) {
+
+                   getSwipeLimit();
+
+                   currentDay = Integer.parseInt(dataSnapshot.child("currentDay").getValue().toString());
+                   swipeDay = Integer.parseInt(dataSnapshot.child("swipeDay").getValue().toString());
+
+                    if (!currentDay.equals(swipeDay)) {
+
+                        swipes = swipesLimit;
+                        swipeDay = currentDay;
+                        mUserDatabase.child("status").child("swipes").setValue(swipes);
+                        mUserDatabase.child("status").child("swipeClock").child("swipeDay").setValue(swipeDay);
+                        updateScore();
+                    }
+
+
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+    }
 
     GeoQuery geoQuery;
     /**
@@ -385,7 +496,7 @@ public class CardFragment  extends Fragment {
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                getUsersInfo(key);
+                    getUsersInfo(key);
             }
             @Override
             public void onKeyExited(String key) {
@@ -457,7 +568,6 @@ public class CardFragment  extends Fragment {
                 if (dataSnapshot.exists()){
 
 
-
                     if (dataSnapshot.child("interest").getValue() != null)
                         userInterest = dataSnapshot.child("interest").getValue().toString();
                     if (dataSnapshot.child("search_distance").getValue() != null)
@@ -470,13 +580,21 @@ public class CardFragment  extends Fragment {
                     if (dataSnapshot.child("ageMin").getValue() != null)
                         ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
 
+                    rowItems.clear();
+                    cardAdapter.notifyDataSetChanged();
+
+                    mNoPeople.setVisibility(View.GONE);
+                    pgsBar.setVisibility(View.VISIBLE);
+
                     // the line below throwing error
-                  //  ((MainActivity)getActivity()).isLocationEnable();
+                  // ((MainActivity)getActivity()).isLocationEnable();
                     ((MainActivity) Objects.requireNonNull(getActivity())).isLocationEnable();
 
 
-                    rowItems.clear();
-                    cardAdapter.notifyDataSetChanged();
+
+
+
+
 
 
                 }
@@ -499,18 +617,24 @@ public class CardFragment  extends Fragment {
         for(UserObject mCard : rowItems){
             if(mCard.getUserId().equals(userId)){return;}
         }
-        pgsBar.setVisibility(View.GONE);
-        mNoPeople.setVisibility(View.VISIBLE);
 
 
         usersDb.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //load only certain no of cards
+                if(rowItems.size()>18){
+                    return;
+                }
+
                 if(!dataSnapshot.exists()) { return; }
 
+                if(dataSnapshot.hasChild("xx")){return;}
                 if(!dataSnapshot.child("name").exists()){return;}
                 if(!dataSnapshot.child("score").exists()){return;}
                 if(!dataSnapshot.child("profileImageUrl").exists()){return;}
+
 
                 for(UserObject mCard : rowItems){
                     if(mCard.getUserId().equals(dataSnapshot.getKey())){return;}
@@ -536,9 +660,7 @@ public class CardFragment  extends Fragment {
 
 
                 rowItems.add(mUser);
-                //cardAdapter.notifyDataSetChanged();
 
-                //test
 
                 Collections.sort(rowItems, Collections.reverseOrder(new Comparator<UserObject>() {
                     @Override
@@ -550,6 +672,8 @@ public class CardFragment  extends Fragment {
 
                 cardAdapter.notifyDataSetChanged();
 
+               // Toast.makeText(getContext(), "count "+rowItems.size(), Toast.LENGTH_LONG).show();
+
 
 
             }
@@ -558,6 +682,21 @@ public class CardFragment  extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+        if(cardAdapter.isEmpty())
+        {
+            new Handler().postDelayed(new Runnable() {
+
+                @Override
+                public void run() {
+                    pgsBar.setVisibility(View.GONE);
+                    mNoPeople.setVisibility(View.VISIBLE);
+                }
+            }, 5000);
+
+
+        } else pgsBar.setVisibility(View.GONE);
+
     }
 
     private void ShowPopup(View v) {
@@ -657,6 +796,73 @@ public class CardFragment  extends Fragment {
 
     }
 
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          {
+            e.printStackTrace(); }
+        catch (InterruptedException e) {
+            e.printStackTrace(); }
+
+        Toast.makeText(getContext(), "offline", Toast.LENGTH_LONG).show();
+        return false;
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        //For 3G check
+        boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+        //For WiFi Check
+        boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+
+        if (!is3g && !isWifi) {
+            rowItems.clear();
+            cardAdapter.notifyDataSetChanged();
+            mNoPeople.setVisibility(View.GONE);
+            mNotOnline.setVisibility(View.VISIBLE);
+            i=1;
+
+
+            checkNetwork();
+        }
+
+
+
+    }
+
+    private void checkNetwork(){
+        Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+                ConnectivityManager manager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
+                boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
+
+
+                if (is3g || isWifi){
+                    fetchUserSearchParams();
+                    mNotOnline.setVisibility(View.GONE);
+                    i = 0;
+                }
+
+                if(i==1)
+                handler.postDelayed(this,3000);
+            }
+        },3000);
+
+
+    }
 
 
 }

@@ -48,7 +48,7 @@
         android:fontFamily="@font/montserrat"
         android:paddingEnd="40dp"
         android:paddingStart="20dp"
-        android:text="You are required to add atleast one photo of yourself in the first section before you proceed!"
+        android:text="You are required (*) to add atleast one photo of yourself in the first section before you proceed!"
         android:textColor="@color/colorGrayDark7f"
         android:textSize="12sp"
         android:textStyle="normal" />
@@ -66,6 +66,9 @@
         android:weightSum="3">
 
 
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
         <ImageView
             android:id="@+id/profileImage"
             android:padding="5dp"
@@ -74,27 +77,75 @@
             android:layout_gravity="center"
             android:background="@drawable/bg_circle_white_noborder"
             android:src="@drawable/icons_add_image" />
+            <TextView
+                android:id="@+id/dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="*"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:textColor="@color/colorGrayDark7f"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/profileImage"
+                android:padding="3dp"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:visibility="visible"
+                />
+        </RelativeLayout>
 
 
-        <ImageView
-            android:id="@+id/image"
-            android:padding="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_circle_white_noborder"
-            android:src="@drawable/icons_add_image" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/image"
+                android:padding="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:src="@drawable/icons_add_image" />
 
-        <ImageView
-            android:id="@+id/image3"
-            android:padding="5dp"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_circle_white_noborder"
-            android:src="@drawable/icons_add_image" />
+            <ImageView
+                android:id="@+id/cross2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_cancel"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/image"
+                android:padding="3dp"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/image3"
+                android:padding="5dp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:src="@drawable/icons_add_image" />
+
+            <ImageView
+                android:id="@+id/cross3"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_cancel"
+                android:layout_alignParentBottom="true"
+                android:layout_alignRight="@+id/image3"
+                android:padding="3dp"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:visibility="gone"
+                />
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -114,7 +165,7 @@
         android:layout_below="@id/ll1"
         android:id="@+id/select"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10sp"
+        android:layout_marginTop="15sp"
         android:paddingLeft="10sp"
         android:paddingRight="10dp"
         android:textSize="10dp"

@@ -1,8 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: io.apptik.widget:multislider:1.3@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3aa7be9135b91dab8cc82199def8c1ce/jetified-multislider-1.3/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3aa7be9135b91dab8cc82199def8c1ce/jetified-multislider-1.3/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85668d1643d04d3c050bb1e5e9b2552a/jetified-multislider-1.3/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85668d1643d04d3c050bb1e5e9b2552a/jetified-multislider-1.3/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/85668d1643d04d3c050bb1e5e9b2552a/jetified-multislider-1.3/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.apptik.widget/multislider/1.3/b8ee2a0c8f4d4fb85cdc1c648cfa7737d19cf4a9/multislider-1.3-javadoc.jar!/" />

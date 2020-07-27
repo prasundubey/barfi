@@ -60,7 +60,10 @@
         <Spinner
             android:id="@+id/spinnerCountries"
             android:layout_width="140dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+
+            />
 
         <EditText
             android:id="@+id/editTextPhone"

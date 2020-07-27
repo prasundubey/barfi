@@ -198,7 +198,7 @@
             <ImageView
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_send"
-                android:tint="@color/colorTitleDark"
+                android:tint="@color/com_facebook_messenger_blue"
                 android:layout_weight="0.15"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

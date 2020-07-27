@@ -27,7 +27,7 @@
     <string name="add_phone">Add Phone</string>
     <string name="phone">Phone</string>
     <string name="add_about">Add About</string>
-    <string name="about">About me you want to know. Yes about me. random text random text random text random text  </string>
+    <string name="about">About me? \nHi! I am Barfi. I was created to help you find your life partner. You can delete me once my purpose is fulfilled. Have a good day and please switch on the internet to enjoy me. </string>
     <string name="add_name">Add Name</string>
     <string name="name">Name</string>
     <string name="interested_in">Interested In</string>
@@ -78,6 +78,7 @@
 
     <string name="facebook_app_id">586361782277092</string>
     <string name="fake_photos"><u>Note:</u> Account with inappropriate or fake photos will be strictly reported/deleted.</string>
-    <string name="enter_profile_details_1">Fill in the below details about yourself.\n<u>Note:</u> These details cannot be changed once your profile has been created.</string>
+    <string name="enter_profile_details_1"><u>Note:</u> Your phone number, email &amp; DOB is kept private and will be visible to you only. These details cannot be changed once your profile has been created.</string>
+    <string name="offline"><b>You\'re offline!</b>\n\nPlease check your internet connectivity.</string>
 
 </resources>

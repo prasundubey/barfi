@@ -11,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.PaymentActivity" android:theme="@style/Theme.AppCompat.Dialog.Alert"></activity>
+        <activity android:name=".Activity.ForceUpdateActivity"></activity>
+        <activity
+            android:name=".Activity.PaymentActivity"
+            android:theme="@style/Theme.AppCompat.Dialog.Alert" />
         <activity android:name=".Activity.VerifyAccount" />
         <activity android:name=".Activity.WebViewActivity" />
         <!--
@@ -31,7 +34,7 @@
         <activity android:name=".NewUserDetails" />
         <activity android:name=".Login.OtpActivity" />
         <activity android:name=".Login.RegisterActivityOtp" />
-        <activity android:name=".Fragments.OpenSettings" />
+        <activity android:name=".Fragments.OpenLocationSettings" />
         <activity android:name=".Fragments.MainActivity" />
         <activity android:name=".Activity.Birthday" />
         <activity
@@ -39,6 +42,7 @@
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -54,42 +58,34 @@
         <activity android:name=".Activity.ZoomCardActivity" />
         <activity android:name=".Activity.SettingsActivity" />
         <activity android:name=".Activity.ZoomCardUser" />
+        <activity android:name=".LikesContainerActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr,face" />
-        <!--<meta-data
-            android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="face" />-->
-
-
     </application>
-
     <uses-feature
         android:name="android.hardware.camera.any"
-        android:required="true" />
+        android:required="true" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+        android:required="false" />
+
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-
     <uses-permission android:name="com.android.vending.BILLING" />
-
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
-
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>
