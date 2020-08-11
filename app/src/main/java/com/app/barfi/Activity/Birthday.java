@@ -3,10 +3,13 @@ package com.app.barfi.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,12 +22,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.app.barfi.R;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Birthday extends AppCompatActivity {
 
     private static final String TAG = "Birthday";
     private TextView mDisplayDate;
-    private DatePickerDialog.OnDateSetListener mDateSetListener;
     private FirebaseAuth mAuth;
     private String mUserId;
     private DatabaseReference mUserDatabase;
@@ -32,32 +36,50 @@ public class Birthday extends AppCompatActivity {
     public String mAge;
 
 
+    private TextView mBirthday;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
+    private Integer birthYear, birthDay;
+    private int age;
+
+    private Button mConfirm;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_birthday);
-        mDisplayDate = (TextView) findViewById(R.id.tvDate);
 
-        mDisplayDate.setOnClickListener(new View.OnClickListener() {
+        mBirthday = (TextView) findViewById(R.id.birthday);
+        mConfirm = (Button) findViewById(R.id.confirm);
+
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        mBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar cal = Calendar.getInstance();
+                Calendar twenty1 = (Calendar) cal.clone();
+                twenty1.add(Calendar.YEAR, -21);
+
+
+
                 int year = cal.get(Calendar.YEAR);
                 int month = cal.get(Calendar.MONTH);
                 int day = cal.get(Calendar.DAY_OF_MONTH);
 
-                DatePickerDialog dialog = new DatePickerDialog(
-                        Birthday.this,
+
+                DatePickerDialog dialog = new DatePickerDialog(Birthday.this,
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         mDateSetListener,
-                        year,month,day);
+                        year, month, day);
+
+                dialog.getDatePicker().setMaxDate(twenty1.getTimeInMillis());
+
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
 
-
             }
         });
-
 
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
@@ -65,37 +87,38 @@ public class Birthday extends AppCompatActivity {
                 month = month + 1;
                 Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
 
-                String date = month + "/" + day + "/" + year;
-                mDisplayDate.setText(date);
+                String date = day + "/" + month  + "/" + year;
+                mBirthday.setText(date);
 
                 Calendar dob = Calendar.getInstance();
                 Calendar today = Calendar.getInstance();
 
                 dob.set(year, month, day);
 
-                int age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+                birthYear = dob.get(Calendar.YEAR);
+                birthDay = dob.get(Calendar.DAY_OF_YEAR);
 
-                if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)){
+                age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
+
+                if (today.get(Calendar.DAY_OF_YEAR) < dob.get(Calendar.DAY_OF_YEAR)) {
                     age--;
                 }
 
-                mAge = Integer.toString(age);
+                mConfirm.setEnabled(true);
 
-                mAuth = FirebaseAuth.getInstance();
-                mUserId = mAuth.getCurrentUser().getUid();
-
-                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("age").setValue(age);;
-                //FirebaseDatabase.getInstance().getReference().child("Users").child(mUserId).child("age").setValue(age);
 
             }
+
         };
 
-        Button mConfirm = (Button) findViewById(R.id.confirm);
+
+
 
         mConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Birthday.this, EditProfileActivity.class);
+                saveInfo();
+                Intent intent = new Intent(Birthday.this, MainActivity.class);
                 startActivity(intent);
                 finish();
                // return;
@@ -103,4 +126,15 @@ public class Birthday extends AppCompatActivity {
         });
 
     }
+
+
+    private void saveInfo(){
+        Map userBday = new HashMap();
+        userBday.put("year", birthYear);
+        userBday.put("day", birthDay );
+        mUserDatabase.child("dob").updateChildren(userBday);
+        mUserDatabase.child("age").setValue(age);
+    }
+
+
 }

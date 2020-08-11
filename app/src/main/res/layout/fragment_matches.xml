@@ -39,7 +39,7 @@
          android:background="@color/colorDeadBackground">
 
         <TextView
-            android:paddingTop="30sp"
+            android:paddingTop="20sp"
             android:paddingLeft="20sp"
             android:paddingBottom="10sp"
             android:layout_width="wrap_content"
@@ -117,7 +117,7 @@
         <View
             android:layout_marginTop="0dp"
             android:layout_width="match_parent"
-            android:layout_height="10px"
+            android:layout_height="1dp"
             android:background="@color/colorDeadBackground"
             android:layout_marginBottom="10dp"/>
 

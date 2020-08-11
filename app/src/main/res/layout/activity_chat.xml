@@ -7,6 +7,31 @@
     android:background="@color/white"
     >
 
+    <RelativeLayout
+        android:id="@+id/rlCanvas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_barfi_chat_canvas_mid_whitesh"
+        >
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/bg_barfi_chat_canvas_mid_whitesh"/>
+    </RelativeLayout>
+    <ProgressBar
+        android:id="@+id/pgsBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/sendLayout"
+        android:layout_margin="30dp"
+        android:layout_centerHorizontal="true"
+        style="?android:attr/progressBarStyleSmallTitle"
+        android:visibility="gone"
+        />
+
+
     <LinearLayout
         android:id="@+id/firstMove"
         android:layout_width="match_parent"
@@ -50,13 +75,16 @@
     </LinearLayout>
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cvHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="10sp">
+        android:elevation="10sp"
+        android:background="@color/white">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?android:attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:background="@color/white"
             android:elevation="10sp">
             <ImageView
                 android:layout_gravity="center_vertical"
@@ -75,17 +103,35 @@
                 android:id="@+id/image"
                 android:src="@mipmap/ic_user_default"
                 android:layout_gravity="center"/>
-            <TextView
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:textColor="@color/colorBlack"
+
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:text=""
-                android:id="@+id/name"
-                android:gravity="center"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center|start"
+                android:layout_marginStart="3dp">
+                <TextView
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text=""
+                    android:id="@+id/name"
+                    android:gravity="center|start"/>
+                <TextView
+                    android:textStyle="normal"
+                    android:textSize="12sp"
+                    android:textColor="@color/colorGrayDark7f"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="typing..."
+                    android:id="@+id/typing"
+                    android:gravity="center|start"
+                    android:visibility="gone"/>
+            </LinearLayout>
         </LinearLayout>
+
 
         <TextView
             android:padding="1sp"
@@ -95,38 +141,96 @@
             android:layout_height="match_parent"
             android:text="Remove\nConnection"
             android:id="@+id/unMatch"
-            android:textSize="10dp"
+            android:textSize="10sp"
+            android:elevation="10sp"
             android:src="@mipmap/ic_user_default"
             android:layout_gravity="end"/>
     </androidx.cardview.widget.CardView>
 
 
-        <LinearLayout
-            android:id="@+id/llChat"
-            android:layout_alignParentTop="true"
+
+    <LinearLayout
+        android:id="@+id/llChat"
+        android:layout_marginTop="?android:attr/actionBarSize"
+        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_above="@+id/sendLayout"
+        android:fitsSystemWindows="true"
+        android:focusableInTouchMode="true"
+        android:focusable="true">
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvNotification"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_above="@+id/sendLayout"
-            android:fitsSystemWindows="true"
-            android:focusableInTouchMode="true"
-            android:focusable="true">
+            android:elevation="1sp"
+            android:background="@color/colorDeadBackground">
 
-
-
-
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_marginTop="?android:attr/actionBarSize"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/recyclerView"
-                android:scrollbars="vertical"
-                android:paddingBottom="5dp"
-                >
-            </androidx.recyclerview.widget.RecyclerView>
+                android:orientation="vertical"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:background="@color/colorDeadBackground">
 
-        </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginEnd="60dp"
+                    android:gravity="center"
+                    android:text="Turn on notifications so you know right away when you get new messages or connections."
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorGrayDark7f"/>
+
+                <Button
+                    android:id="@+id/enable"
+                    android:background="@drawable/bg_button_grad"
+                    android:backgroundTint="@color/colorGreen"
+                    android:layout_margin="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:text="Enable Notifications"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/montserrat_semi_bold"
+                    android:textColor="@android:color/white"
+                    />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/close"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:src="@drawable/i_cross"
+                android:layout_gravity="end|top"
+                android:paddingTop="10dp"
+                android:paddingEnd="10dp"
+                android:tint="@color/colorGrayMid"
+                />
+
+
+        </androidx.cardview.widget.CardView>
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recyclerView"
+            android:scrollbars="vertical"
+            android:paddingBottom="5dp"
+            >
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 
 
     <View
@@ -158,26 +262,9 @@
             android:paddingLeft="20sp"
             android:paddingBottom="20dp"
             android:fitsSystemWindows="true"
-
-
             android:background="@color/colorDeadBackground"
             >
 
-            <!--<com.timpra.barfi.MyEditText
-                android:background="@drawable/bg_box_edit_border"
-                android:padding="10dp"
-                android:layout_weight="0.85"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingStart="10dp"
-                android:hint="Type a message..."
-                android:textSize="14dp"
-                android:id="@+id/message"
-                android:maxLength="500"
-                android:inputType="textCapSentences|textMultiLine"
-                android:maxLines="7"
-                android:layout_marginRight="5sp"/>-->
 
             <EditText
                 android:background="@drawable/bg_box_edit_border"

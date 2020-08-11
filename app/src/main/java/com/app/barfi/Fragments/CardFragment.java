@@ -1,12 +1,17 @@
 package com.app.barfi.Fragments;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 
@@ -23,7 +28,11 @@ import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
+import io.nlopez.smartlocation.SmartLocation;
+import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
 
 import android.os.Handler;
 import android.os.Vibrator;
@@ -44,6 +53,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 import com.app.barfi.Activity.ChatActivity;
@@ -108,12 +118,18 @@ public class CardFragment  extends Fragment {
     List<UserObject> rowItems;
 
 
-    private Integer mLimit = 22,fLimit = 50, premiumLimit = 1000, swipesLimit = 10;
+    private Integer mLimit = 20,fLimit = 50, premiumLimit = 1000, swipesLimit = 10;
     private Integer swipes,totalSwipes=0;
 
     private Integer i = 0;
 
     private Integer currentDay = 1,swipeDay = 1;
+
+    private Location fLastKnownLocation;
+
+    private ProgressBar swipePgs;
+
+    private Integer counter=0;
 
     View view;
 
@@ -157,32 +173,9 @@ public class CardFragment  extends Fragment {
         pgsBar = (LinearLayout) view.findViewById(R.id.pBar);
         pgsBar.setVisibility(View.VISIBLE);
 
-
-        //check internet on 5 sec intervals
-
-       /* Handler handler=new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(!isOnline()){
-                    rowItems.clear();
-                    cardAdapter.notifyDataSetChanged();
-                    mNoPeople.setVisibility(View.GONE);
-                    mNotOnline.setVisibility(View.VISIBLE);
-                    i=1;
-                }else if (i==1){
-                   // mNoPeople.setVisibility(View.VISIBLE);
-                    fetchUserSearchParams();
-                    mNotOnline.setVisibility(View.GONE);
-                    i = 0;
-                }
-
-                handler.postDelayed(this,8000);
-            }
-        },8000);
-
-*/
-
+        swipePgs = view.findViewById(R.id.swipesPgs);
+        swipePgs.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
+        swipePgs.setVisibility(View.GONE);
 
 
 
@@ -214,10 +207,30 @@ public class CardFragment  extends Fragment {
                         usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
 
 
+                        if(rowItems.size()<5)
+                            getCloseUsers(fLastKnownLocation);
+
+                        //testing
+                        if(swipes<5) {
+                            swipePgs.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.MULTIPLY);
+                        }
+                        else
+                            swipePgs.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
+                        swipePgs.setProgress((swipes*100)/swipesLimit);
+                        swipePgs.setVisibility(View.VISIBLE);
+
                         if(cardAdapter.isEmpty())
                         {
-                            mNoPeople.setVisibility(View.VISIBLE);
-                            fetchUserSearchParams();
+                            mNoPeople.setVisibility(View.GONE);
+                            pgsBar.setVisibility(View.VISIBLE);
+
+                            if(fLastKnownLocation!=null)
+                            getCloseUsers(fLastKnownLocation);
+                            else {
+                                mNoPeople.setVisibility(View.VISIBLE);
+                                pgsBar.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Location error! Please re-open Barfi.", Toast.LENGTH_LONG).show();
+                            }
 
                         } else mNoPeople.setVisibility(View.GONE);
 
@@ -349,6 +362,8 @@ public class CardFragment  extends Fragment {
         return view;
     }
 
+
+
     private void getSwipeLimit(){
          /*DatabaseReference mSwipeLimit = FirebaseDatabase.getInstance().getReference().child("Params");
         mSwipeLimit.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -474,43 +489,50 @@ public class CardFragment  extends Fragment {
      * @param lastKnowLocation - user last know location
      */
     public void getCloseUsers(Location lastKnowLocation){
-        rowItems.clear();
+
+        // rowItems.clear();
+        if(lastKnowLocation!=null)
+            fLastKnownLocation = lastKnowLocation;
+
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
-
         GeoFire geoFire = new GeoFire(ref);
-
-        if(geoQuery!=null)
+        if (geoQuery != null)
             geoQuery.removeAllListeners();
-     //  geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), 100);
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(fLastKnownLocation.getLatitude(), fLastKnownLocation.getLongitude()), searchDistance);
 
-        if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
-            geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), searchDistance);
-        else
-            geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), searchDistance);
+        //for testing & nudging
+           /* if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
+                geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), searchDistance);
+            else
+                geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), searchDistance);
 
-
-        //for testing
-      //  geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), 100);
-
+*/
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                    getUsersInfo(key);
+                //load only certain no of cards
+                getUsersInfo(key);
+
             }
+
             @Override
             public void onKeyExited(String key) {
             }
+
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
             }
+
             @Override
             public void onGeoQueryReady() {
             }
+
             @Override
             public void onGeoQueryError(DatabaseError error) {
             }
         });
+
     }
 
     /**
@@ -523,12 +545,18 @@ public class CardFragment  extends Fragment {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-                    // Toast.makeText(getContext(), "New Connection", Toast.LENGTH_LONG).show();
 
                     String key = FirebaseDatabase.getInstance().getReference().child("Chat").push().getKey();
 
                     usersDb.child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUId).child("ChatId").setValue(key);
                     usersDb.child(currentUId).child("connections").child("matches").child(dataSnapshot.getKey()).child("ChatId").setValue(key);
+
+
+                    //add match time stamp to the matches DB
+                    usersDb.child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUId).child("matchTimestamp").setValue(ServerValue.TIMESTAMP);
+                    usersDb.child(currentUId).child("connections").child("matches").child(dataSnapshot.getKey()).child("matchTimestamp").setValue(ServerValue.TIMESTAMP);
+
+
 
                     SendNotification sendNotification = new SendNotification();
                     sendNotification.SendNotification("Check it out!", "New Barfi Connection!", dataSnapshot.getKey());
@@ -568,6 +596,8 @@ public class CardFragment  extends Fragment {
                 if (dataSnapshot.exists()){
 
 
+                  //  ((MainActivity)getActivity()).getLastKnownLocation();
+
                     if (dataSnapshot.child("interest").getValue() != null)
                         userInterest = dataSnapshot.child("interest").getValue().toString();
                     if (dataSnapshot.child("search_distance").getValue() != null)
@@ -580,21 +610,12 @@ public class CardFragment  extends Fragment {
                     if (dataSnapshot.child("ageMin").getValue() != null)
                         ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
 
-                    rowItems.clear();
-                    cardAdapter.notifyDataSetChanged();
-
-                    mNoPeople.setVisibility(View.GONE);
-                    pgsBar.setVisibility(View.VISIBLE);
-
-                    // the line below throwing error
-                  // ((MainActivity)getActivity()).isLocationEnable();
-                    ((MainActivity) Objects.requireNonNull(getActivity())).isLocationEnable();
-
-
-
-
-
-
+                    if(rowItems!=null) {
+                        rowItems.clear();
+                        cardAdapter.notifyDataSetChanged();
+                        mNoPeople.setVisibility(View.GONE);
+                        pgsBar.setVisibility(View.VISIBLE);
+                    }
 
 
                 }
@@ -623,14 +644,14 @@ public class CardFragment  extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                //load only certain no of cards
-                if(rowItems.size()>18){
+                if(rowItems.size()>13){
                     return;
                 }
 
                 if(!dataSnapshot.exists()) { return; }
 
                 if(dataSnapshot.hasChild("xx")){return;}
+                if(dataSnapshot.hasChild("hide")){return;}
                 if(!dataSnapshot.child("name").exists()){return;}
                 if(!dataSnapshot.child("score").exists()){return;}
                 if(!dataSnapshot.child("profileImageUrl").exists()){return;}
@@ -648,7 +669,7 @@ public class CardFragment  extends Fragment {
                 Integer age = Integer.parseInt(mUser.getAge());
                 //user age range
 
-                if(mUser.getUserId().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){return;}
+                if(mUser.getUserId().equals(currentUId)){return;}
                 if(dataSnapshot.child("connections").child("nope").hasChild(currentUId)){return;}
                 if(dataSnapshot.child("connections").child("yeps").hasChild(currentUId)) {return;}
                 if(!mUser.getUserSex().equals(userInterest) && !userInterest.equals("All")){return;}
@@ -672,7 +693,7 @@ public class CardFragment  extends Fragment {
 
                 cardAdapter.notifyDataSetChanged();
 
-               // Toast.makeText(getContext(), "count "+rowItems.size(), Toast.LENGTH_LONG).show();
+             //   Toast.makeText(getContext(), "count "+rowItems.size(), Toast.LENGTH_LONG).show();
 
 
 
@@ -716,8 +737,6 @@ public class CardFragment  extends Fragment {
         mImage2 = (ImageView) myDialog.findViewById(R.id.image2);
 
         //Image of user
-        mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -785,7 +804,7 @@ public class CardFragment  extends Fragment {
                 ScoreObject mScore = new ScoreObject();
                 mScore.parseObject(dataSnapshot);
                 Integer score = mScore.getScore();
-                FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+                mUserDatabase.child("score").setValue(score);
             }
 
             @Override
@@ -851,8 +870,14 @@ public class CardFragment  extends Fragment {
 
 
                 if (is3g || isWifi){
-                    fetchUserSearchParams();
+                    if(fLastKnownLocation!=null)
+                        getCloseUsers(fLastKnownLocation);
+                    else  Toast.makeText(getContext(), "Location error! Please re-open Barfi.", Toast.LENGTH_LONG).show();
                     mNotOnline.setVisibility(View.GONE);
+
+                    mNoPeople.setVisibility(View.GONE);
+                    pgsBar.setVisibility(View.VISIBLE);
+
                     i = 0;
                 }
 

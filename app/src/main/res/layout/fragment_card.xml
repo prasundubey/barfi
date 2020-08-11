@@ -7,6 +7,17 @@
     android:orientation="vertical"
     android:background="@color/white"
     android:id="@+id/layout">
+    <ProgressBar
+        android:id="@+id/swipesPgs"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginStart="150dp"
+        android:layout_marginEnd="150dp"
+        android:visibility="gone"
+        />
 
 
     <LinearLayout

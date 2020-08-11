@@ -51,6 +51,9 @@ public class InfoFragment1 extends Fragment {
     private String mUserId;
     private int age;
 
+    private Integer birthYear, birthDay;
+
+
     View view;
 
     public InfoFragment1() {
@@ -121,6 +124,9 @@ public class InfoFragment1 extends Fragment {
                 Calendar today = Calendar.getInstance();
 
                 dob.set(year, month, day);
+
+                birthYear = dob.get(Calendar.YEAR);
+                birthDay = dob.get(Calendar.DAY_OF_YEAR);
 
                 age = today.get(Calendar.YEAR) - dob.get(Calendar.YEAR);
 
@@ -238,7 +244,6 @@ public class InfoFragment1 extends Fragment {
         }
 
 
-        String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Map userInfo = new HashMap();
 
         userInfo.put("phone", phonenumber);
@@ -248,9 +253,18 @@ public class InfoFragment1 extends Fragment {
         userInfo.put("sex", accountType);
         userInfo.put("email", email);
 
+        userInfo.put("age", age);
+        userInfo.put("vc", versionCode);
+
         userInfo.put("score", 1);
 
-        FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).updateChildren(userInfo);
+        mUserDatabase.updateChildren(userInfo);
+
+        Map userBday = new HashMap();
+        userBday.put("year", birthYear);
+        userBday.put("day", birthDay );
+        mUserDatabase.child("dob").updateChildren(userBday);
+
 
 
         // Filters
@@ -281,22 +295,22 @@ public class InfoFragment1 extends Fragment {
                 break;
         }
 
-        FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("filters").updateChildren(userInfo1);
+        mUserDatabase.child("filters").updateChildren(userInfo1);
 
         //add account level
         Map userInfo2 = new HashMap();
         userInfo2.put("level", "basic");
-        FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("status").updateChildren(userInfo2);
+        mUserDatabase.child("status").updateChildren(userInfo2);
 
 
 
-        mAuth = FirebaseAuth.getInstance();
+        /*mAuth = FirebaseAuth.getInstance();
         mUserId = mAuth.getCurrentUser().getUid();
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("age").setValue(age);
 
         FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("vc").setValue(versionCode);
-
+*/
 
     }
 

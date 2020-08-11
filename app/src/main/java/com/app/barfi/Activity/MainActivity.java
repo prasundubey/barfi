@@ -16,11 +16,15 @@ import com.app.barfi.Objects.ScoreObject;
 
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,6 +43,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import io.nlopez.smartlocation.SmartLocation;
 import io.nlopez.smartlocation.location.providers.LocationGooglePlayServicesProvider;
@@ -86,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ImageView chatBadge;
 
-    Location lastKnownLocation;
+    private Location lastKnownLocation ;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -95,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.ic_tab_card,
             R.drawable.ic_tab_chat
     };
-
 
 
     public BillingClient billingClient;
@@ -110,19 +115,33 @@ public class MainActivity extends AppCompatActivity {
     private Integer i = 0;
     private ImageView mOffline;
 
+
+    //admin premium access
+    private Boolean admin = false;
+
+    private TextView mLoading;
+    private String city="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-
-        //checkUserInformation();
-
-
-        final RippleBackground rippleBackground=(RippleBackground)findViewById(R.id.content);
-        ImageView imageView=(ImageView)findViewById(R.id.centerImage);
+        final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.content);
+        ImageView imageView = (ImageView) findViewById(R.id.centerImage);
         rippleBackground.startRippleAnimation();
+
+        mLoading = findViewById(R.id.loadingText);
+        mLoading.setVisibility(View.GONE);
+
+        Handler loadHandler = new Handler();
+        loadHandler.postDelayed(new Runnable() {
+            public void run() {
+                mLoading.setVisibility(View.VISIBLE);
+            }
+        }, 12000);
+
 
 
         chatBadge = findViewById(R.id.chatBadge);
@@ -132,38 +151,33 @@ public class MainActivity extends AppCompatActivity {
 
 
         mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserId = Objects.requireNonNull(mAuth.getCurrentUser()).getUid();
+
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mUserId);
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 //check if name is updated name
-                if (!dataSnapshot.hasChild("name") ||!dataSnapshot.hasChild("profileImageUrl") ) {
+                if (!dataSnapshot.hasChild("name") || !dataSnapshot.hasChild("profileImageUrl")) {
                     Intent intent = new Intent(MainActivity.this, NewUserDetails.class);
                     startActivity(intent);
                     //added later
                     finish();
 
-                }
-
-                //for testing
-
-                /*if (!dataSnapshot.hasChild("town") || dataSnapshot.child("town").getValue()==null) {
-                    Intent intent = new Intent(MainActivity.this, NewUserDetails.class);
-
-                    startActivity(intent);
-                }*/
-
-
-                else {
+                } else {
 
                     viewPager = findViewById(R.id.viewpager);
+
+                    // Added to not refresh fragments 0 and 2
+                    viewPager.setOffscreenPageLimit(2);
+
                     setupViewPager(viewPager);
 
                     tabLayout = findViewById(R.id.tabs);
                     tabLayout.setupWithViewPager(viewPager);
 
-                    updateCurrentDay=1;
+                    updateCurrentDay = 1;
 
                     //Listener responsible for changing the color of the elected fragment's icon
                     tabLayout.addOnTabSelectedListener(
@@ -176,15 +190,13 @@ public class MainActivity extends AppCompatActivity {
 
                                     //change status bar theme
 
-                                    if (tab == tabLayout.getTabAt(0)){
+                                    if (tab == tabLayout.getTabAt(0)) {
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                             getWindow().setStatusBarColor(getResources().getColor(R.color.colorBgLightPinkCanvas, getApplication().getTheme()));
                                         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                                             getWindow().setStatusBarColor(getResources().getColor(R.color.colorBgLightPinkCanvas));
                                         }
-                                    }
-
-                                    else {
+                                    } else {
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                             getWindow().setStatusBarColor(getResources().getColor(R.color.colorDeadBackground, getApplication().getTheme()));
                                         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -214,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
                     setupTabIcons();
 
 
-
                     //Starts the custom view for each tab
                     for (int i = 0; i < tabLayout.getTabCount(); i++) {
                         TabLayout.Tab tab = tabLayout.getTabAt(i);
@@ -224,61 +235,73 @@ public class MainActivity extends AppCompatActivity {
                     //Makes it so that the first fragment displayed is the CardFragment
                     viewPager.setCurrentItem(1, false);
 
+                    setupBillingClient();
+                    //check app update
+                    checkUpdate();
+
+
+
                     getPermissions();
                     isLocationEnable();
 
 
-
+                    mLoading.setVisibility(View.GONE);
+                    loadHandler.removeCallbacksAndMessages(null);
                     rippleBackground.stopRippleAnimation();
                     imageView.setVisibility(View.GONE);
+
 
 
                     ScoreObject mScore = new ScoreObject();
                     mScore.parseObject(dataSnapshot);
                     Integer score = mScore.getScore();
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
-
-
+                    mUserDatabase.child("score").setValue(score);
 
                     //for chatBadge test
-                    Query matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("connections").child("matches").orderByChild("timestamp");
-                    matchDb.addValueEventListener(new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            if(dataSnapshot.exists())
-                                chatBadge.setVisibility(View.VISIBLE);
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                        }
-                    });
+                    checkChatBadge();
 
                     //save the notificationID to the database
                     OneSignal.startInit(MainActivity.this).init();
-                    OneSignal.sendTag("User_ID", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    OneSignal.sendTag("User_ID", mUserId);
                     OneSignal.setEmail(FirebaseAuth.getInstance().getCurrentUser().getEmail());
                     OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
                     OneSignal.idsAvailable((userId, registrationId) -> FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("notificationKey").setValue(userId));
 
 
                     //account status check and payment state checked
-                    if(dataSnapshot.child("status").hasChild("everPaid")){
-                        if(dataSnapshot.child("status").child("everPaid").getValue().toString().equals("yes")) {
+                    if (dataSnapshot.child("status").hasChild("everPaid")) {
+                        if (dataSnapshot.child("status").child("everPaid").getValue().toString().equals("yes")) {
                             everPaid = true;
                         }
                     }
-                    setupBillingClient();
 
 
+                    // calculate age
+                    if(!dataSnapshot.hasChild("dob")){
+                        Intent intent = new Intent(MainActivity.this, Birthday.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Calendar today = Calendar.getInstance();
 
-                    //check update
-                    checkUpdate();
+                        int age = Integer.parseInt(dataSnapshot.child("age").getValue().toString());
+                        int bDay = Integer.parseInt(dataSnapshot.child("dob").child("day").getValue().toString());
+                        int bYear = Integer.parseInt(dataSnapshot.child("dob").child("year").getValue().toString());
 
+                        int tAge = today.get(Calendar.YEAR) - bYear;
+                        if (today.get(Calendar.DAY_OF_YEAR) < bDay){
+                            tAge--;
+                        }
+
+                        if(tAge!=age)
+                            mUserDatabase.child("age").setValue(tAge);
+                    }
+
+                    if(!dataSnapshot.child("vc").getValue().toString().equals(BuildConfig.VERSION_CODE))
                     mUserDatabase.child("vc").setValue(BuildConfig.VERSION_CODE);
 
-
+                    if (dataSnapshot.hasChild("admin"))
+                        admin = true;
 
 
                 }
@@ -295,8 +318,54 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void checkChatBadge(){
+        Query matchDb = mUserDatabase.child("connections").child("matches").orderByChild("chatted");
+        matchDb.addValueEventListener(new ValueEventListener() {
 
-    CardFragment cardFragment = new CardFragment();
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists())
+                    chatBadge.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+
+
+    /**
+     * if gps location is disabled then ask user to enable it with a dialog
+     */
+    public void isLocationEnable() {
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+            Toast.makeText(MainActivity.this, "Unable to fetch location", Toast.LENGTH_SHORT).show();
+        }
+
+        if (!gps_enabled) {
+            goToOpenSettings();
+        }
+        else {
+            if(lastKnownLocation!=null)
+                cardFragment.getCloseUsers(lastKnownLocation);
+            else
+                reCheckLastLocation = true;
+
+            getLocation();
+        }
+
+        if (!isOnline())
+            Toast.makeText(MainActivity.this, "Slow or no internet connection! Please check your internet connectivity.", Toast.LENGTH_LONG).show();
+
+    }
+
 
 
     /**
@@ -304,44 +373,38 @@ public class MainActivity extends AppCompatActivity {
      * if it is available and the app is able to find a valid location
      * then update the user location's database with the most updated location
      */
-    Boolean locationGotten = false;
+    CardFragment cardFragment = new CardFragment();
+    private Boolean reCheckLastLocation = false;
+
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
+
 
         LocationGooglePlayServicesProvider provider = new LocationGooglePlayServicesProvider();
         provider.setCheckLocationSettings(true);
         SmartLocation.with(this).location(provider).start(location -> {
-            if (location != null) {
+            if (location != null && location != lastKnownLocation) {
                 lastKnownLocation = location;
-                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
+                if(reCheckLastLocation){
+                    cardFragment.getCloseUsers(lastKnownLocation);
+                    reCheckLastLocation = false;
 
-                // Get city to DB
-
-                try {
-                    //initialise geocoder
-                    Geocoder geocoder = new Geocoder(MainActivity.this,
-                            Locale.getDefault());
-                    List <Address> addresses = geocoder.getFromLocation(location.getLatitude(),location.getLongitude(),1);
-
-                    mAuth = FirebaseAuth.getInstance();
-                    mUserId = mAuth.getCurrentUser().getUid();
-
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(mUserId).child("city").setValue(addresses.get(0).getLocality());
-
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
-
-
-
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
                 GeoFire geoFire = new GeoFire(ref);
 
+                geoFire.setLocation(mUserId, new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
+                    @Override
+                    public void onComplete(String key, DatabaseError error) {
+                    }
+                });
 
                 //forcing to take a manual location
-                if ((location.getLatitude()<30 && location.getLatitude()>10) && (location.getLongitude()<90 && location.getLongitude()>60)){
+                /*if ((location.getLatitude()<30 && location.getLatitude()>10) && (location.getLongitude()<90 && location.getLongitude()>60)){
 
                     geoFire.setLocation(FirebaseAuth.getInstance().getUid(), new GeoLocation(location.getLatitude(), location.getLongitude()), new GeoFire.CompletionListener() {
 
@@ -356,60 +419,40 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(String key, DatabaseError error) {
                         }
                     });
+                }*/
+
+
+                // Get city to DB || causing problem in one plus
+                try {
+                    List<Address> addresses =null;
+
+                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                    if(addresses!=null && addresses.get(0).getLocality()!=null && addresses.get(0).getLocality().length()>0)
+                    mUserDatabase.child("city").setValue(addresses.get(0).getLocality());
+
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
 
-                //if(!locationGotten)
-                cardFragment.getCloseUsers(location);
-                locationGotten = true;
+            }
+            else if (location != lastKnownLocation) {
 
+
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return; }
+                lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+
+                if (lastKnownLocation != null && reCheckLastLocation) {
+                    cardFragment.getCloseUsers(lastKnownLocation);
+                    reCheckLastLocation = false;
+                } else
+                    isLocationEnable();
             }
-            else{
-                isLocationEnable();
-            }
+
         });
     }
-
-    /**
-     * if gps location is disabled then ask user to enable it with a dialog
-     */
-    public void isLocationEnable() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-
-
-        if(!isOnline())
-            Toast.makeText(MainActivity.this, "Slow or no internet connection! Please check your internet connectivity.", Toast.LENGTH_LONG).show();
-
-
-
-        if (!gps_enabled) {
-            // notify user
-
-           /* AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), (paramDialogInterface, paramInt) -> {
-                // TODO Auto-generated method stub
-                Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(myIntent);
-                finish();
-                paramDialogInterface.dismiss();
-            });
-            dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> isLocationEnable());
-            dialog.show();*/
-
-            goToOpenSettings();
-
-        } else {
-            getLocation();
-        }
-    }
-
 
 
 
@@ -423,6 +466,30 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    isLocationEnable();
+
+                } else {
+
+                    //Enable setting manually
+                    goToOpenSettings();
+
+                    Toast.makeText(MainActivity.this, "Location permission required", Toast.LENGTH_SHORT).show();
+
+                }
+                return;
+            }
+
+        }
+    }
+
 
 
     /**
@@ -478,7 +545,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         //Uncomment to display titles
         @Override
         public CharSequence getPageTitle(int position) {
@@ -488,36 +554,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
 
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    isLocationEnable();
-
-                } else {
-
-                    //Enable setting manually
-                    goToOpenSettings();
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Location permission required", Toast.LENGTH_SHORT).show();
-
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-
-        }
-    }
 
     public boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
@@ -651,13 +688,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+
     @Override
     protected void onResume() {
         super.onResume();
+
+
         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
-        if(updateCurrentDay==1)
-        mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
+        if(updateCurrentDay==1) {
+            mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
+            isLocationEnable();
+        }
 
 
         ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -670,8 +713,18 @@ public class MainActivity extends AppCompatActivity {
             checkNetwork();
         }
 
+        //set the user to premium if admin
+        if(admin)
+            mUserDatabase.child("status").child("level").setValue("premium");
+
+
 
     }
+
+
+
+
+
     private void checkNetwork(){
         Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
@@ -681,7 +734,6 @@ public class MainActivity extends AppCompatActivity {
                 ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
                 boolean is3g = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).isConnectedOrConnecting();
                 boolean isWifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnectedOrConnecting();
-
 
 
                 if (is3g || isWifi){
@@ -696,6 +748,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
 
 
 }

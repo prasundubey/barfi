@@ -58,17 +58,48 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         holder.mMessage.setText(chatList.get(position).getMessage());
 
+
+
+        // make date visible for msgs
+        if(position!=0) {
+
+            if (!chatList.get(position).getDate().equals(chatList.get(position - 1).getDate())) {
+                holder.mDate.setText(chatList.get(position).getDate());
+                holder.mDate.setVisibility(View.VISIBLE);
+            } else
+                holder.mDate.setVisibility(View.GONE);
+        }else {
+            holder.mDate.setText(chatList.get(position).getDate());
+            holder.mDate.setVisibility(View.VISIBLE);
+
+        }
+
+
+
         if(chatList.get(position).getCurrentUser()){
             holder.mMessage.setTextColor(ContextCompat.getColor(context, R.color.colorBlack));
             holder.mLayout.setGravity(Gravity.END);
             holder.mLayout.setPadding(100,0,0,0);
+            holder.mDate.setPadding(0,15,100,0);
             holder.mContainer.setBackground(ContextCompat.getDrawable(context, R.drawable.message_right));
+
+            if(position==chatList.size()-1) {
+                holder.mDelivery.setVisibility(View.VISIBLE);
+                holder.mDelivery.setText(chatList.get(position).getDelivery());
+            } else holder.mDelivery.setVisibility(View.GONE);
+
         }else{
             holder.mMessage.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
             holder.mLayout.setGravity(Gravity.START);
             holder.mLayout.setPadding(0,0,100,0);
+            holder.mDate.setPadding(100,15,0,0);
             holder.mContainer.setBackground(ContextCompat.getDrawable(context, R.drawable.message_left));
+
+            holder.mDelivery.setVisibility(View.GONE);
+
         }
+
+
     }
 
 
@@ -80,6 +111,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     class MessageViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mMessage;
+        public TextView mDate, mDelivery;
         public LinearLayout mContainer, mLayout;
         public MessageViewHolders(View itemView) {
             super(itemView);
@@ -88,6 +120,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             mLayout = itemView.findViewById(R.id.layout);
             mMessage = itemView.findViewById(R.id.message);
             mContainer = itemView.findViewById(R.id.container);
+
+            mDate = itemView.findViewById(R.id.date);
+            mDelivery = itemView.findViewById(R.id.delivery);
         }
 
         @Override

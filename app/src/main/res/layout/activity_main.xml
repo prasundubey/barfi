@@ -40,7 +40,20 @@
             android:id="@+id/centerImage"
             android:src="@drawable/ic_barfies_white"
             />
+        <!--<TextView
+            android:id="@+id/loadingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="30dp"
+            android:elevation="20dp"
+            android:textSize="12sp"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/centerImage"
+            android:text="Loading Barfi is taking more time than usual. \nPlease check your internet connection or restart your app."/>
+-->
     </com.skyfishjy.library.RippleBackground>
+
 
 
 
@@ -119,6 +132,22 @@
             app:tabGravity="fill"
             android:background="@android:color/white"/>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/loadingText"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="15dp"
+        android:elevation="10dp"
+        android:textSize="12sp"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorGrayDark7f"
+        android:text="Loading Barfi is taking more time than usual. \nPlease check your internet connection or restart your app."
+        android:visibility="gone"
+        />
+
 
 
 

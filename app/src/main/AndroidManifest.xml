@@ -14,9 +14,9 @@
         <activity android:name=".Activity.ForceUpdateActivity"></activity>
         <activity
             android:name=".Activity.PaymentActivity"
-            android:theme="@style/Theme.AppCompat.Dialog.Alert" />
-        <activity android:name=".Activity.VerifyAccount" />
-        <activity android:name=".Activity.WebViewActivity" />
+            android:theme="@style/Theme.AppCompat.Dialog.Alert" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.VerifyAccount" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.WebViewActivity" android:screenOrientation="portrait"/>
         <!--
         <activity android:name=".SplashActivity">
             <intent-filter>
@@ -31,12 +31,11 @@
             android:windowSoftInputMode="adjustResize"> &lt;!&ndash;This goes in the specific activity with the button &ndash;&gt;
         </activity>
         -->
-        <activity android:name=".NewUserDetails" />
-        <activity android:name=".Login.OtpActivity" />
-        <activity android:name=".Login.RegisterActivityOtp" />
-        <activity android:name=".Fragments.OpenLocationSettings" />
-        <activity android:name=".Fragments.MainActivity" />
-        <activity android:name=".Activity.Birthday" />
+        <activity android:name=".NewUserDetails" android:screenOrientation="portrait"/>
+        <activity android:name=".Login.OtpActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Login.RegisterActivityOtp" android:screenOrientation="portrait"/>
+        <activity android:name=".Fragments.OpenLocationSettings" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.Birthday" android:screenOrientation="portrait"/>
         <activity
             android:name=".Login.LauncherActivity"
             android:theme="@style/AppTheme.Launcher">
@@ -45,20 +44,24 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".Login.AuthenticationActivity" />
-        <activity android:name=".Activity.EditProfileActivity" />
+        <activity android:name=".Login.AuthenticationActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.EditProfileActivity" android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.ChatActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize" android:screenOrientation="portrait"/>
         <activity
             android:name=".Activity.MainActivity"
             android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme" />
-        <activity android:name=".Activity.ZoomCardActivity" />
-        <activity android:name=".Activity.SettingsActivity" />
-        <activity android:name=".Activity.ZoomCardUser" />
-        <activity android:name=".LikesContainerActivity" />
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"/>
+
+        <activity android:name=".Activity.ZoomCardActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.SettingsActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".Activity.ZoomCardUser" android:screenOrientation="portrait"/>
+        <activity android:name=".LikesContainerActivity" android:screenOrientation="portrait" />
+
 
         <meta-data
             android:name="preloaded_fonts"
@@ -69,7 +72,10 @@
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ocr,face" />
+
+
     </application>
+
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="true" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->

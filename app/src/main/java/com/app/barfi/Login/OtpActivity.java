@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -33,7 +35,9 @@ import java.util.concurrent.TimeUnit;
 
 public class OtpActivity extends AppCompatActivity {
 
-    private String verificationid;
+    private static final String TAG = "PhoneOTPAuthActivity";
+
+    private String verificationId;
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
     private EditText editText;
@@ -43,11 +47,16 @@ public class OtpActivity extends AppCompatActivity {
 
     private PhoneAuthProvider.ForceResendingToken mResendToken;
 
+   // private static final String KEY_VERIFICATION_ID = "key_verification_id";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otp);
+
+       /* if (verificationId == null && savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }*/
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -74,7 +83,10 @@ public class OtpActivity extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     return;
                 }
+              //  Toast.makeText(OtpActivity.this, " Code sent " + code, Toast.LENGTH_SHORT).show();
                 verifyCode(code);
+
+
 
             }
         });
@@ -93,17 +105,18 @@ public class OtpActivity extends AppCompatActivity {
 
     private void verifyCode(String code){
 
-        //try {
-            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationid, code);
+        try {
+            PhoneAuthCredential credential = PhoneAuthProvider.getCredential(verificationId, code);
             signInWithCredential(credential);
-        /*}catch (Exception e){
-            Toast toast = Toast.makeText(getApplicationContext(), "Verification Code is wrong, try again", Toast.LENGTH_SHORT);
-            toast.setGravity(Gravity.CENTER,0,0);
-            toast.show();
-        }*/
+        //  Toast.makeText(OtpActivity.this, "vId " + verificationid, Toast.LENGTH_SHORT).show();
+        }catch (Exception e){
+            Toast.makeText(getApplicationContext(), "Verification Code is wrong, try again", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void signInWithCredential(PhoneAuthCredential credential) {
+
+      // Toast.makeText(OtpActivity.this, "sign in with cred", Toast.LENGTH_SHORT).show();
 
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -125,6 +138,9 @@ public class OtpActivity extends AppCompatActivity {
     }
 
     private void sendVerificationCode(String number){
+
+        //Toast.makeText(OtpActivity.this, "send verification " + number, Toast.LENGTH_SHORT).show();
+
 
         PhoneAuthProvider.getInstance().verifyPhoneNumber(
                 number,
@@ -157,9 +173,12 @@ public class OtpActivity extends AppCompatActivity {
         }*/
 
         @Override
+
         public void onCodeSent(String s, PhoneAuthProvider.ForceResendingToken forceResendingToken) {
             super.onCodeSent(s, forceResendingToken);
-            verificationid = s;
+         //   Toast.makeText(OtpActivity.this, "callbacks "+s + forceResendingToken, Toast.LENGTH_SHORT).show();
+
+            verificationId = s;
             mResendToken= forceResendingToken;
         }
 
@@ -181,6 +200,7 @@ public class OtpActivity extends AppCompatActivity {
         @Override
         public void onVerificationFailed(FirebaseException e) {
             Toast.makeText(OtpActivity.this, e.getMessage(),Toast.LENGTH_LONG).show();
+
             progressBar.setVisibility(View.GONE);
 
         }
@@ -198,6 +218,20 @@ public class OtpActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
+
+    // For caching problem
+
+    /*@Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_VERIFICATION_ID,verificationId);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        verificationId = savedInstanceState.getString(KEY_VERIFICATION_ID);
+    }*/
 
 
 }

@@ -1,6 +1,8 @@
 package com.app.barfi.Fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,8 @@ import com.app.barfi.Objects.UserObject;
 import com.app.barfi.R;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,8 +62,6 @@ public class MatchesFragment extends Fragment {
     private RecyclerView mMatch;
 
 
-
-
     private String currentUserID;
     private View view;
 
@@ -70,8 +72,9 @@ public class MatchesFragment extends Fragment {
     private TextView mLikes;
     private String likes;
     private int countLikes;
-    private Boolean premium;
+    private Boolean premium = false;
 
+    private DatabaseReference mUserDatabase;
 
     private Boolean showNoChats;
 
@@ -88,6 +91,7 @@ public class MatchesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
 
@@ -98,6 +102,7 @@ public class MatchesFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_matches, container, false);
 
         currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
 
         mNoMatches = view.findViewById(R.id.no_matches_layout);
         mNoChats = view.findViewById(R.id.no_chats_layout);
@@ -120,7 +125,8 @@ public class MatchesFragment extends Fragment {
         initNewMatches();
         getLikes();
 
-        DatabaseReference mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID);
+
+
         mUserDatabase.child("status").child("level").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -189,43 +195,29 @@ public class MatchesFragment extends Fragment {
 
 
     //Count no of likes
+    private Integer checkAccountCount=0;
     private void getLikes() {
 
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users");
 
-        DatabaseReference connectionDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections");
-        connectionDb.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        DatabaseReference connectionDb = mUserDatabase.child("connections");
+        connectionDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()){
-
-                   // countLikes = (int) dataSnapshot.child("yeps").getChildrenCount();
                     countLikes=0;
+                    checkAccountCount =0;
                      for(DataSnapshot yeps : dataSnapshot.child("yeps").getChildren()){
                          if(!dataSnapshot.child("matches").hasChild(yeps.getKey()) && !dataSnapshot.child("rejected").hasChild(yeps.getKey())) {
-
-
                             checkAccountStatus(yeps.getKey());
-
-                          //    countLikes++;
-
-
+                            checkAccountCount++;
+                            //countLikes++;
                          }
                      }
-
-                     /*if (countLikes!=0) {
-                         mllLikes.setVisibility(View.VISIBLE);
-                         mNoMatches.setVisibility(View.GONE);
-
-                     }else mllLikes.setVisibility(View.GONE);
-
-
-                     if(countLikes>99){
-                         countLikes=99;
-                         likes = Integer.toString(countLikes)+"+";
-                     }else likes = Integer.toString(countLikes);
-
-                    mLikes.setText(likes);*/
+                     if(checkAccountCount==0)
+                         mllLikes.setVisibility(View.GONE);
 
                 }else mllLikes.setVisibility(View.GONE);
 
@@ -280,12 +272,11 @@ public class MatchesFragment extends Fragment {
     }
 
 
-
     private void getUserMatchId() {
 
        // DatabaseReference matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections").child("matches");
 
-        Query matchDb = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUserID).child("connections").child("matches").orderByChild("timestamp");
+        Query matchDb = mUserDatabase.child("connections").child("matches").orderByChild("matchTimestamp");
         matchDb.addValueEventListener(new ValueEventListener() {
 
             @Override
@@ -293,8 +284,6 @@ public class MatchesFragment extends Fragment {
 
 
                 showNoChats = true;
-
-                resultsMatchesChat.clear();
 
                 resultsMatches.clear();
                 resultsChat.clear();
@@ -308,7 +297,7 @@ public class MatchesFragment extends Fragment {
                     mConversations.setVisibility(View.VISIBLE);
                     for(DataSnapshot match : dataSnapshot.getChildren()){
 
-                        if (match.hasChild("timestamp"))
+                        if (match.hasChild("chatted") || match.hasChild("timestamp"))
                             showNoChats=false;
 
                         FetchMatchInformation(match.getKey());
@@ -339,14 +328,13 @@ public class MatchesFragment extends Fragment {
         }
 
         //test
-        for(int i = 0; i < resultsMatchesChat.size(); i++){
-            if(resultsMatchesChat.get(i).getUser().getUserId().equals(key))
+        for(int i = 0; i < resultsChat.size(); i++){
+            if(resultsChat.get(i).getUser().getUserId().equals(key))
                 return;
         }
 
         DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("Users").child(key);
         userDb.addListenerForSingleValueEvent(new ValueEventListener() {
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -359,8 +347,8 @@ public class MatchesFragment extends Fragment {
                     mUser.parseObject(dataSnapshot);
 
 
-                    if(dataSnapshot.child("connections").child("matches").child(FirebaseAuth.getInstance().getUid()).child("ChatId").getValue()!=null)
-                        chatId = dataSnapshot.child("connections").child("matches").child(FirebaseAuth.getInstance().getUid()).child("ChatId").getValue().toString();
+                    if(dataSnapshot.child("connections").child("matches").child(currentUserID).child("ChatId").getValue()!=null)
+                        chatId = dataSnapshot.child("connections").child("matches").child(currentUserID).child("ChatId").getValue().toString();
 
 
                     for(int i = 0; i < resultsMatches.size(); i++){
@@ -369,33 +357,38 @@ public class MatchesFragment extends Fragment {
                     }
 
                     //test
-                    for(int i = 0; i < resultsMatchesChat.size(); i++){
-                        if(resultsMatchesChat.get(i).getUser().getUserId().equals(userId))
+                    for(int i = 0; i < resultsChat.size(); i++){
+                        if(resultsChat.get(i).getUser().getUserId().equals(userId))
                             return;
                     }
 
-                    MatchesObject obj = new MatchesObject(mUser, chatId, "", false);
+                    MatchesObject obj = new MatchesObject(mUser, chatId, "", false,"");
 
 
+                    if (dataSnapshot.child("connections").child("matches").child(currentUserID).hasChild("chatted") ||
+                            dataSnapshot.child("connections").child("matches").child(currentUserID).hasChild("timestamp")) {
+                        resultsChat.add(obj);
+                    }
+
+                    else
+                        resultsMatches.add(obj);
 
 
-                    //test
-                    resultsMatchesChat.add(obj);
-
-                    resultsMatches.add(obj);
                     mMatchesAdapter.notifyDataSetChanged();
 
-                    if (dataSnapshot.child("connections").child("matches").child(FirebaseAuth.getInstance().getUid()).hasChild("timestamp"))
-                        //test
-                        resultsMatches.remove(obj);
 
                     if(resultsMatches.isEmpty() && countLikes==0)
                         mNoMatches.setVisibility(View.VISIBLE);
+                    else mNoMatches.setVisibility(View.GONE);
 
                     if(!chatId.equals("")) {
                         FetchLastMessage(chatId);
 
                     }
+                }
+                else {
+                    mUserDatabase.child("connections").child("matches").child(key).removeValue();
+                    mUserDatabase.child("connections").child("yeps").child(key).removeValue();
                 }
             }
 
@@ -424,20 +417,20 @@ public class MatchesFragment extends Fragment {
                     mMessage.parseObject(dataSnapshot);
 
 
-
                     // mChatLayoutManager.scrollToPosition(resultsMatches.size() - 1);
+
+
                     mChat.postDelayed(() -> mChat.scrollToPosition(mChat.getAdapter().getItemCount() - 1), 1000);
 
-                    /*
 
-                    for(int i = 0; i < resultsMatches.size(); i++){
+                    /*for(int i = 0; i < resultsMatches.size(); i++){
                         if(resultsMatches.get(i).getChatId().equals(chatId)) {
 
                             resultsMatches.get(i).setLastMessage(mMessage.getMessage());
                             resultsMatches.get(i).setCreatedByCurrentUser(mMessage.getCurrentUser());
 
 
-                            *//*for(int j = 0; j < resultsChat.size(); j++){
+                            for(int j = 0; j < resultsChat.size(); j++){
                                 if(resultsChat.get(j).getChatId().equals(chatId)){
                                    // resultsChat.add(j, resultsMatches.get(i));
                                    resultsMatches.get(i).setLastMessage(mMessage.getMessage());
@@ -452,7 +445,7 @@ public class MatchesFragment extends Fragment {
 
                                     return;
                                 }
-                            }*//*
+                            }
 
                             resultsChat.add(resultsMatches.get(i));
                             mChatAdapter.notifyDataSetChanged();
@@ -461,20 +454,31 @@ public class MatchesFragment extends Fragment {
                         }
                     }
 */
-                    //test
-                    for(int i = 0; i < resultsMatchesChat.size(); i++){
-                        if(resultsMatchesChat.get(i).getChatId().equals(chatId)) {
 
-                            resultsMatchesChat.get(i).setLastMessage(mMessage.getMessage());
-                            resultsMatchesChat.get(i).setCreatedByCurrentUser(mMessage.getCurrentUser());
-                            resultsChat.add(resultsMatchesChat.get(i));
+
+
+                    //test
+                    for(int i = 0; i < resultsChat.size(); i++){
+                        if(resultsChat.get(i).getChatId().equals(chatId)) {
+
+                            resultsChat.get(i).setLastMessage(mMessage.getMessage());
+                            resultsChat.get(i).setCreatedByCurrentUser(mMessage.getCurrentUser());
+                            resultsChat.get(i).setTimestamp(mMessage.getTimestamp());
+
+                            Collections.sort(resultsChat, new Comparator<MatchesObject>() {
+                                @Override
+                                public int compare(MatchesObject lhs, MatchesObject rhs) {
+                                    return lhs.getTimestamp().compareTo(rhs.getTimestamp());
+                                }
+                            });
+
+
+
                             mChatAdapter.notifyDataSetChanged();
                             return;
 
                         }
                     }
-
-
 
 
 
@@ -490,6 +494,13 @@ public class MatchesFragment extends Fragment {
     }
 
 
+    /*@Override
+    public void onResume() {
+        super.onResume();
+        getLikes();
+
+    }*/
+
 
 
     private ArrayList<MatchesObject> resultsChat = new ArrayList<>();
@@ -502,11 +513,5 @@ public class MatchesFragment extends Fragment {
         return resultsMatches;
     }
 
-
-
-    private ArrayList<MatchesObject> resultsMatchesChat = new ArrayList<>();
-    private List<MatchesObject> getDataSetMatchesChat() {
-        return resultsMatchesChat;
-    }
 
 }

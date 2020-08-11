@@ -77,6 +77,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private LinearLayout mPgs;
 
+    private Integer searchDistance=100;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,15 +124,17 @@ public class SettingsActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     mSlider.setVisibility(View.GONE);
-                    Map userInfo1 = new HashMap();
+                    searchDistance = 2000;
+                    /*Map userInfo1 = new HashMap();
                     userInfo1.put("search_distance", 2000);
-                    mUserDatabase.child("filters").updateChildren(userInfo1);
+                    mUserDatabase.child("filters").updateChildren(userInfo1);*/
 
                 } else {
                     mSlider.setVisibility(View.VISIBLE);
-                    Map userInfo1 = new HashMap();
+                    searchDistance = 100;
+                    /*Map userInfo1 = new HashMap();
                     userInfo1.put("search_distance", 100);
-                    mUserDatabase.child("filters").updateChildren(userInfo1);
+                    mUserDatabase.child("filters").updateChildren(userInfo1);*/
                 }
             }
         });
@@ -263,6 +267,9 @@ public class SettingsActivity extends AppCompatActivity {
         userInfo.put("ageMax", ageMax);
         if (!mSwitch.isChecked())
         userInfo.put("search_distance", Math.round(mSlider.getPosition() * 100));
+        else userInfo.put("search_distance", searchDistance);
+
+
         mUserDatabase.child("filters").updateChildren(userInfo);
 
     }

@@ -162,7 +162,7 @@ public class ZoomCardActivity extends AppCompatActivity {
 
 
 
-        mBack.setOnClickListener(view -> { super.onBackPressed();});
+        mBack.setOnClickListener(view -> { finish();});
 
 
         FloatingActionButton fabLike = findViewById(R.id.fabLike);
@@ -203,6 +203,7 @@ public class ZoomCardActivity extends AppCompatActivity {
                     else LikesFragment.flingContainer.getTopCardListener().selectLeft();
 
                     ZoomCardActivity.super.onBackPressed();
+                    finish();
 
                 }
 
