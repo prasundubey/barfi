@@ -39,6 +39,7 @@ import android.widget.Toast;
 import com.addisonelliott.segmentedbutton.SegmentedButtonGroup;
 import com.app.barfi.BuildConfig;
 import com.app.barfi.Login.AuthenticationActivity;
+import com.app.barfi.Objects.CurrentUserObject;
 import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -170,6 +171,7 @@ public class EditProfileActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
         getUserInfo();
+
 
         mCross2.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -21,9 +21,10 @@
 
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
         android:layout_gravity="center">
 
         <LinearLayout
@@ -48,6 +49,29 @@
                 android:text="Fetching profiles.."
                 android:textColor="@color/colorGrayDark7f"/>
         </LinearLayout>
+
+        <com.skyfishjy.library.RippleBackground
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/pgsWaves"
+            app:rb_color="@color/colorPrimaryLight"
+            app:rb_radius="40dp"
+            app:rb_rippleAmount="4"
+            app:rb_duration="6000"
+            app:rb_type="fillRipple"
+            app:rb_scale="6">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:padding="5dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/dp"
+                android:src="@drawable/ic_barfies_white"
+                android:background="@drawable/bg_circle_secondary_grad"
+                android:backgroundTint="@color/colorPrimaryLight"
+                android:tooltipText="Fetching profiles near you.."
+                />
+        </com.skyfishjy.library.RippleBackground>
 
         <TextView
             android:id="@+id/noPeople"

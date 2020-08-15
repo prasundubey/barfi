@@ -12,8 +12,10 @@ import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.app.barfi.BuildConfig;
+import com.app.barfi.Objects.CurrentUserObject;
 import com.app.barfi.Objects.ScoreObject;
 
+import com.app.barfi.Objects.UserObject;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -172,6 +174,9 @@ public class MainActivity extends AppCompatActivity {
                     // Added to not refresh fragments 0 and 2
                     viewPager.setOffscreenPageLimit(2);
 
+                    //testing: for introducing a global object from where any activity can extract data
+                    ((CurrentUserObject) getApplication()).initialize(dataSnapshot);
+
                     setupViewPager(viewPager);
 
                     tabLayout = findViewById(R.id.tabs);
@@ -235,20 +240,20 @@ public class MainActivity extends AppCompatActivity {
                     //Makes it so that the first fragment displayed is the CardFragment
                     viewPager.setCurrentItem(1, false);
 
+                    getPermissions();
+                    isLocationEnable();
+
                     setupBillingClient();
                     //check app update
                     checkUpdate();
 
 
 
-                    getPermissions();
-                    isLocationEnable();
-
-
                     mLoading.setVisibility(View.GONE);
                     loadHandler.removeCallbacksAndMessages(null);
                     rippleBackground.stopRippleAnimation();
                     imageView.setVisibility(View.GONE);
+
 
 
 
@@ -297,11 +302,14 @@ public class MainActivity extends AppCompatActivity {
                             mUserDatabase.child("age").setValue(tAge);
                     }
 
-                    if(!dataSnapshot.child("vc").getValue().toString().equals(BuildConfig.VERSION_CODE))
+                   // if(!dataSnapshot.child("vc").getValue().toString().equals(BuildConfig.VERSION_CODE))
                     mUserDatabase.child("vc").setValue(BuildConfig.VERSION_CODE);
 
                     if (dataSnapshot.hasChild("admin"))
                         admin = true;
+
+
+
 
 
                 }
@@ -378,7 +386,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getLocation() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(MainActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
+           // Toast.makeText(MainActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
 

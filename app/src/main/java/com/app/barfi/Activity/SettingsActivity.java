@@ -78,6 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
     private LinearLayout mPgs;
 
     private Integer searchDistance=100;
+    private String mUserID;
 
 
     @Override
@@ -105,7 +106,8 @@ public class SettingsActivity extends AppCompatActivity {
         mDone = findViewById(R.id.done);
 
         mAuth = FirebaseAuth.getInstance();
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        mUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(mUserID);
 
 
         mSwitch = (Switch) findViewById(R.id.switch1);
@@ -302,10 +304,10 @@ public class SettingsActivity extends AppCompatActivity {
                 //mUserDatabase.removeValue();
                 FirebaseAuth.getInstance().signOut();
                 Intent intent = new Intent(SettingsActivity.this, AuthenticationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK |
-                        Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 mUserDatabase.removeValue();
+                FirebaseDatabase.getInstance().getReference().child("location").child(mUserID).removeValue();
                // currentUser.delete();
                 finish();
 

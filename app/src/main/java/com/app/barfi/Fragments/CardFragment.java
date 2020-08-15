@@ -18,6 +18,7 @@ import android.os.Bundle;
 import com.airbnb.lottie.LottieAnimationView;
 import com.app.barfi.Activity.PaymentActivity;
 import com.app.barfi.Activity.WebViewActivity;
+import com.app.barfi.Objects.CurrentUserObject;
 import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -63,6 +64,7 @@ import com.app.barfi.Activity.MainActivity;
 import com.app.barfi.R;
 import com.app.barfi.Utils.SendNotification;
 import com.app.barfi.Activity.ZoomCardActivity;
+import com.skyfishjy.library.RippleBackground;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -131,36 +133,45 @@ public class CardFragment  extends Fragment {
 
     private Integer counter=0;
 
+
+    private Integer dynamicRadius = 50;
+    private List<String> closeUsers;
+    private List<String> swipedUIDs;
+
+    private Integer rowLimit = 10;
+
+    private RippleBackground pgsWaves;
+    private ImageView profileImage;
+
+
     View view;
 
-    public CardFragment() {
-    }
+    public CardFragment() { }
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-    }
+    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_card, container, false);
 
-
         usersDb = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
-        if(mAuth.getCurrentUser()==null)
-            return view;
+        if(mAuth.getCurrentUser()==null) return view;
         currentUId = mAuth.getCurrentUser().getUid();
+        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(currentUId);
 
-        LottieAnimationView animationView1 = view.findViewById(R.id.animationView1);
-        LottieAnimationView animationView2 = view.findViewById(R.id.animationView2);
+
+        pgsWaves = (RippleBackground) view.findViewById(R.id.pgsWaves);
+        profileImage = view.findViewById(R.id.dp);
+        pgsWaves.startRippleAnimation();
+        pgsWaves.setVisibility(View.VISIBLE);
+        String profileImageUrl = ((CurrentUserObject) getActivity().getApplication()).getProfileImageUrl();
+        if(!profileImageUrl.equals("default"))
+            Glide.with(getApplicationContext()).load(profileImageUrl).apply(RequestOptions.circleCropTransform()).thumbnail(0.1f).into(profileImage);
 
 
         mNoPeople = (TextView) view.findViewById(R.id.noPeople);
@@ -171,29 +182,32 @@ public class CardFragment  extends Fragment {
 
 
         pgsBar = (LinearLayout) view.findViewById(R.id.pBar);
-        pgsBar.setVisibility(View.VISIBLE);
+        // pgsBar.setVisibility(View.VISIBLE);
 
         swipePgs = view.findViewById(R.id.swipesPgs);
         swipePgs.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
         swipePgs.setVisibility(View.GONE);
 
 
+        LottieAnimationView animationView1 = view.findViewById(R.id.animationView1);
+        LottieAnimationView animationView2 = view.findViewById(R.id.animationView2);
 
-        mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-
-        initSwipes();
-
-        fetchUserSearchParams();
+        myDialog = new Dialog(getActivity());
 
         rowItems = new ArrayList<>();
+
+        initSwipes();
+        fetchUserSearchParams();
+
+
         cardAdapter = new CardAdapter(getContext(), R.layout.item_card, rowItems );
         flingContainer = view.findViewById(R.id.frame);
         flingContainer.setAdapter(cardAdapter);
-
+        FloatingActionButton fabLike = view.findViewById(R.id.fabLike);
+        FloatingActionButton fabNope = view.findViewById(R.id.fabNope);
 
         //Handling swipe of cards
-
-            flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
+        flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
                 @Override
                 public void removeFirstObjectInAdapter() {
                     Log.d("LIST", "removed object!");
@@ -207,8 +221,24 @@ public class CardFragment  extends Fragment {
                         usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
 
 
-                        if(rowItems.size()<5)
-                            getCloseUsers(fLastKnownLocation);
+                       /* if(rowItems.size()<5)
+                            getCloseUsers(fLastKnownLocation);*/
+
+                        if(cardAdapter.isEmpty()) {
+                            mNoPeople.setVisibility(View.GONE);
+                           // pgsBar.setVisibility(View.VISIBLE);
+                            pgsWaves.setVisibility(View.VISIBLE);
+
+                            if(fLastKnownLocation!=null)
+                                checkRadius();
+                            else {
+                                mNoPeople.setVisibility(View.VISIBLE);
+                               // pgsBar.setVisibility(View.GONE);
+                                pgsWaves.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Location error! Please re-open Barfi.", Toast.LENGTH_LONG).show();
+                            }
+
+                        } else mNoPeople.setVisibility(View.GONE);
 
                         //testing
                         if(swipes<5) {
@@ -219,21 +249,6 @@ public class CardFragment  extends Fragment {
                         swipePgs.setProgress((swipes*100)/swipesLimit);
                         swipePgs.setVisibility(View.VISIBLE);
 
-                        if(cardAdapter.isEmpty())
-                        {
-                            mNoPeople.setVisibility(View.GONE);
-                            pgsBar.setVisibility(View.VISIBLE);
-
-                            if(fLastKnownLocation!=null)
-                            getCloseUsers(fLastKnownLocation);
-                            else {
-                                mNoPeople.setVisibility(View.VISIBLE);
-                                pgsBar.setVisibility(View.GONE);
-                                Toast.makeText(getContext(), "Location error! Please re-open Barfi.", Toast.LENGTH_LONG).show();
-                            }
-
-                        } else mNoPeople.setVisibility(View.GONE);
-
 
 
                     } else {
@@ -243,7 +258,7 @@ public class CardFragment  extends Fragment {
                         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
                         mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
 
-                        Toast.makeText(getContext(), "Daily swipe limit reached", Toast.LENGTH_LONG).show();
+                      // Toast.makeText(getContext(), "Daily swipe limit reached", Toast.LENGTH_LONG).show();
 
 
                         Intent intent = new Intent(view.getContext(), PaymentActivity.class);
@@ -284,6 +299,9 @@ public class CardFragment  extends Fragment {
                         String userId = obj.getUserId();
 
                         usersDb.child(userId).child("connections").child("nope").child(currentUId).setValue(true);
+
+                        //save instance of UserId in own db
+                        usersDb.child(currentUId).child("swipeHistory").child("nope").child(userId).setValue(true);
                     }
 
                 }
@@ -317,21 +335,20 @@ public class CardFragment  extends Fragment {
                         String userId = obj.getUserId();
                         usersDb.child(userId).child("connections").child("yeps").child(currentUId).setValue(true);
                         isConnectionMatch(userId);
+
+                        //add uid to own DB
+                        usersDb.child(currentUId).child("swipeHistory").child("yeps").child(userId).setValue(true);
                     }
                 }
 
                 @Override
-                public void onAdapterAboutToEmpty(int itemsInAdapter) {
-                }
+                public void onAdapterAboutToEmpty(int itemsInAdapter) { }
 
                 @Override
-                public void onScroll(float scrollProgressPercent) {
-                }
+                public void onScroll(float scrollProgressPercent) { }
             });
 
 
-
-        // Optionally add an OnItemClickListener
         flingContainer.setOnItemClickListener((itemPosition, dataObject) -> {
             UserObject UserObject = (UserObject) dataObject;
             Intent i = new Intent(getContext(), ZoomCardActivity.class);
@@ -342,13 +359,6 @@ public class CardFragment  extends Fragment {
         });
 
 
-
-        myDialog = new Dialog(getActivity());
-
-
-        FloatingActionButton fabLike = view.findViewById(R.id.fabLike);
-        FloatingActionButton fabNope = view.findViewById(R.id.fabNope);
-
         //Listeners for the fab buttons, they do the same as the swipe feature, but withe the click of the buttons
         fabLike.setOnClickListener(v -> {
             if(rowItems.size()!=0)
@@ -358,6 +368,11 @@ public class CardFragment  extends Fragment {
             if(rowItems.size()!=0)
                 flingContainer.getTopCardListener().selectLeft();
         });
+
+
+        swipedUIDs = ((CurrentUserObject) getActivity().getApplication()).getSwipedUIDs();
+
+
 
         return view;
     }
@@ -447,6 +462,7 @@ public class CardFragment  extends Fragment {
         checkCurrentDay();
 
     }
+
     private void checkCurrentDay(){
 
         mUserDatabase.child("status").child("swipeClock").addValueEventListener(new ValueEventListener() {
@@ -480,7 +496,58 @@ public class CardFragment  extends Fragment {
 
     }
 
-    GeoQuery geoQuery;
+
+    /**
+     * Fetches user search params from the database
+     *
+     * After that call isLocationEnabled which will see if the location services are enabled
+     * and then fetch the last location known.
+     */
+
+    private String  userInterest = "Male";
+
+    private void fetchUserSearchParams(){
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference userDb = usersDb.child(user.getUid()).child("filters");
+
+        userDb.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+
+                    counter = 0;
+                    dynamicRadius = 20;
+                    closeUsers = new ArrayList<>();
+
+                  //((MainActivity)getActivity()).getLastKnownLocation();
+
+                    if (dataSnapshot.child("interest").getValue() != null)
+                        userInterest = dataSnapshot.child("interest").getValue().toString();
+                    if (dataSnapshot.child("search_distance").getValue() != null)
+                        searchDistance = Integer.parseInt(dataSnapshot.child("search_distance").getValue().toString());
+                    if (dataSnapshot.child("ageMax").getValue() != null)
+                        ageMax = Integer.parseInt(dataSnapshot.child("ageMax").getValue().toString());
+                    if (dataSnapshot.child("ageMin").getValue() != null)
+                        ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
+
+
+                    if(rowItems!=null) {
+                        rowItems.clear();
+                        cardAdapter.notifyDataSetChanged();
+                        mNoPeople.setVisibility(View.GONE);
+                        //pgsBar.setVisibility(View.VISIBLE);
+                        pgsWaves.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+
     /**
      * Fetch closest users to the current user using a GeoQuery.
      *
@@ -488,52 +555,183 @@ public class CardFragment  extends Fragment {
      * the radius is the current user's location
      * @param lastKnowLocation - user last know location
      */
+
+    private Boolean geoQueryReady = false;
+    GeoQuery geoQuery;
     public void getCloseUsers(Location lastKnowLocation){
 
-        // rowItems.clear();
-        if(lastKnowLocation!=null)
-            fLastKnownLocation = lastKnowLocation;
+        if(rowItems.size()>=rowLimit) return;
 
+        //testing
+        //Toast.makeText(getContext(), "GetCloseUsers entered" , Toast.LENGTH_LONG).show();
+
+        fLastKnownLocation = lastKnowLocation;
+        geoQueryReady = false;
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
         GeoFire geoFire = new GeoFire(ref);
         if (geoQuery != null)
             geoQuery.removeAllListeners();
-        geoQuery = geoFire.queryAtLocation(new GeoLocation(fLastKnownLocation.getLatitude(), fLastKnownLocation.getLongitude()), searchDistance);
+
+        geoQuery = geoFire.queryAtLocation(new GeoLocation(fLastKnownLocation.getLatitude(), fLastKnownLocation.getLongitude()), dynamicRadius);
 
         //for testing & nudging
-           /* if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
-                geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), searchDistance);
+        /* if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
+                geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), dynamicRadius);
             else
-                geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), searchDistance);
+                geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
 
-*/
+         //Delhi
+        //geoQuery = geoFire.queryAtLocation(new GeoLocation(28.8458429,77.0894171), dynamicRadius);
+
+        //Bangalore
+        //geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
+                */
+
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                //load only certain no of cards
-                getUsersInfo(key);
-
+                if(!closeUsers.contains(key) && !swipedUIDs.contains(key)){
+                    getUsersInfo(key);
+                    counter++;
+                    closeUsers.add(key);
+                }
             }
-
             @Override
-            public void onKeyExited(String key) {
-            }
-
+            public void onKeyExited(String key) { }
             @Override
-            public void onKeyMoved(String key, GeoLocation location) {
-            }
-
+            public void onKeyMoved(String key, GeoLocation location) { }
             @Override
             public void onGeoQueryReady() {
+                geoQueryReady = true;
+              //  Toast.makeText(getContext(), "Query ended " + counter, Toast.LENGTH_LONG).show();
             }
-
             @Override
             public void onGeoQueryError(DatabaseError error) {
             }
         });
 
     }
+
+    /**
+     * Get info of a user and check if that user is within the search params, if it is then
+     * add it to the list and update the adapter.
+     *
+     * Does not add the user if it is already a connection.
+     * @param userId - id of the user that's a possible user to display the card of
+     */
+
+    private Integer threadCounter = 0;
+    private void getUsersInfo(String userId){
+
+        for(UserObject mCard : rowItems){
+            if(mCard.getUserId().equals(userId)){ counter--; checkRadius(); return;}
+        }
+
+        if(userId.equals(currentUId)) { counter--; checkRadius(); return; }
+
+        //Checks if the UID is already swiped
+       /* for(String Uid : swipedUIDs){
+            if(userId.equals(Uid)) { counter--; checkRadius(); return; }
+        }*/
+
+        usersDb.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                //testing
+                threadCounter++;
+
+                if(!dataSnapshot.exists()) { counter--; checkRadius(); return; }
+                if(dataSnapshot.hasChild("xx")){ counter--; checkRadius(); return;}
+                if(dataSnapshot.hasChild("hide")){ counter--;  checkRadius(); return;}
+                if(!dataSnapshot.child("name").exists()){ counter--;  checkRadius(); return;}
+                if(!dataSnapshot.child("score").exists()){ counter--;  checkRadius(); return;}
+                if(!dataSnapshot.child("profileImageUrl").exists()){ counter--;  checkRadius(); return;}
+
+                UserObject mUser = new UserObject();
+                mUser.parseObject(dataSnapshot);
+
+                int age = Integer.parseInt(mUser.getAge());
+
+                //Swipe history check 2
+                if(mUser.getUserId().equals(currentUId)){ counter--; checkRadius(); return;}
+                if(dataSnapshot.child("connections").child("nope").hasChild(currentUId)){ counter--; checkRadius(); return;}
+                if(dataSnapshot.child("connections").child("yeps").hasChild(currentUId)) { counter--; checkRadius(); return;}
+
+                //Filters check
+                if(!mUser.getUserSex().equals(userInterest) && !userInterest.equals("All")){ counter--; checkRadius(); return;}
+                if(age>ageMax || age<ageMin){ counter--; checkRadius(); return;}
+
+                /*for(UserObject mCard : rowItems){
+                    if(mCard.getUserId().equals(userId)){ counter--;  checkRadius(); return;}
+                }*/
+
+                //Redundant check of existing IDs required to make sure of the IDs added later
+                for(UserObject mCard : rowItems){
+                    if(mCard.getUserId().equals(dataSnapshot.getKey())){ counter--; checkRadius(); return;}
+                }
+
+                rowItems.add(mUser);
+                counter--;
+                Collections.sort(rowItems, Collections.reverseOrder(new Comparator<UserObject>() {
+                    @Override
+                    public int compare(UserObject lhs, UserObject rhs) {
+                        return lhs.getScore().compareTo(rhs.getScore());
+                    }
+                }));
+                cardAdapter.notifyDataSetChanged();
+                checkRadius();
+
+                /*if(threadCounter>200)
+                    Toast.makeText(getContext(), "thread "+ threadCounter +", Row count "+rowItems.size() + ", CloseUsers "+closeUsers.size()  , Toast.LENGTH_LONG).show();
+*/
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        if(cardAdapter.isEmpty()) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    // pgsBar.setVisibility(View.GONE);
+                    pgsWaves.setVisibility(View.GONE);
+                    mNoPeople.setVisibility(View.VISIBLE);
+                }
+            }, 10000);
+        } else // pgsBar.setVisibility(View.GONE);
+         pgsWaves.setVisibility(View.GONE);
+
+    }
+
+
+    private Integer checkRadiusCount =1;
+    private void checkRadius() {
+        if( geoQueryReady && counter==0 && rowItems.size()<rowLimit ) {
+            if (searchDistance > dynamicRadius) {
+                dynamicRadius = dynamicRadius + 25*checkRadiusCount;
+                getCloseUsers(fLastKnownLocation);
+
+                //testing
+               // Toast.makeText(getContext(), "Check Radius Run " + checkRadiusCount, Toast.LENGTH_LONG).show();
+
+                checkRadiusCount++;
+            }
+        }
+
+    }
+
+
+
+
+
+
+
+
+
 
     /**
      * Checks if new connection is a match if it is then add it to the database and create a new chat
@@ -576,148 +774,6 @@ public class CardFragment  extends Fragment {
             public void onCancelled(DatabaseError databaseError) {
             }
         });
-    }
-
-    private String  userInterest = "Male";
-
-    /**
-     * Fetches user search params from the database
-     *
-     * After that call isLocationEnabled which will see if the location services are enabled
-     * and then fetch the last location known.
-     */
-    private void fetchUserSearchParams(){
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference userDb = usersDb.child(user.getUid()).child("filters");
-
-        userDb.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
-
-
-                  //  ((MainActivity)getActivity()).getLastKnownLocation();
-
-                    if (dataSnapshot.child("interest").getValue() != null)
-                        userInterest = dataSnapshot.child("interest").getValue().toString();
-                    if (dataSnapshot.child("search_distance").getValue() != null)
-                        searchDistance = Integer.parseInt(dataSnapshot.child("search_distance").getValue().toString());
-
-                   // check user age max & min
-                    if (dataSnapshot.child("ageMax").getValue() != null)
-                        ageMax = Integer.parseInt(dataSnapshot.child("ageMax").getValue().toString());
-
-                    if (dataSnapshot.child("ageMin").getValue() != null)
-                        ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
-
-                    if(rowItems!=null) {
-                        rowItems.clear();
-                        cardAdapter.notifyDataSetChanged();
-                        mNoPeople.setVisibility(View.GONE);
-                        pgsBar.setVisibility(View.VISIBLE);
-                    }
-
-
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    /**
-     * Get info of a user and check if that user is within the search params, if it is then
-     * add it to the list and update the adapter.
-     *
-     * Does not add the user if it is already a connection.
-     * @param userId - id of the user that's a possible user to display the card of
-     */
-    private void getUsersInfo(String userId){
-        for(UserObject mCard : rowItems){
-            if(mCard.getUserId().equals(userId)){return;}
-        }
-
-
-        usersDb.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                if(rowItems.size()>13){
-                    return;
-                }
-
-                if(!dataSnapshot.exists()) { return; }
-
-                if(dataSnapshot.hasChild("xx")){return;}
-                if(dataSnapshot.hasChild("hide")){return;}
-                if(!dataSnapshot.child("name").exists()){return;}
-                if(!dataSnapshot.child("score").exists()){return;}
-                if(!dataSnapshot.child("profileImageUrl").exists()){return;}
-
-
-                for(UserObject mCard : rowItems){
-                    if(mCard.getUserId().equals(dataSnapshot.getKey())){return;}
-                }
-
-                UserObject mUser = new UserObject();
-                mUser.parseObject(dataSnapshot);
-
-
-
-                Integer age = Integer.parseInt(mUser.getAge());
-                //user age range
-
-                if(mUser.getUserId().equals(currentUId)){return;}
-                if(dataSnapshot.child("connections").child("nope").hasChild(currentUId)){return;}
-                if(dataSnapshot.child("connections").child("yeps").hasChild(currentUId)) {return;}
-                if(!mUser.getUserSex().equals(userInterest) && !userInterest.equals("All")){return;}
-                if(age>ageMax || age<ageMin){return;}
-
-                for(UserObject mCard : rowItems){
-                    if(mCard.getUserId().equals(userId)){return;}
-                }
-
-
-                rowItems.add(mUser);
-
-
-                Collections.sort(rowItems, Collections.reverseOrder(new Comparator<UserObject>() {
-                    @Override
-                    public int compare(UserObject lhs, UserObject rhs) {
-                        return lhs.getScore().compareTo(rhs.getScore());
-                    }
-                }));
-
-
-                cardAdapter.notifyDataSetChanged();
-
-             //   Toast.makeText(getContext(), "count "+rowItems.size(), Toast.LENGTH_LONG).show();
-
-
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        if(cardAdapter.isEmpty())
-        {
-            new Handler().postDelayed(new Runnable() {
-
-                @Override
-                public void run() {
-                    pgsBar.setVisibility(View.GONE);
-                    mNoPeople.setVisibility(View.VISIBLE);
-                }
-            }, 5000);
-
-
-        } else pgsBar.setVisibility(View.GONE);
-
     }
 
     private void ShowPopup(View v) {
@@ -876,7 +932,8 @@ public class CardFragment  extends Fragment {
                     mNotOnline.setVisibility(View.GONE);
 
                     mNoPeople.setVisibility(View.GONE);
-                    pgsBar.setVisibility(View.VISIBLE);
+                    //pgsBar.setVisibility(View.VISIBLE);
+                    pgsWaves.setVisibility(View.VISIBLE);
 
                     i = 0;
                 }

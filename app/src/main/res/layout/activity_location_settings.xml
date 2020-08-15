@@ -14,27 +14,30 @@
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
         android:gravity="center"
-
         android:orientation="vertical"
         android:layout_marginTop="25dp">
 
         <TextView
-            android:paddingTop="20sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ahhhh!"
-            android:textColor="@color/colorPrimary"
-            android:textSize="25sp"
-            android:textStyle="bold"/>
-        <TextView
             android:id="@+id/tvDate"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Your location is not enabled!"
+            android:text="Ooops!\nYour location is not enabled!"
             android:textColor="@color/colorPrimary"
             android:textSize="25sp"
             android:layout_marginBottom="20dp"
             android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="Barfi needs your location to show profiles nearby."
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            android:textStyle="normal"/>
 
 
 
@@ -43,46 +46,48 @@
             android:layout_height="150dp"
             android:src="@drawable/ic_location_undraw"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"/>
+            android:layout_margin="70dp"/>
+
+
 
         <TextView
-            android:paddingTop="20sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:text="Barfi needs your location to show profiles near you.."
-            android:textColor="@color/colorPrimaryDark"
-            android:textSize="20sp"
-            android:textStyle="normal"/>
-
-        <TextView
-
-            android:layout_marginTop="70dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="30dp"
-            android:gravity="center"
-            android:text="Please open settings and give permission to continue."
-            android:textSize="16sp" />
+            android:textColor="@color/colorGray"
+            android:text="Please open location settings and allow location access."
+            android:textSize="14sp" />
 
         <Button
-            android:layout_marginTop="30dp"
             android:paddingStart="30dp"
             android:paddingEnd="30dp"
-            android:layout_margin="25dp"
+            android:layout_margin="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/openSettings"
             android:textColor="@color/white"
             android:background="@drawable/bg_button"
+            android:backgroundTint="@color/colorPrimaryDark"
             android:fontFamily="@font/montserrat_bold"
             android:text="Open Location Settings"
-            android:layout_marginBottom="10dp"
-
         />
+
+        <TextView
+
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/colorGrayDark7f"
+            android:text="In case the location is enabled and you are still getting redirected to this page, try switching to more accurate location option from your device settings."
+            android:textSize="12sp" />
+
     </LinearLayout>
 
 </ScrollView>
+

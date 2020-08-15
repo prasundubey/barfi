@@ -1,6 +1,8 @@
 package com.app.barfi.Login;
 
+import android.app.ActivityManager;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,8 @@ import androidx.fragment.app.Fragment;
 
 import com.app.barfi.Activity.WebViewActivity;
 import com.app.barfi.R;
+
+import static android.content.Context.ACTIVITY_SERVICE;
 
 
 /**
@@ -40,7 +44,6 @@ public class MenuFragment extends Fragment implements View.OnClickListener {
             view = inflater.inflate(R.layout.fragment_menu, container, false);
         else
             container.removeView(view);
-
 
         return view;
     }

@@ -1,30 +1,21 @@
 package com.app.barfi.Fragments;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.app.barfi.Activity.MainActivity;
 import com.app.barfi.Activity.PaymentActivity;
 import com.app.barfi.LikesContainerActivity;
-import com.app.barfi.LikesFragment;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Displays MAthces Available to the user in two recyclerView, one for the most recent ones
@@ -388,7 +378,9 @@ public class MatchesFragment extends Fragment {
                 }
                 else {
                     mUserDatabase.child("connections").child("matches").child(key).removeValue();
-                    mUserDatabase.child("connections").child("yeps").child(key).removeValue();
+
+                    mUserDatabase.child("swipeHistory").child("yeps").child(key).removeValue();
+
                 }
             }
 

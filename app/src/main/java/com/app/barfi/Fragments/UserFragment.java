@@ -36,6 +36,7 @@ import com.app.barfi.Activity.VerifyAccount;
 import com.app.barfi.Activity.WebViewActivity;
 import com.app.barfi.BuildConfig;
 import com.app.barfi.NewUserDetails;
+import com.app.barfi.Objects.CurrentUserObject;
 import com.app.barfi.Objects.ScoreObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -56,6 +57,8 @@ import com.app.barfi.Activity.SettingsActivity;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -94,6 +97,7 @@ public class UserFragment extends Fragment {
 
     private TextView mUpdateApp;
 
+    private String userId;
 
     public UserFragment() {
     }
@@ -138,6 +142,7 @@ public class UserFragment extends Fragment {
         mUpdateApp = view.findViewById(R.id.updateNow);
         mUpdateApp.setVisibility(View.GONE);
 
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         getUserInfo();
 
@@ -245,16 +250,11 @@ public class UserFragment extends Fragment {
      */
 
     private void getUserInfo() {
-        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         mUserDatabase = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
         mUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @SuppressLint("SetTextI18n")
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                if(dataSnapshot.hasChild("xx")){
-                    //  Toast.makeText(getContext(), "Your account is blocked & invisible to others. Contact us for more info.", Toast.LENGTH_LONG).show();
-                    mFlag.setVisibility(View.VISIBLE);}
+            public void onDataChange(@NotNull DataSnapshot dataSnapshot) {
 
                 UserObject mUser = new UserObject();
                 mUser.parseObject(dataSnapshot);
@@ -288,7 +288,7 @@ public class UserFragment extends Fragment {
                     ScoreObject mScore = new ScoreObject();
                     mScore.parseObject(dataSnapshot);
                     Integer score = mScore.getScore();
-                    FirebaseDatabase.getInstance().getReference().child("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child("score").setValue(score);
+                    FirebaseDatabase.getInstance().getReference().child("Users").child(userId).child("score").setValue(score);
 
                 }
 
@@ -301,6 +301,14 @@ public class UserFragment extends Fragment {
 
                 }
 
+                if(dataSnapshot.hasChild("xx")){
+                    //  Toast.makeText(getContext(), "Your account is blocked & invisible to others. Contact us for more info.", Toast.LENGTH_LONG).show();
+                    mFlag.setVisibility(View.VISIBLE);
+                    FirebaseDatabase.getInstance().getReference().child("location").child(userId).removeValue();
+                } else mFlag.setVisibility(View.GONE);
+
+
+                ((CurrentUserObject) getActivity().getApplication()).initialize(dataSnapshot);
 
             }
             @Override

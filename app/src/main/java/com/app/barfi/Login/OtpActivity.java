@@ -110,7 +110,7 @@ public class OtpActivity extends AppCompatActivity {
             signInWithCredential(credential);
         //  Toast.makeText(OtpActivity.this, "vId " + verificationid, Toast.LENGTH_SHORT).show();
         }catch (Exception e){
-            Toast.makeText(getApplicationContext(), "Verification Code is wrong, try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "Incorrect verification code, try again", Toast.LENGTH_SHORT).show();
         }
     }
 

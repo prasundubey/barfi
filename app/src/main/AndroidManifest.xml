@@ -4,6 +4,7 @@
     package="com.app.barfi">
 
     <application
+        android:name=".Objects.CurrentUserObject"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,10 +12,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".Activity.ForceUpdateActivity"></activity>
         <activity
             android:name=".Activity.PaymentActivity"
-            android:theme="@style/Theme.AppCompat.Dialog.Alert" android:screenOrientation="portrait"/>
+            android:theme="@style/Theme.AppCompat.Dialog.Alert"/>
         <activity android:name=".Activity.VerifyAccount" android:screenOrientation="portrait"/>
         <activity android:name=".Activity.WebViewActivity" android:screenOrientation="portrait"/>
         <!--
