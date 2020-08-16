@@ -308,7 +308,9 @@ public class UserFragment extends Fragment {
                 } else mFlag.setVisibility(View.GONE);
 
 
-                ((CurrentUserObject) getActivity().getApplication()).initialize(dataSnapshot);
+                if((CurrentUserObject) Objects.requireNonNull(getActivity()).getApplication()!=null)
+                    ((CurrentUserObject) getActivity().getApplication()).initialize(dataSnapshot);
+
 
             }
             @Override

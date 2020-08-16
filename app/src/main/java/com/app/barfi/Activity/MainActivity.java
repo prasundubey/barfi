@@ -18,6 +18,11 @@ import com.app.barfi.Objects.ScoreObject;
 import com.app.barfi.Objects.UserObject;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -124,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView mLoading;
     private String city="";
 
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
         final RippleBackground rippleBackground = (RippleBackground) findViewById(R.id.content);
         ImageView imageView = (ImageView) findViewById(R.id.centerImage);
         rippleBackground.startRippleAnimation();
+
+
+
 
         mLoading = findViewById(R.id.loadingText);
         mLoading.setVisibility(View.GONE);

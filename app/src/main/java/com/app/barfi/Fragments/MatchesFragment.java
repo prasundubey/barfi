@@ -15,6 +15,12 @@ import android.widget.TextView;
 
 import com.app.barfi.Activity.PaymentActivity;
 import com.app.barfi.LikesContainerActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -70,6 +76,9 @@ public class MatchesFragment extends Fragment {
 
     private LinearLayout mPgs;
 
+    private AdView mAdView;
+    private LinearLayout llBanner;
+
     public MatchesFragment() {
     }
 
@@ -108,6 +117,20 @@ public class MatchesFragment extends Fragment {
 
         mPgs = view.findViewById(R.id.pgsLL);
         mPgs.setVisibility(View.VISIBLE);
+
+
+        llBanner = view.findViewById(R.id.llBanner);
+
+       // MobileAds.initialize(getActivity(), "ca-app-pub-6009441235740224/1011618240");
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+        mAdView = view.findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        llBanner.setVisibility(View.GONE);
 
 
         getUserMatchId();

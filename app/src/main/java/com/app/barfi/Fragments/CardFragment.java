@@ -2,6 +2,7 @@ package com.app.barfi.Fragments;
 
 import android.Manifest;
 import android.animation.Animator;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,16 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
@@ -143,6 +154,7 @@ public class CardFragment  extends Fragment {
     private RippleBackground pgsWaves;
     private ImageView profileImage;
 
+    private RewardedAd rewardedAd;
 
     View view;
 
@@ -157,6 +169,32 @@ public class CardFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_card, container, false);
+
+
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
+        //Load ad
+        this.rewardedAd = new RewardedAd(getActivity(), "ca-app-pub-3940256099942544/5224354917");
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() { // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(LoadAdError adError) {// Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+
+
+
+
+
+
 
         usersDb = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
@@ -221,9 +259,6 @@ public class CardFragment  extends Fragment {
                         usersDb.child(currentUId).child("status").child("swipes").setValue(swipes);
 
 
-                       /* if(rowItems.size()<5)
-                            getCloseUsers(fLastKnownLocation);*/
-
                         if(cardAdapter.isEmpty()) {
                             mNoPeople.setVisibility(View.GONE);
                            // pgsBar.setVisibility(View.VISIBLE);
@@ -258,13 +293,12 @@ public class CardFragment  extends Fragment {
                         int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
                         mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
 
-                      // Toast.makeText(getContext(), "Daily swipe limit reached", Toast.LENGTH_LONG).show();
 
+                       // showRewardedAds();
 
                         Intent intent = new Intent(view.getContext(), PaymentActivity.class);
                         intent.putExtra("lPremium", false);
                         startActivity(intent);
-
 
                     }
 
@@ -560,7 +594,7 @@ public class CardFragment  extends Fragment {
     GeoQuery geoQuery;
     public void getCloseUsers(Location lastKnowLocation){
 
-        if(rowItems.size()>=rowLimit) return;
+        if(rowItems!=null && rowItems.size()>=rowLimit) return;
 
         //testing
         //Toast.makeText(getContext(), "GetCloseUsers entered" , Toast.LENGTH_LONG).show();
@@ -710,7 +744,7 @@ public class CardFragment  extends Fragment {
 
     private Integer checkRadiusCount =1;
     private void checkRadius() {
-        if( geoQueryReady && counter==0 && rowItems.size()<rowLimit ) {
+        if( geoQueryReady && counter==0 && rowItems!=null && rowItems.size()<rowLimit ) {
             if (searchDistance > dynamicRadius) {
                 dynamicRadius = dynamicRadius + 25*checkRadiusCount;
                 getCloseUsers(fLastKnownLocation);
@@ -945,6 +979,56 @@ public class CardFragment  extends Fragment {
 
 
     }
+
+
+    //Show ads
+    private void showRewardedAds (){
+        if (rewardedAd.isLoaded()) {
+            Activity activityContext = getActivity();
+            RewardedAdCallback adCallback = new RewardedAdCallback() {
+                @Override
+                public void onRewardedAdOpened() {
+                    // Ad opened.
+                }
+
+                @Override
+                public void onRewardedAdClosed() {
+                    createAndLoadRewardedAd();
+                   // Toast.makeText(getContext(), "onRewardedAdClosed", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem reward) {
+                    swipes = 5;
+                    mUserDatabase.child("status").child("swipes").setValue(swipes);
+                }
+
+                @Override
+                public void onRewardedAdFailedToShow(AdError adError) {
+                    // Ad failed to display.
+                }
+            };
+            rewardedAd.show(activityContext, adCallback);
+        } else {
+            Log.d("TAG", "The rewarded ad wasn't loaded yet.");
+        }
+    }
+
+    public RewardedAd createAndLoadRewardedAd() {
+        RewardedAd rewardedAd = new RewardedAd(getActivity(), "ca-app-pub-3940256099942544/5224354917");
+        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() { // Ad successfully loaded.
+            }
+
+            @Override
+            public void onRewardedAdFailedToLoad(LoadAdError adError) { // Ad failed to load.
+            }
+        };
+        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
+        return rewardedAd;
+    }
+
 
 
 }

@@ -76,6 +76,11 @@
             android:value="ocr,face" />
 
 
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-6009441235740224~2351785920"/>
+
+
     </application>
 
     <uses-feature

@@ -213,8 +213,7 @@
                 android:layout_gravity="end|top"
                 android:paddingTop="10dp"
                 android:paddingEnd="10dp"
-                android:tint="@color/colorGrayMid"
-                />
+                app:tint="@color/colorGrayMid" />
 
 
         </androidx.cardview.widget.CardView>
@@ -285,12 +284,11 @@
             <ImageView
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_send"
-                android:tint="@color/com_facebook_messenger_blue"
                 android:layout_weight="0.15"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/send"
-                />
+                app:tint="@color/com_facebook_messenger_blue" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

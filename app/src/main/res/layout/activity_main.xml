@@ -100,12 +100,11 @@
         android:padding="10dp"
         android:elevation="1dp"
         android:src="@drawable/ic_no_internet"
-        android:tint="@color/white"
         android:background="@drawable/bg_box_white_noborder"
         android:backgroundTint="@color/colorPrimary"
         android:visibility="gone"
-        android:tooltipText="No internet connectivity"/>
-
+        android:tooltipText="No internet connectivity"
+        app:tint="@color/white" />
 
     <com.google.android.material.appbar.AppBarLayout
 
