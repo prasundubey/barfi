@@ -307,10 +307,13 @@ public class UserFragment extends Fragment {
                     FirebaseDatabase.getInstance().getReference().child("location").child(userId).removeValue();
                 } else mFlag.setVisibility(View.GONE);
 
+                if(dataSnapshot.hasChild("hide"))
+                    FirebaseDatabase.getInstance().getReference().child("location").child(userId).removeValue();
 
-                if((CurrentUserObject) Objects.requireNonNull(getActivity()).getApplication()!=null)
-                    ((CurrentUserObject) getActivity().getApplication()).initialize(dataSnapshot);
 
+
+
+                ((CurrentUserObject) getApplicationContext()).initialize(dataSnapshot);
 
             }
             @Override
@@ -327,7 +330,6 @@ public class UserFragment extends Fragment {
     public void onResume(){
         super.onResume();
         getUserInfo();
-
     }
 
 

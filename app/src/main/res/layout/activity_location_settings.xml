@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/openSettings"
             android:textColor="@color/white"
-            android:background="@drawable/bg_button"
+            android:background="@drawable/bg_button_selector"
             android:backgroundTint="@color/colorPrimaryDark"
             android:fontFamily="@font/montserrat_bold"
             android:text="Open Location Settings"

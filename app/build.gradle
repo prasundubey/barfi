@@ -32,8 +32,8 @@ android {
         applicationId "com.app.barfi"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 33
-        versionName "2.33"
+        versionCode 36
+        versionName "2.36"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [onesignal_app_id               : '17d8682e-1cef-485a-afb3-edd07393587b',
                                 onesignal_google_project_number: 'REMOTE']

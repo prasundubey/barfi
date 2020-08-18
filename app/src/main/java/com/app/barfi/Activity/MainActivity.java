@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AdView mAdView;
 
+    private Boolean premiumUser = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -200,8 +202,15 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onTabSelected(TabLayout.Tab tab) {
                                     super.onTabSelected(tab);
-                                    int tabIconColor = ContextCompat.getColor(getApplicationContext(), R.color.colorGray);
-                                    tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+
+                                    //changes barfi color for premium
+                                    if(!premiumUser) {
+                                        int tabIconColor = ContextCompat.getColor(getApplicationContext(), R.color.colorGray);
+                                        tab.getIcon().setColorFilter(tabIconColor, PorterDuff.Mode.SRC_IN);
+                                    }else{
+                                        int premiumIconColor = ContextCompat.getColor(getApplicationContext(), R.color.colorGold);
+                                        tab.getIcon().setColorFilter(premiumIconColor, PorterDuff.Mode.SRC_IN);
+                                    }
 
                                     //change status bar theme
 
@@ -222,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     if (tab == tabLayout.getTabAt(2))
                                         chatBadge.setVisibility(View.GONE);
+
 
                                 }
 
@@ -261,8 +271,8 @@ public class MainActivity extends AppCompatActivity {
 
                     mLoading.setVisibility(View.GONE);
                     loadHandler.removeCallbacksAndMessages(null);
+                    rippleBackground.setVisibility(View.GONE);
                     rippleBackground.stopRippleAnimation();
-                    imageView.setVisibility(View.GONE);
 
 
 
@@ -319,9 +329,6 @@ public class MainActivity extends AppCompatActivity {
                         admin = true;
 
 
-
-
-
                 }
 
 
@@ -369,8 +376,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (!gps_enabled) {
             goToOpenSettings();
-        }
-        else {
+        } else {
             if(lastKnownLocation!=null)
                 cardFragment.getCloseUsers(lastKnownLocation);
             else
@@ -441,17 +447,22 @@ public class MainActivity extends AppCompatActivity {
 
 
                 // Get city to DB || causing problem in one plus
-                try {
-                    List<Address> addresses =null;
 
-                    Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
-                    addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                    if(addresses!=null && addresses.get(0).getLocality()!=null && addresses.get(0).getLocality().length()>0)
-                    mUserDatabase.child("city").setValue(addresses.get(0).getLocality());
 
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+               // if(!Build.BRAND.toLowerCase().equals("oneplus")) {
+                    try {
+                        List<Address> addresses = null;
+
+                        Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+                        addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                        if (addresses != null && addresses.size()>0 && addresses.get(0).getLocality() != null && addresses.get(0).getLocality().length() > 0)
+                            mUserDatabase.child("city").setValue(addresses.get(0).getLocality());
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
 
             }
             else if (location != lastKnownLocation) {
@@ -643,6 +654,7 @@ public class MainActivity extends AppCompatActivity {
                                 FirebaseDatabase.getInstance().getReference().child("Purchases").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).updateChildren(userInfo);
                                 FirebaseDatabase.getInstance().getReference().child("Purchases").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(orderID.replace(".","-")).updateChildren(userInfo1);
 
+                                premiumUser = true;
 
                                 isOwned = true;
                             }

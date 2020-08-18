@@ -41,8 +41,8 @@ public class CountryData {
             "Sweden", "Switzerland", "Syrian Arab Republic", "Taiwan",
             "Tajikistan", "Tanzania", "Thailand", "Togo", "Tokelau", "Tonga",
             "Tunisia", "Turkey", "Turkmenistan", "Tuvalu",
-            "United Arab Emirates", "Uganda", "United Kingdom", "Ukraine",
-            "Uruguay", "United States", "Uzbekistan", "Vanuatu",
+            "United Arab Emirates", "Uganda", "United Kingdom(+44)", "Ukraine",
+            "Uruguay", "United States(+1)", "Uzbekistan", "Vanuatu",
             "Holy See (vatican City State)", "Venezuela", "Viet Nam",
             "Wallis And Futuna", "Yemen", "Zambia", "Zimbabwe"};
 

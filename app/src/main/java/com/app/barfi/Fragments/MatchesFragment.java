@@ -79,6 +79,7 @@ public class MatchesFragment extends Fragment {
     private AdView mAdView;
     private LinearLayout llBanner;
 
+
     public MatchesFragment() {
     }
 
@@ -167,6 +168,7 @@ public class MatchesFragment extends Fragment {
                 }else{
                     Intent intent = new Intent(view.getContext(), PaymentActivity.class);
                     intent.putExtra("lPremium", true);
+                    intent.putExtra("count", Integer.parseInt(likes));
                     startActivity(intent);
                 }
             }

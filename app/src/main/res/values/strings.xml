@@ -80,5 +80,8 @@
     <string name="fake_photos"><u>Note:</u> Account with inappropriate or fake photos will be strictly reported/deleted.</string>
     <string name="enter_profile_details_1"><u>Note:</u> Your phone number, email &amp; DOB is kept private and will be visible to you only. These details cannot be changed once your profile has been created.</string>
     <string name="offline"><b>You\'re offline!</b>\n\nPlease check your internet connectivity.</string>
+    <string name="subs_terms_bottom"><b>Start and cancel anytime.</b>\nYou will not be charged during the trial period.\nAll payments are handled by Google. You can manage your subscription by accessing your Google Play Account Settings after purchase.
+ </string>
+    <string name="upgrade_subtext">100+ people upgraded to Premium Barfi recently.\nEnjoy Premium for a month just for the price of one coffee.</string>
 
 </resources>

@@ -39,6 +39,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.barfi.Objects.CurrentUserObject;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -61,6 +62,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -95,6 +98,7 @@ public class ChatActivity extends AppCompatActivity {
     private TextView mTyping;
 
     private String matchName = "Barfi";
+    private String currentUserName = "Barfi";
 
     private RelativeLayout rlCanvas;
 
@@ -133,8 +137,11 @@ public class ChatActivity extends AppCompatActivity {
         cvNotification.setVisibility(View.GONE);
 
 
-        unMatch = findViewById(R.id.unMatch);
+        currentUserName = ((CurrentUserObject) getApplication()).getName();
+       // Toast.makeText(ChatActivity.this, "Name= "+ currentUserName, Toast.LENGTH_SHORT).show();
 
+
+        unMatch = findViewById(R.id.unMatch);
         unMatch.setOnClickListener(view -> {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
@@ -387,9 +394,8 @@ public class ChatActivity extends AppCompatActivity {
             newMessage.put("delivery", "sending...");
 
 
-
             SendNotification sendNotification = new SendNotification();
-            sendNotification.SendNotification(sendMessageText, matchName, matchId);
+            sendNotification.SendNotification(sendMessageText, currentUserName, matchId);
 
             newMessageDb.setValue(newMessage);
 

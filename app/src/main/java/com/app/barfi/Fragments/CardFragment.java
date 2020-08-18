@@ -154,7 +154,9 @@ public class CardFragment  extends Fragment {
     private RippleBackground pgsWaves;
     private ImageView profileImage;
 
-    private RewardedAd rewardedAd;
+    private Integer rAdCount=0;
+
+
 
     View view;
 
@@ -169,31 +171,6 @@ public class CardFragment  extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_card, container, false);
-
-
-        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });
-
-        //Load ad
-        this.rewardedAd = new RewardedAd(getActivity(), "ca-app-pub-3940256099942544/5224354917");
-        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
-            @Override
-            public void onRewardedAdLoaded() { // Ad successfully loaded.
-            }
-
-            @Override
-            public void onRewardedAdFailedToLoad(LoadAdError adError) {// Ad failed to load.
-            }
-        };
-        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
-
-
-
-
-
 
 
         usersDb = FirebaseDatabase.getInstance().getReference().child("Users");
@@ -220,7 +197,6 @@ public class CardFragment  extends Fragment {
 
 
         pgsBar = (LinearLayout) view.findViewById(R.id.pBar);
-        // pgsBar.setVisibility(View.VISIBLE);
 
         swipePgs = view.findViewById(R.id.swipesPgs);
         swipePgs.getProgressDrawable().setColorFilter(getResources().getColor(R.color.colorPrimaryDark), PorterDuff.Mode.MULTIPLY);
@@ -261,14 +237,12 @@ public class CardFragment  extends Fragment {
 
                         if(cardAdapter.isEmpty()) {
                             mNoPeople.setVisibility(View.GONE);
-                           // pgsBar.setVisibility(View.VISIBLE);
                             pgsWaves.setVisibility(View.VISIBLE);
 
                             if(fLastKnownLocation!=null)
                                 checkRadius();
                             else {
                                 mNoPeople.setVisibility(View.VISIBLE);
-                               // pgsBar.setVisibility(View.GONE);
                                 pgsWaves.setVisibility(View.GONE);
                                 Toast.makeText(getContext(), "Location error! Please re-open Barfi.", Toast.LENGTH_LONG).show();
                             }
@@ -294,11 +268,14 @@ public class CardFragment  extends Fragment {
                         mUserDatabase.child("status").child("swipeClock").child("currentDay").setValue(currentDay);
 
 
-                       // showRewardedAds();
+                        rewardedAdsCount();
 
                         Intent intent = new Intent(view.getContext(), PaymentActivity.class);
                         intent.putExtra("lPremium", false);
+                        intent.putExtra("count", adSession);
                         startActivity(intent);
+
+
 
                     }
 
@@ -404,9 +381,15 @@ public class CardFragment  extends Fragment {
         });
 
 
-        swipedUIDs = ((CurrentUserObject) getActivity().getApplication()).getSwipedUIDs();
+        swipedUIDs = ((CurrentUserObject) getApplicationContext()).getSwipedUIDs();
 
 
+        //initialise ads
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
 
         return view;
     }
@@ -517,6 +500,8 @@ public class CardFragment  extends Fragment {
                         mUserDatabase.child("status").child("swipes").setValue(swipes);
                         mUserDatabase.child("status").child("swipeClock").child("swipeDay").setValue(swipeDay);
                         updateScore();
+
+                        adSession = 0;
                     }
 
 
@@ -569,7 +554,6 @@ public class CardFragment  extends Fragment {
                         rowItems.clear();
                         cardAdapter.notifyDataSetChanged();
                         mNoPeople.setVisibility(View.GONE);
-                        //pgsBar.setVisibility(View.VISIBLE);
                         pgsWaves.setVisibility(View.VISIBLE);
                     }
                 }
@@ -614,13 +598,15 @@ public class CardFragment  extends Fragment {
                 geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), dynamicRadius);
             else
                 geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
-
+         */
          //Delhi
-        //geoQuery = geoFire.queryAtLocation(new GeoLocation(28.8458429,77.0894171), dynamicRadius);
+       // geoQuery = geoFire.queryAtLocation(new GeoLocation(28.8458429,77.0894171), dynamicRadius);
+
 
         //Bangalore
-        //geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
-                */
+       // geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
+       // Toast.makeText(getContext(), "test location" , Toast.LENGTH_LONG).show();
+
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
@@ -731,12 +717,11 @@ public class CardFragment  extends Fragment {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // pgsBar.setVisibility(View.GONE);
                     pgsWaves.setVisibility(View.GONE);
                     mNoPeople.setVisibility(View.VISIBLE);
                 }
             }, 10000);
-        } else // pgsBar.setVisibility(View.GONE);
+        } else
          pgsWaves.setVisibility(View.GONE);
 
     }
@@ -744,12 +729,12 @@ public class CardFragment  extends Fragment {
 
     private Integer checkRadiusCount =1;
     private void checkRadius() {
+        //TO-DO: check this condition when the row is empty and null
         if( geoQueryReady && counter==0 && rowItems!=null && rowItems.size()<rowLimit ) {
             if (searchDistance > dynamicRadius) {
                 dynamicRadius = dynamicRadius + 25*checkRadiusCount;
                 getCloseUsers(fLastKnownLocation);
 
-                //testing
                // Toast.makeText(getContext(), "Check Radius Run " + checkRadiusCount, Toast.LENGTH_LONG).show();
 
                 checkRadiusCount++;
@@ -757,10 +742,6 @@ public class CardFragment  extends Fragment {
         }
 
     }
-
-
-
-
 
 
 
@@ -783,12 +764,9 @@ public class CardFragment  extends Fragment {
                     usersDb.child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUId).child("ChatId").setValue(key);
                     usersDb.child(currentUId).child("connections").child("matches").child(dataSnapshot.getKey()).child("ChatId").setValue(key);
 
-
                     //add match time stamp to the matches DB
                     usersDb.child(dataSnapshot.getKey()).child("connections").child("matches").child(currentUId).child("matchTimestamp").setValue(ServerValue.TIMESTAMP);
                     usersDb.child(currentUId).child("connections").child("matches").child(dataSnapshot.getKey()).child("matchTimestamp").setValue(ServerValue.TIMESTAMP);
-
-
 
                     SendNotification sendNotification = new SendNotification();
                     sendNotification.SendNotification("Check it out!", "New Barfi Connection!", dataSnapshot.getKey());
@@ -940,11 +918,8 @@ public class CardFragment  extends Fragment {
             mNotOnline.setVisibility(View.VISIBLE);
             i=1;
 
-
             checkNetwork();
         }
-
-
 
     }
 
@@ -966,7 +941,6 @@ public class CardFragment  extends Fragment {
                     mNotOnline.setVisibility(View.GONE);
 
                     mNoPeople.setVisibility(View.GONE);
-                    //pgsBar.setVisibility(View.VISIBLE);
                     pgsWaves.setVisibility(View.VISIBLE);
 
                     i = 0;
@@ -980,55 +954,41 @@ public class CardFragment  extends Fragment {
 
     }
 
-
-    //Show ads
-    private void showRewardedAds (){
-        if (rewardedAd.isLoaded()) {
-            Activity activityContext = getActivity();
-            RewardedAdCallback adCallback = new RewardedAdCallback() {
-                @Override
-                public void onRewardedAdOpened() {
-                    // Ad opened.
-                }
-
-                @Override
-                public void onRewardedAdClosed() {
-                    createAndLoadRewardedAd();
-                   // Toast.makeText(getContext(), "onRewardedAdClosed", Toast.LENGTH_LONG).show();
-                }
-
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem reward) {
-                    swipes = 5;
-                    mUserDatabase.child("status").child("swipes").setValue(swipes);
-                }
-
-                @Override
-                public void onRewardedAdFailedToShow(AdError adError) {
-                    // Ad failed to display.
-                }
-            };
-            rewardedAd.show(activityContext, adCallback);
-        } else {
-            Log.d("TAG", "The rewarded ad wasn't loaded yet.");
-        }
-    }
-
-    public RewardedAd createAndLoadRewardedAd() {
-        RewardedAd rewardedAd = new RewardedAd(getActivity(), "ca-app-pub-3940256099942544/5224354917");
-        RewardedAdLoadCallback adLoadCallback = new RewardedAdLoadCallback() {
+    private Integer adSession = 0;
+    public void rewardedAdsCount(){
+        mUserDatabase.child("status").child("rAdCount").addValueEventListener(new ValueEventListener() {
             @Override
-            public void onRewardedAdLoaded() { // Ad successfully loaded.
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    if(rAdCount==0 && snapshot.getValue()!=null){
+                        rAdCount = Integer.parseInt(snapshot.getValue().toString());
+
+                    } else if (Integer.parseInt(snapshot.getValue().toString()) == (rAdCount+2)) {
+                        rAdCount+=2;
+                        swipes = 5;
+                        mUserDatabase.child("status").child("swipes").setValue(swipes);
+                        Toast.makeText(getContext(), "5 Swipes Added", Toast.LENGTH_LONG).show();
+                        adSession++;
+
+                    } else if (rAdCount==1 && Integer.parseInt(snapshot.getValue().toString()) == (rAdCount+1)) {
+                        rAdCount++;
+                        swipes = 5;
+                        mUserDatabase.child("status").child("swipes").setValue(swipes);
+                        Toast.makeText(getContext(), "5 Swipes Added", Toast.LENGTH_LONG).show();
+                        adSession++;
+                    }
+
+                }
+
             }
 
             @Override
-            public void onRewardedAdFailedToLoad(LoadAdError adError) { // Ad failed to load.
-            }
-        };
-        rewardedAd.loadAd(new AdRequest.Builder().build(), adLoadCallback);
-        return rewardedAd;
-    }
+            public void onCancelled(@NonNull DatabaseError error) {
 
+            }
+        });
+
+    }
 
 
 }
