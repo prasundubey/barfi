@@ -131,7 +131,7 @@ public class CardFragment  extends Fragment {
     List<UserObject> rowItems;
 
 
-    private Integer mLimit = 20,fLimit = 50, premiumLimit = 1000, swipesLimit = 10;
+    private Integer mLimit = 20,fLimit = 40, premiumLimit = 1000, swipesLimit = 10;
     private Integer swipes,totalSwipes=0;
 
     private Integer i = 0;
@@ -154,7 +154,7 @@ public class CardFragment  extends Fragment {
     private RippleBackground pgsWaves;
     private ImageView profileImage;
 
-    private Integer rAdCount=0;
+    private Integer rAdCount;
 
 
 
@@ -380,9 +380,7 @@ public class CardFragment  extends Fragment {
                 flingContainer.getTopCardListener().selectLeft();
         });
 
-
-        swipedUIDs = ((CurrentUserObject) getApplicationContext()).getSwipedUIDs();
-
+      //  swipedUIDs = ((CurrentUserObject) getApplicationContext()).getSwipedUIDs();
 
         //initialise ads
         MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
@@ -538,8 +536,10 @@ public class CardFragment  extends Fragment {
                     dynamicRadius = 20;
                     closeUsers = new ArrayList<>();
 
-                  //((MainActivity)getActivity()).getLastKnownLocation();
+                    //to avoid null pointer exception
+                    closeUsers.add(currentUId);
 
+                  //((MainActivity)getActivity()).getLastKnownLocation();
                     if (dataSnapshot.child("interest").getValue() != null)
                         userInterest = dataSnapshot.child("interest").getValue().toString();
                     if (dataSnapshot.child("search_distance").getValue() != null)
@@ -549,6 +549,7 @@ public class CardFragment  extends Fragment {
                     if (dataSnapshot.child("ageMin").getValue() != null)
                         ageMin = Integer.parseInt(dataSnapshot.child("ageMin").getValue().toString());
 
+                    swipedUIDs = ((CurrentUserObject) getApplicationContext()).getSwipedUIDs();
 
                     if(rowItems!=null) {
                         rowItems.clear();
@@ -556,6 +557,19 @@ public class CardFragment  extends Fragment {
                         mNoPeople.setVisibility(View.GONE);
                         pgsWaves.setVisibility(View.VISIBLE);
                     }
+
+
+                    // in case someone is at a location with no user
+                    if(cardAdapter.isEmpty()) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pgsWaves.setVisibility(View.GONE);
+                                mNoPeople.setVisibility(View.VISIBLE);
+                            }
+                        }, 20000);
+                    }
+
                 }
             }
             @Override
@@ -593,6 +607,7 @@ public class CardFragment  extends Fragment {
 
         geoQuery = geoFire.queryAtLocation(new GeoLocation(fLastKnownLocation.getLatitude(), fLastKnownLocation.getLongitude()), dynamicRadius);
 
+
         //for testing & nudging
         /* if ((lastKnowLocation.getLatitude()<30 && lastKnowLocation.getLatitude()>10) && (lastKnowLocation.getLongitude()<90 && lastKnowLocation.getLongitude()>60))
                 geoQuery = geoFire.queryAtLocation(new GeoLocation(lastKnowLocation.getLatitude(),lastKnowLocation.getLongitude()), dynamicRadius);
@@ -602,20 +617,24 @@ public class CardFragment  extends Fragment {
          //Delhi
        // geoQuery = geoFire.queryAtLocation(new GeoLocation(28.8458429,77.0894171), dynamicRadius);
 
-
         //Bangalore
-       // geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
-       // Toast.makeText(getContext(), "test location" , Toast.LENGTH_LONG).show();
-
+       /* geoQuery = geoFire.queryAtLocation(new GeoLocation(13.0234517,77.6582622), dynamicRadius);
+        Toast.makeText(getContext(), "test location" , Toast.LENGTH_LONG).show();*/
 
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
-                if(!closeUsers.contains(key) && !swipedUIDs.contains(key)){
+
+                if(closeUsers==null || swipedUIDs==null){
+                    getUsersInfo(key);
+                    counter++;
+                    closeUsers.add(key);
+                }else if(!closeUsers.contains(key) && !swipedUIDs.contains(key)){
                     getUsersInfo(key);
                     counter++;
                     closeUsers.add(key);
                 }
+
             }
             @Override
             public void onKeyExited(String key) { }
@@ -693,7 +712,6 @@ public class CardFragment  extends Fragment {
                 }
 
                 rowItems.add(mUser);
-                counter--;
                 Collections.sort(rowItems, Collections.reverseOrder(new Comparator<UserObject>() {
                     @Override
                     public int compare(UserObject lhs, UserObject rhs) {
@@ -701,6 +719,7 @@ public class CardFragment  extends Fragment {
                     }
                 }));
                 cardAdapter.notifyDataSetChanged();
+                counter--;
                 checkRadius();
 
                 /*if(threadCounter>200)
@@ -729,6 +748,7 @@ public class CardFragment  extends Fragment {
 
     private Integer checkRadiusCount =1;
     private void checkRadius() {
+
         //TO-DO: check this condition when the row is empty and null
         if( geoQueryReady && counter==0 && rowItems!=null && rowItems.size()<rowLimit ) {
             if (searchDistance > dynamicRadius) {
@@ -740,6 +760,11 @@ public class CardFragment  extends Fragment {
                 checkRadiusCount++;
             }
         }
+
+
+        // if(checkRadiusCount == 3 && )
+
+
 
     }
 
@@ -951,7 +976,6 @@ public class CardFragment  extends Fragment {
             }
         },3000);
 
-
     }
 
     private Integer adSession = 0;
@@ -960,25 +984,34 @@ public class CardFragment  extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    if(rAdCount==0 && snapshot.getValue()!=null){
-                        rAdCount = Integer.parseInt(snapshot.getValue().toString());
 
-                    } else if (Integer.parseInt(snapshot.getValue().toString()) == (rAdCount+2)) {
-                        rAdCount+=2;
-                        swipes = 5;
-                        mUserDatabase.child("status").child("swipes").setValue(swipes);
-                        Toast.makeText(getContext(), "5 Swipes Added", Toast.LENGTH_LONG).show();
-                        adSession++;
+                    int adWatched = Integer.parseInt(snapshot.getValue().toString());
 
-                    } else if (rAdCount==1 && Integer.parseInt(snapshot.getValue().toString()) == (rAdCount+1)) {
+                    if(rAdCount!=null){
+
+                        if (adWatched == (rAdCount+1)) {
+                            rAdCount++;
+                            swipes = 5;
+                            mUserDatabase.child("status").child("swipes").setValue(swipes);
+                            Toast.makeText(getApplicationContext(), "5 Swipes Added", Toast.LENGTH_LONG).show();
+                            adSession++;
+                        }
+
+                    }
+                    else
+                        rAdCount = adWatched;
+
+
+                    /* else if (rAdCount==1 && Integer.parseInt(snapshot.getValue().toString()) == (rAdCount+1)) {
                         rAdCount++;
                         swipes = 5;
                         mUserDatabase.child("status").child("swipes").setValue(swipes);
                         Toast.makeText(getContext(), "5 Swipes Added", Toast.LENGTH_LONG).show();
                         adSession++;
-                    }
+                    }*/
 
                 }
+                else mUserDatabase.child("status").child("rAdCount").setValue(0);
 
             }
 

@@ -30,28 +30,34 @@
             android:textColor="@color/colorTitleDark"
             android:textSize="20sp"
             android:textStyle="bold"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat_semi_bold"
-        android:paddingEnd="80dp"
-        android:paddingStart="20dp"
-        android:text="Add your photos"
-        android:textColor="@color/colorTitleDark"
-        android:textSize="40sp"
-        android:textStyle="bold"/>
 
-    <TextView
-        android:paddingTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/montserrat"
-        android:paddingEnd="40dp"
-        android:paddingStart="20dp"
-        android:text="You are required (*) to add atleast one photo of yourself in the first section before you proceed!"
-        android:textColor="@color/colorGrayDark7f"
-        android:textSize="12sp"
-        android:textStyle="normal" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat_semi_bold"
+            android:paddingEnd="80dp"
+            android:paddingStart="20dp"
+            android:text="Add your photos"
+            android:textColor="@color/colorTitleDark"
+            android:textSize="40sp"
+            android:textStyle="bold"/>
+        </LinearLayout>
+
+        <TextView
+            android:paddingTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:paddingEnd="40dp"
+            android:paddingStart="20dp"
+            android:text="You are required (*) to add atleast one photo of yourself in the first section before you proceed!"
+            android:textColor="@color/colorGrayDark7f"
+            android:textSize="12sp"
+            android:textStyle="normal" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,14 +75,14 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <ImageView
-            android:id="@+id/profileImage"
-            android:padding="5dp"
-            android:layout_width="110dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_circle_white_noborder"
-            android:src="@drawable/icons_add_image" />
+            <ImageView
+                android:id="@+id/profileImage"
+                android:padding="5dp"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_circle_white_noborder"
+                android:src="@drawable/icons_add_image" />
             <TextView
                 android:id="@+id/dp"
                 android:layout_width="30dp"
@@ -151,14 +157,14 @@
 
 
     <ProgressBar
-        android:layout_below="@id/select"
+        android:layout_alignEnd="@+id/ll0"
         android:id="@+id/pBar"
-        android:layout_centerHorizontal="true"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_margin="40dp"
         android:visibility="gone"/>
+
 
 
     <TextView
@@ -178,23 +184,25 @@
         android:textStyle="normal"/>
 
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/llNext"
-        android:layout_margin="25dp"
-        android:textSize="12sp"
-        android:text="@string/fake_photos"/>
+
 
 
     <LinearLayout
         android:id="@+id/llNext"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
+        android:gravity="center"
         android:fitsSystemWindows="false"
         android:layout_alignParentBottom="true">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/llNext"
+            android:layout_margin="25dp"
+            android:textSize="12sp"
+            android:text="@string/fake_photos"/>
 
         <Button
             android:enabled="false"
@@ -202,7 +210,7 @@
             android:layout_marginEnd="30dp"
             android:layout_marginStart="30dp"
             android:id="@+id/next2"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"

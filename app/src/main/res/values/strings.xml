@@ -34,7 +34,7 @@
     <string name="search_distance">Search Distance</string>
     <string name="logout">LogOut</string>
     <string name="profile_image">profile image</string>
-    <string name="no_more_people_to_show">No new profiles to show you right now.\nCheck back soon!</string>
+    <string name="no_more_people_to_show">There\'re no new profiles around you right now.\n\nCheck back soon!</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="register">Register</string>
     <string name="edit">edit</string>

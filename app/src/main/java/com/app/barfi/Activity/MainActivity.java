@@ -401,11 +401,11 @@ public class MainActivity extends AppCompatActivity {
     private Boolean reCheckLastLocation = false;
 
     private void getLocation() {
+
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
            // Toast.makeText(MainActivity.this, "something went wrong", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         LocationGooglePlayServicesProvider provider = new LocationGooglePlayServicesProvider();
         provider.setCheckLocationSettings(true);
@@ -417,6 +417,7 @@ public class MainActivity extends AppCompatActivity {
                     reCheckLastLocation = false;
 
                 }
+
 
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("location");
                 GeoFire geoFire = new GeoFire(ref);
@@ -460,13 +461,14 @@ public class MainActivity extends AppCompatActivity {
 
                     } catch (IOException e) {
                         e.printStackTrace();
+                       //  Toast.makeText(MainActivity.this, "Unable to fetch your city", Toast.LENGTH_SHORT).show();
+
                     }
 
 
 
             }
             else if (location != lastKnownLocation) {
-
 
                 LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -480,7 +482,10 @@ public class MainActivity extends AppCompatActivity {
                     isLocationEnable();
             }
 
+
         });
+
+
     }
 
 

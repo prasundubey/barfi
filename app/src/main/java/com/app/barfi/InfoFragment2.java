@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class InfoFragment2 extends Fragment {
 
@@ -335,7 +336,7 @@ public class InfoFragment2 extends Fragment {
 
     private void uploadSuccessful () {
         pgsBar.setVisibility(View.GONE);
-        FragmentTransaction fr = getFragmentManager().beginTransaction();
+        FragmentTransaction fr = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
         fr.replace(R.id.infoContainer, new InfoFragment3());
         fr.commit();
     }

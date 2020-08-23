@@ -181,6 +181,23 @@
                     android:textColor="@color/colorGray"/>
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:padding="10sp"
+                    android:layout_centerHorizontal="true"
+                    android:text="Gender: "
+                    android:textStyle="normal"
+                    android:textSize="14sp"/>
+
+
             <com.addisonelliott.segmentedbutton.SegmentedButtonGroup
                 android:id="@+id/radioRealButtonGroup"
                 android:layout_width="match_parent"
@@ -188,7 +205,7 @@
                 android:layout_gravity="center_horizontal"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:layout_marginTop="30dp"
+
                 android:elevation="0dp"
                 android:background="@color/colorGrayMid"
                 app:borderColor="@color/colorWhite"
@@ -241,6 +258,7 @@
                     app:textSize="14sp"
                     app:textColor="@color/colorWhite" />
             </com.addisonelliott.segmentedbutton.SegmentedButtonGroup>
+            </LinearLayout>
 
 
             <LinearLayout
